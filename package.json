@@ -1,0 +1,19 @@
+{
+  "name": "benchmarking-custom",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "scripts": {
+    "start": "tsc && node dist/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^12.7.1"
+  },
+  "dependencies": {
+    "lodash": "^4.17.15",
+    "node-chartist": "^1.0.5"
+  }
+}

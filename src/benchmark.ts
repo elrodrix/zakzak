@@ -4,11 +4,12 @@ import { TimeUnit } from "./time";
 import { median } from "./util";
 
 export default class Benchmark {
+
     public constructor(private fn: () => void, private name: string) { }
 
     public run() {
-        // const cycleTime = this.getCycleTime(this.fn, { warmupIterations: 200, targetIterations: 30 });
-        const functionIterationCount = this.getFunctionIterationCount(this.fn);
+        const warmupIter = this.estimateWarmup(this.fn);
+        const functionIterationCount = this.getFunctionIterationCount(this.fn, warmupIter);
         console.log(`innerIterationCount: ${functionIterationCount}`);
         const overHead = this.measure(() => { }, { cycleTime: 64 * TimeUnit.Millisecond, warmupIterations: 200, cycles: 100, functionIterationCount: functionIterationCount })
         console.log(`overhead: ${overHead}`);
@@ -17,15 +18,40 @@ export default class Benchmark {
         return time - overHead;
     }
 
-    private getFunctionIterationCount(fn: () => void, options = { warmupIterations: 100, minTime: 50 * TimeUnit.Microsecond, sampleCount: 20 }) {
-        // warm up the function
-        for (let i = 0; i < options.warmupIterations; i++) {
-            fn();
-        }
+    /**
+     * Estimates how often the function has the be executed in order to be properly warmed up
+     * @param fn 
+     */
+    private estimateWarmup(fn: () => void, maxTime = 2 * TimeUnit.Second) {
+        let iterations = 1
+        let total = 0;
+        let times: { time: number, iter: number }[] = [];
+        console.log("estimating warmup");
+        do {
+            iterations *= 2;
+            const startTime = Benchmark.getTime();
+            for (let i = 0; i < iterations; i++) {
+                fn();
+            }
+            const endTime = Benchmark.getTime();
+            total = endTime - startTime;
+            let currentTime = (endTime - startTime) / iterations;
+            times.push({ time: currentTime, iter: iterations });
+            console.log(`time: ${currentTime} iter: ${iterations}`)
+        } while (total < maxTime)
+        const min = _.minBy(times, t => t.time);
+        const best = _.minBy(_.filter(times, t => t.time / min.time < 1.1), t => t.iter);
+        return best.iter;
+    }
 
+    private getFunctionIterationCount(fn: () => void, warmupIterations = 100, options = { minTime: 50 * TimeUnit.Microsecond, sampleCount: 20 }) {
         let iterations = [];
+
         for (let i = 0; i < options.sampleCount; i++) {
             let count = 0;
+            for (let i = 0; i < warmupIterations; i++) {
+                fn();
+            }
             const startTime = Benchmark.getTime();
             do {
                 fn();

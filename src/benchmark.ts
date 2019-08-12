@@ -11,9 +11,9 @@ export default class Benchmark {
         const warmupIter = this.estimateWarmup(this.fn);
         const functionIterationCount = this.getFunctionIterationCount(this.fn, warmupIter);
         console.log(`innerIterationCount: ${functionIterationCount}`);
-        const overHead = this.measure(() => { }, { cycleTime: 64 * TimeUnit.Millisecond, warmupIterations: 200, cycles: 100, functionIterationCount: functionIterationCount })
+        const overHead = this.measure(() => { }, { cycleTime: 64 * TimeUnit.Millisecond, warmupIterations: warmupIter, cycles: 100, functionIterationCount: functionIterationCount })
         console.log(`overhead: ${overHead}`);
-        const time = this.measure(this.fn, { cycleTime: 64 * TimeUnit.Millisecond, warmupIterations: 200, cycles: 100, functionIterationCount: functionIterationCount })
+        const time = this.measure(this.fn, { cycleTime: 64 * TimeUnit.Millisecond, warmupIterations: warmupIter, cycles: 100, functionIterationCount: functionIterationCount })
         console.log(`time: ${time}`);
         return time - overHead;
     }
@@ -65,15 +65,13 @@ export default class Benchmark {
     }
 
     private measure(fn: () => void, options = { warmupIterations: 100, cycleTime: 32 * TimeUnit.Millisecond, cycles: 30, functionIterationCount: 1 }) {
-        for (let i = 0; i < options.warmupIterations; i++) {
-            fn();
-        }
-
         const measurements: number[][] = [];
-
         let times: number[] = [];
 
         for (let i = 0; i < options.cycles; i++) {
+            for (let i = 0; i < options.warmupIterations; i++) {
+                fn();
+            }
             const cycleStartTime = Benchmark.getTime();
             do {
                 const startTime = Benchmark.getTime()

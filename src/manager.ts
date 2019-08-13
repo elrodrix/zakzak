@@ -1,57 +1,48 @@
 import Benchmark from "./benchmark";
+import Table from "cli-table";
 
 interface BenchmarkData {
     name: string,
-    benchmark: Benchmark,
-    time?: number
+    benchmark: Benchmark
 }
 
 export default class BenchmarkManager {
 
-    private benchmarks: BenchmarkData[];
+    private benchmarks: Benchmark[];
 
     constructor() {
         this.benchmarks = [];
     }
 
+    /**
+     * Add a function that will be benchmarked
+     * @param name Name of the function for display purposes
+     * @param fn The function that will be benchmarked
+     */
     public add(name: string, fn: () => void) {
-        const b = new Benchmark(fn)
-        this.benchmarks.push({ name: name, benchmark: b });
+        const b = new Benchmark(name, fn)
+        this.benchmarks.push(b);
 
         return this;
     }
 
+    /**
+     * Run all the benchmarks
+     */
     public run() {
-        this.printHeader();
+        let table = new Table({
+            head: ["Name", "Execution time in ns", "Margin of Error"],
+        });
+
         this.benchmarks.forEach((b) => {
-            b.time = b.benchmark.run();
-            this.printResults(b);
+            b.run();
+            table.push(
+                [b.name, b.executionTime, b.marginOfError]
+            )
         })
-        this.printBottom();
+
+        console.log(table.toString());
     }
 
-    private printHeader() {
-        const namePad = 12;
-        const execTimePad = 1
-        const headerText = `| ${"name".padEnd(namePad, " ")} | ${"execution time".padEnd(execTimePad, " ")} |`;
-        const headerTopBar = `${"+".padEnd(headerText.length - 1, "-")}+`;
-        const headerBottomBar = `${"+".padEnd(headerText.length - 1, "-")}+`
-        console.log(headerTopBar);
-        console.log(headerText);
-        console.log(headerBottomBar);
-    }
 
-    private printBottom() {
-        const namePad = 12;
-        const execTimePad = 14
-        const headerText = `${String.fromCharCode(186)} ${"name".padEnd(namePad, " ")} ${String.fromCharCode(186)} ${"execution time".padEnd(execTimePad, " ")} ${String.fromCharCode(186)}`;
-        const bottomBar = `${"+".padEnd(headerText.length - 1, "-")}+`;
-        console.log(bottomBar);
-    }
-
-    private printResults(b: BenchmarkData) {
-        const namePad = 12;
-        const execTimePad = 14
-        console.log(`| ${b.name.padEnd(namePad, " ")} | ${(b.time.toFixed(2) + "ns").padEnd(execTimePad, " ")} |`);
-    }
 }

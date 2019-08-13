@@ -70,7 +70,7 @@ export default class Benchmark {
         }
 
         // To prevent returning 0 if function consistently takes longer than minTime
-        return Math.max(1, _.mean(iterations))
+        return Math.round(Math.max(1, _.mean(iterations)))
     }
 
     private measure(fn: () => void, options = { warmupIterations: 100, cycleTime: 32 * TimeUnit.Millisecond, cycles: 30, functionIterationCount: 1 }) {
@@ -78,7 +78,7 @@ export default class Benchmark {
         let times: number[] = [];
 
         for (let i = 0; i < options.cycles; i++) {
-            for (let i = 0; i < options.warmupIterations; i++) {
+            for (let x = 0; x < options.warmupIterations; x++) {
                 fn();
             }
             const cycleStartTime = Benchmark.getTime();

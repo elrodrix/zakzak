@@ -5,7 +5,24 @@ import { median } from "./util";
 
 export default class Benchmark {
 
-    public constructor(private fn: () => void) { }
+    /**
+     * The margin of error
+     */
+    public marginOfError: number;
+
+    /**
+     * Execution time in nanoseconds
+     */
+    public executionTime: number;
+
+    /**
+     * The name of the benchmark
+     */
+    public name: string;
+
+    public constructor(name: string,private fn: () => void) {
+        this.name = name;
+    }
 
     /**
      * Do a complete Benchmark run

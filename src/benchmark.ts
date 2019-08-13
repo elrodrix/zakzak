@@ -88,7 +88,7 @@ export default class Benchmark {
             actualTimes.push((times[i + 1] - times[i]) / warmupIterations);
         }
 
-        this.marginOfError = marginOfError(actualTimes, 99.9);
+        this.marginOfError = calculateMarginOfError(actualTimes, 99.9);
 
         const execTime = _.mean(actualTimes);
         this.executionTime = execTime;

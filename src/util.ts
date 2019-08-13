@@ -5,7 +5,7 @@ import _ from "lodash";
  * Calculates the median of an array of numbers
  * @param array 
  */
-export function median(array: number[]) {
+export function calculateMedian(array: number[]) {
     let sorted = array.sort();
     if (sorted.length % 2 === 0) { // array with even number elements
         return (sorted[sorted.length / 2] + sorted[(sorted.length / 2) - 1]) / 2;
@@ -22,15 +22,23 @@ export function median(array: number[]) {
  * @param values The sample
  * @param confidenceLevel Level of confidence for the margin of error
  */
-export function marginOfError(values: number[], confidenceLevel: ConfidenceLevel = 95) {
-    const mean = _.mean(values);
-    const squaredDeviations = _.sumBy(values, (t) => (t - mean) ** 2);
-    const standardDeviation = Math.sqrt(squaredDeviations / (values.length - 1));
-    const standardError = standardDeviation / Math.sqrt(values.length)
+export function calculateMarginOfError(values: number[], confidenceLevel: ConfidenceLevel = 95) {
+    const standardError = calculateStandardError(values);
     const criticalValue = calculateTScore(values, confidenceLevel)
     const moe = standardError * criticalValue;
 
     return moe;
+}
+
+/**
+ * Calculates the [Sample Standard Error](https://www.radford.edu/~biol-web/stats/standarderrorcalc.pdf) of a sample
+ * @param values The sample
+ */
+export function calculateStandardError(values: number[]) {
+    const mean = _.mean(values);
+    const squaredDeviations = _.sumBy(values, (t) => (t - mean) ** 2);
+    const standardDeviation = Math.sqrt(squaredDeviations / (values.length - 1));
+    return standardDeviation / Math.sqrt(values.length)
 }
 
 const tTable = [

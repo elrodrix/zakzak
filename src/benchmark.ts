@@ -9,12 +9,8 @@ export default class Benchmark {
 
     public run() {
         const warmupIter = this.estimateWarmup(this.fn);
-        const functionIterationCount = this.getFunctionIterationCount(this.fn, warmupIter);
-        console.log(`innerIterationCount: ${functionIterationCount}`);
-        const overHead = this.measure(() => { }, { cycleTime: 64 * TimeUnit.Millisecond, warmupIterations: warmupIter, cycles: 100, functionIterationCount: functionIterationCount })
-        console.log(`overhead: ${overHead}`);
-        const time = this.measure(this.fn, { cycleTime: 64 * TimeUnit.Millisecond, warmupIterations: warmupIter, cycles: 100, functionIterationCount: functionIterationCount })
-        console.log(`time: ${time}`);
+        const overHead = this.measure(() => { }, warmupIter, 100);
+        const time = this.measure(this.fn, warmupIter, 100);
         return time - overHead;
     }
 
@@ -48,57 +44,34 @@ export default class Benchmark {
     }
 
     /**
-     * Calculates how often the inner loop wrapping the function should run
-     * @param fn 
-     * @param warmupIterations 
-     * @param options 
+     * Measures the function execution time of a function
+     * @param fn The function that will be measured
+     * @param warmupIterations How often the function needs to be executed, before it is warmed up
+     * @param cycleIterations How many cycles should be performed
      */
-    private getFunctionIterationCount(fn: () => void, warmupIterations = 100, options = { minTime: 50 * TimeUnit.Microsecond, sampleCount: 20 }) {
-        let iterations = [];
-
-        for (let i = 0; i < options.sampleCount; i++) {
-            let count = 0;
-            for (let i = 0; i < warmupIterations; i++) {
+    private measure(fn: () => void, warmupIterations = 100, cycleIterations = 30) {
+        const times = [];
+        let warmup = warmupIterations;
+        let cycles = cycleIterations;
+        let inner = warmupIterations
+        while (warmup--) {
                 fn();
             }
-            const startTime = Benchmark.getTime();
-            do {
-                fn();
-                count++;
-            } while (Benchmark.getTime() - startTime < options.minTime)
-            iterations.push(count);
+        while (cycles--) {
+            times.push(Benchmark.getTime())
+            while (inner--) {
+                fn()
         }
-
-        // To prevent returning 0 if function consistently takes longer than minTime
-        return Math.round(Math.max(1, _.mean(iterations)))
+            times.push(Benchmark.getTime())
+            inner = warmupIterations
     }
 
-    private measure(fn: () => void, options = { warmupIterations: 100, cycleTime: 32 * TimeUnit.Millisecond, cycles: 30, functionIterationCount: 1 }) {
-        const measurements: number[][] = [];
-        let times: number[] = [];
-
-        for (let i = 0; i < options.cycles; i++) {
-            for (let x = 0; x < options.warmupIterations; x++) {
-                fn();
-            }
-            const cycleStartTime = Benchmark.getTime();
-            do {
-                const startTime = Benchmark.getTime()
-                for (let x = 0; x < options.functionIterationCount; x++) {
-                    fn();
-                }
-                const endTime = Benchmark.getTime();
-                times.push((endTime - startTime) / options.functionIterationCount);
-            } while (Benchmark.getTime() - cycleStartTime < options.cycleTime)
-            measurements.push(times);
-            times = [];
+        let actualTimes = [];
+        for (let i = 0, l = times.length; i < l; i += 2) {
+            actualTimes.push((times[i + 1] - times[i]) / warmupIterations);
         }
 
-        times = measurements.map((m) => {
-            return median(m);
-        })
-
-        return _.mean(times);
+        return _.mean(actualTimes);
     }
 
     /**

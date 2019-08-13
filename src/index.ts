@@ -38,6 +38,27 @@ const rand = () => {
     let b = Math.random();
     a = b;
 };
+
+const rand2 = () => {
+    rand();
+    rand();
+}
+
+const rand4 = () => {
+    rand2();
+    rand2();
+}
+
+const rand8 = () => {
+    rand4();
+    rand4();
+}
+
+const rand16 = () => {
+    rand8();
+    rand8();
+}
+
 const rand128 = () => {
     rand();
     rand();
@@ -169,12 +190,14 @@ const rand128 = () => {
     rand();
 };
 
-// console.info(`result: ${new Benchmark(rand, "test").run().toFixed(2)}ns`)
-// console.info(`result: ${new Benchmark(rand1k, "test").run().toFixed(2)}ns`)
-// console.info(`result: ${new Benchmark(encAndDec, "test").run().toFixed(2)}ns`)
-// console.info(`result: ${new Benchmark(pbkdf2, "test").run().toFixed(2)}ns`)
 
 
-console.info(`result: ${new Benchmark(rand, "test").run().toFixed(2)}ns`)
+
+console.info(`result rand: ${new Benchmark(rand, "test").run().toFixed(2)}ns`)
+console.info(`result rand2: ${new Benchmark(rand2, "test").run().toFixed(2)}ns`)
+console.info(`result rand4: ${new Benchmark(rand4, "test").run().toFixed(2)}ns`)
+console.info(`result rand8: ${new Benchmark(rand8, "test").run().toFixed(2)}ns`)
+console.info(`result rand16: ${new Benchmark(rand16, "test").run().toFixed(2)}ns`)
+console.info(`result rand1k: ${new Benchmark(rand1k, "test").run().toFixed(2)}ns`)
 // console.info(`result: ${new Benchmark(rand128, "test").run().toFixed(2)}ns`)
 // console.info(`result: ${new Benchmark(rand1k, "test").run().toFixed(2)}ns`)

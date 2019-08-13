@@ -1,7 +1,7 @@
 import process from "process";
 import _ from "lodash";
 import { TimeUnit } from "./time";
-import { median } from "./util";
+import { median, marginOfError } from "./util";
 
 export default class Benchmark {
 
@@ -88,7 +88,12 @@ export default class Benchmark {
             actualTimes.push((times[i + 1] - times[i]) / warmupIterations);
         }
 
-        return _.mean(actualTimes);
+        this.marginOfError = marginOfError(actualTimes);
+
+        const execTime = _.mean(actualTimes);
+        this.executionTime = execTime;
+
+        return execTime;
     }
 
     /**

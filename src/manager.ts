@@ -31,13 +31,13 @@ export default class BenchmarkManager {
      */
     public run() {
         let table = new Table({
-            head: ["Name", "Execution time in ns", "Margin of Error"],
+            head: ["Name", "Execution time", "Margin of Error", "Standard Error", "Min", "Max", "Median"],
         });
 
         this.benchmarks.forEach((b) => {
             b.run();
             table.push(
-                [b.name, b.executionTime, b.marginOfError]
+                [b.name, b.mean.toFixed(3), b.marginOfError.toFixed(3), b.standardError.toFixed(3), b.min.toFixed(3), b.max.toFixed(3), b.median.toFixed(3)]
             )
         })
 

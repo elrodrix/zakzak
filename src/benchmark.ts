@@ -1,19 +1,39 @@
 import process from "process";
 import _ from "lodash";
 import { TimeUnit } from "./time";
-import { median, marginOfError } from "./util";
+import { calculateMedian, calculateMarginOfError, calculateStandardError } from "./util";
 
 export default class Benchmark {
 
     /**
-     * The margin of error
+     * The margin of error in nanoseconds
      */
     public marginOfError: number;
 
     /**
-     * Execution time in nanoseconds
+     * The sample standard error in nanoseconds
      */
-    public executionTime: number;
+    public standardError: number; 
+
+    /**
+     * Mean of the measurements in nanoseconds
+     */
+    public mean: number;
+
+    /**
+     * Fastest measurement in nanoseconds
+     */
+    public min: number;
+
+    /**
+     * Slowest measurement in nanoseconds
+     */
+    public max: number;
+
+    /**
+     * Median of the measurements in nanoseconds
+     */
+    public median: number;
 
     /**
      * The name of the benchmark
@@ -90,8 +110,13 @@ export default class Benchmark {
 
         this.marginOfError = calculateMarginOfError(actualTimes, 99.9);
 
+        this.min = _.min(actualTimes);
+        this.max = _.max(actualTimes);
+        this.median = calculateMedian(actualTimes);
+        this.standardError = calculateStandardError(actualTimes);
+
         const execTime = _.mean(actualTimes);
-        this.executionTime = execTime;
+        this.mean = execTime;
 
         return execTime;
     }

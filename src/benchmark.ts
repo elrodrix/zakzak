@@ -26,7 +26,7 @@ export default class Benchmark {
         let iterations = 1
         let total = 0;
         let times: { time: number, iter: number }[] = [];
-        console.log("estimating warmup");
+        console.log("\nestimating warmup\n");
         do {
             iterations *= 2;
             const startTime = Benchmark.getTime();
@@ -41,9 +41,18 @@ export default class Benchmark {
         } while (total < maxTime)
         const min = _.minBy(times, t => t.time);
         const best = _.minBy(_.filter(times, t => t.time / min.time < 1.1), t => t.iter);
+
+        console.log(`\npicked warmup iteration count: ${best.iter}\n`)
+
         return best.iter;
     }
 
+    /**
+     * Calculates how often the inner loop wrapping the function should run
+     * @param fn 
+     * @param warmupIterations 
+     * @param options 
+     */
     private getFunctionIterationCount(fn: () => void, warmupIterations = 100, options = { minTime: 50 * TimeUnit.Microsecond, sampleCount: 20 }) {
         let iterations = [];
 

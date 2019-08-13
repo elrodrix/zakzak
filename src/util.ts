@@ -1,5 +1,10 @@
 import _ from "lodash";
 
+
+/**
+ * Calculates the median of an array of numbers
+ * @param array 
+ */
 export function median(array: number[]) {
     let sorted = array.sort();
     if (sorted.length % 2 === 0) { // array with even number elements
@@ -10,6 +15,13 @@ export function median(array: number[]) {
     }
 }
 
+/**
+ * Calculates the [margin of error](https://www.statisticshowto.datasciencecentral.com/probability-and-statistics/hypothesis-testing/margin-of-error/) 
+ * from a sample using the [Sample Standard Error](https://www.radford.edu/~biol-web/stats/standarderrorcalc.pdf)
+ * and the [T-Score](http://www.sjsu.edu/faculty/gerstman/StatPrimer/t-table.pdf) inferred from the confidence level
+ * @param values The sample
+ * @param confidenceLevel Level of confidence for the margin of error
+ */
 export function marginOfError(values: number[], confidenceLevel: ConfidenceLevel = 95) {
     const mean = _.mean(values);
     const squaredDeviations = _.sumBy(values, (t) => (t - mean) ** 2);
@@ -63,11 +75,17 @@ const tTable = [
 const confidenceLevels = [0, 50, 60, 70, 80, 90, 95, 98, 99, 99.8, 99.9]
 type ConfidenceLevel = 0 | 50 | 60 | 70 | 80 | 90 | 95 | 98 | 99 | 99.8 | 99.9
 
+
+/**
+ * Returns the t-score for a given sample and confidence level, by using a table of t-scores
+ * @param sample Sample for which the t-score should be gathered
+ * @param confidenceLevel The confidence level for the t-score
+ */
 export function calculateTScore(sample: number[], confidenceLevel: ConfidenceLevel = 95) {
     const confidenceIndex = confidenceLevels.indexOf(confidenceLevel);
     const df = sample.length - 1;
     for (let i = 0, l = tTable.length - 1; i < l; i++) {
-        if(tTable[i].df >= df){
+        if (tTable[i].df >= df) {
             return tTable[i].tValues[confidenceIndex]
         }
     }

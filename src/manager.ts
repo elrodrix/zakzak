@@ -27,7 +27,7 @@ export default class BenchmarkManager {
     }
 
     /**
-     * Run all the benchmarks
+     * Run all the benchmarks and print them out
      */
     public run() {
         let table = new Table({

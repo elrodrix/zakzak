@@ -16,13 +16,12 @@ export default class Benchmark {
 
     /**
      * Estimates how often the function has the be executed in order to be properly warmed up
-     * @param fn 
+     * @param fn Function that should be warmep up
      */
-    private estimateWarmup(fn: () => void, maxTime = 2 * TimeUnit.Second) {
+    private estimateWarmup(fn: () => void, maxTime = 500 * TimeUnit.Millisecond) {
         let iterations = 1
         let total = 0;
         let times: { time: number, iter: number }[] = [];
-        console.log("\nestimating warmup\n");
         do {
             iterations *= 2;
             const startTime = Benchmark.getTime();
@@ -33,12 +32,10 @@ export default class Benchmark {
             total = endTime - startTime;
             let currentTime = (endTime - startTime) / iterations;
             times.push({ time: currentTime, iter: iterations });
-            console.log(`time: ${currentTime} iter: ${iterations}`)
+            // console.log(`time: ${currentTime} iter: ${iterations}`)
         } while (total < maxTime)
         const min = _.minBy(times, t => t.time);
         const best = _.minBy(_.filter(times, t => t.time / min.time < 1.1), t => t.iter);
-
-        console.log(`\npicked warmup iteration count: ${best.iter}\n`)
 
         return best.iter;
     }
@@ -55,16 +52,16 @@ export default class Benchmark {
         let cycles = cycleIterations;
         let inner = warmupIterations
         while (warmup--) {
-                fn();
-            }
+            fn();
+        }
         while (cycles--) {
             times.push(Benchmark.getTime())
             while (inner--) {
                 fn()
-        }
+            }
             times.push(Benchmark.getTime())
             inner = warmupIterations
-    }
+        }
 
         let actualTimes = [];
         for (let i = 0, l = times.length; i < l; i += 2) {

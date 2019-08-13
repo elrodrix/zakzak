@@ -7,11 +7,14 @@ export default class Benchmark {
 
     public constructor(private fn: () => void) { }
 
+    /**
+     * Do a complete Benchmark run
+     */
     public run() {
         const warmupIter = this.estimateWarmup(this.fn);
         const overHead = this.measure(() => { }, warmupIter, 100);
         const time = this.measure(this.fn, warmupIter, 100);
-        return time - overHead;
+        return Math.max(time - overHead, 0); // incase overhead
     }
 
     /**

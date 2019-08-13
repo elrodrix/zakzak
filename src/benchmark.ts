@@ -5,7 +5,7 @@ import { median } from "./util";
 
 export default class Benchmark {
 
-    public constructor(private fn: () => void, private name: string) { }
+    public constructor(private fn: () => void) { }
 
     public run() {
         const warmupIter = this.estimateWarmup(this.fn);

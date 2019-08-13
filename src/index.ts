@@ -1,5 +1,6 @@
 import Benchmark from "./benchmark";
 import crypto from "crypto";
+import BenchmarkManager from "./manager";
 
 const pbkdf2 = () => {
     const key = crypto.pbkdf2Sync("correct horse battery staple", "pepper", 100000, 128, "sha512");
@@ -193,11 +194,22 @@ const rand128 = () => {
 
 
 
-console.info(`result rand: ${new Benchmark(rand, "test").run().toFixed(2)}ns`)
-console.info(`result rand2: ${new Benchmark(rand2, "test").run().toFixed(2)}ns`)
-console.info(`result rand4: ${new Benchmark(rand4, "test").run().toFixed(2)}ns`)
-console.info(`result rand8: ${new Benchmark(rand8, "test").run().toFixed(2)}ns`)
-console.info(`result rand16: ${new Benchmark(rand16, "test").run().toFixed(2)}ns`)
-console.info(`result rand1k: ${new Benchmark(rand1k, "test").run().toFixed(2)}ns`)
+// console.info(`result rand: ${new Benchmark(rand).run().toFixed(2)}ns`)
+// console.info(`result rand2: ${new Benchmark(rand2).run().toFixed(2)}ns`)
+// console.info(`result rand4: ${new Benchmark(rand4).run().toFixed(2)}ns`)
+// console.info(`result rand8: ${new Benchmark(rand8).run().toFixed(2)}ns`)
+// console.info(`result rand16: ${new Benchmark(rand16).run().toFixed(2)}ns`)
+// console.info(`result rand1k: ${new Benchmark(rand1k).run().toFixed(2)}ns`)
+
+const mng = new BenchmarkManager();
+mng
+    .add("rand", rand)
+    .add("rand2", rand2)
+    .add("rand4", rand4)
+    .add("rand8", rand8)
+    .add("rand16", rand16)
+    .add("rand1k", rand1k)
+    .run();
+
 // console.info(`result: ${new Benchmark(rand128, "test").run().toFixed(2)}ns`)
 // console.info(`result: ${new Benchmark(rand1k, "test").run().toFixed(2)}ns`)

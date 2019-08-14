@@ -2,7 +2,7 @@ import Benchmark from "./benchmark";
 import crypto from "crypto";
 import BenchmarkManager from "./manager";
 
-import { disableJITForFunction } from "./../lib/nojit";
+import v8natives from "v8-natives";
 
 const pbkdf2 = () => {
     const key = crypto.pbkdf2Sync("correct horse battery staple", "pepper", 100000, 128, "sha512");
@@ -42,7 +42,7 @@ const rand = () => {
     a = b;
 };
 
-disableJITForFunction(rand);
+// v8natives.neverOptimizeFunction(rand);
 
 const rand2 = () => {
     rand();

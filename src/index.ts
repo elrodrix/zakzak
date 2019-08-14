@@ -2,8 +2,6 @@ import Benchmark from "./benchmark";
 import crypto from "crypto";
 import BenchmarkManager from "./manager";
 
-import v8natives from "v8-natives";
-
 const pbkdf2 = () => {
     const key = crypto.pbkdf2Sync("correct horse battery staple", "pepper", 100000, 128, "sha512");
     key.toString("hex");
@@ -41,8 +39,6 @@ const rand = () => {
     let b = Math.random();
     a = b;
 };
-
-// v8natives.neverOptimizeFunction(rand);
 
 const rand2 = () => {
     rand();

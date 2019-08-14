@@ -2,6 +2,7 @@ import process from "process";
 import _ from "lodash";
 import { TimeUnit } from "./time";
 import { calculateMedian, calculateMarginOfError, calculateStandardError } from "./util";
+import v8natives from "v8-natives";
 
 export default class Benchmark {
 
@@ -13,7 +14,7 @@ export default class Benchmark {
     /**
      * The sample standard error in nanoseconds
      */
-    public standardError: number; 
+    public standardError: number;
 
     /**
      * Mean of the measurements in nanoseconds
@@ -40,8 +41,23 @@ export default class Benchmark {
      */
     public name: string;
 
-    public constructor(name: string,private fn: () => void) {
+    /**
+     * The options set at the beginning for this benchmark
+     */
+    private options: BenchmarkOptions;
+
+    public constructor(name: string, private fn: () => void, options?: BenchmarkOptions) {
+        const defaultOptions: BenchmarkOptions = {
+            maxCycleTime: 500 * TimeUnit.Millisecond,
+            maxCycleNumber: 100,
+            allowJIT: true
+        };
+        this.options = _.merge(defaultOptions, options)
         this.name = name;
+
+        if (this.options.allowJIT === false) {
+            v8natives.neverOptimizeFunction(this.fn);
+        }
     }
 
     /**
@@ -131,8 +147,8 @@ export default class Benchmark {
     }
 }
 
-export class BenchmarkOptions {
-    MaxCycleTime?: number = 500 * TimeUnit.Millisecond;
-    MaxCycleNumber?: number = 100;
-    
+export interface BenchmarkOptions {
+    maxCycleTime?: number;
+    maxCycleNumber?: number;
+    allowJIT?: boolean;
 }

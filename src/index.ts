@@ -2,6 +2,8 @@ import Benchmark from "./benchmark";
 import crypto from "crypto";
 import BenchmarkManager from "./manager";
 
+import { disableJITForFunction } from "./../lib/nojit";
+
 const pbkdf2 = () => {
     const key = crypto.pbkdf2Sync("correct horse battery staple", "pepper", 100000, 128, "sha512");
     key.toString("hex");
@@ -39,6 +41,8 @@ const rand = () => {
     let b = Math.random();
     a = b;
 };
+
+disableJITForFunction(rand);
 
 const rand2 = () => {
     rand();

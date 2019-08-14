@@ -1,0 +1,1 @@
+export declare function disableJITForFunction(fn: () => void): void;

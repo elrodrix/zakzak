@@ -130,3 +130,9 @@ export default class Benchmark {
         return time[0] * 1e9 + time[1];
     }
 }
+
+export class BenchmarkOptions {
+    MaxCycleTime?: number = 500 * TimeUnit.Millisecond;
+    MaxCycleNumber?: number = 100;
+    
+}

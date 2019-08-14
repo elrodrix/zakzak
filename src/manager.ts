@@ -1,4 +1,4 @@
-import Benchmark from "./benchmark";
+import Benchmark, { BenchmarkOptions } from "./benchmark";
 import Table from "cli-table";
 
 interface BenchmarkData {
@@ -19,8 +19,8 @@ export default class BenchmarkManager {
      * @param name Name of the function for display purposes
      * @param fn The function that will be benchmarked
      */
-    public add(name: string, fn: () => void) {
-        const b = new Benchmark(name, fn)
+    public add(name: string, fn: () => void, options?: BenchmarkOptions) {
+        const b = new Benchmark(name, fn, options)
         this.benchmarks.push(b);
 
         return this;

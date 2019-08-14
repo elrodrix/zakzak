@@ -46,13 +46,13 @@ export default class Benchmark {
      */
     private options: BenchmarkOptions;
 
-    public constructor(name: string, private fn: () => void, options?: BenchmarkOptions) {
+    public constructor(name: string, private fn: () => void, opts?: BenchmarkOptions) {
         const defaultOptions: BenchmarkOptions = {
             maxCycleTime: 500 * TimeUnit.Millisecond,
             maxCycleNumber: 100,
             allowJIT: true
         };
-        this.options = _.merge(defaultOptions, options)
+        this.options = _.merge(defaultOptions, opts)
         this.name = name;
 
         if (this.options.allowJIT === false) {

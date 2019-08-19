@@ -6,7 +6,9 @@ data = json.loads(open("data.json").read())
 x = data["x"]
 y = data["y"]
 
-plt.plot(x, y)
+fig, ax = plt.subplots()
+ax.plot(x,y)
+# ax.ticklabel_format(useOffset=False, style='plain')
 plt.show()
 
 

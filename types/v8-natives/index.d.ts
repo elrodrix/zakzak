@@ -1,10 +1,9 @@
 declare module 'v8-natives' {
-    export class v8 {
-        static printStatus(fn: Function, fName: string): number;
-        static testOptimization(f: Function | Function[], fname: string): number;
-        static benchmark(count: number, f: Function, params?: any): number;
+    export let helpers: {
+        printStatus(fn: Function, fName: string): number;
+        testOptimization(f: Function | Function[], fname: string): number;
+        benchmark(count: number, f: Function, params?: any): number;
     }
-
     export function isNative(): boolean;
     export function getOptimizationStatus(fun: Function): number;
     export function optimizeFunctionOnNextCall(fun: Function): void;

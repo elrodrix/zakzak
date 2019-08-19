@@ -99,3 +99,33 @@ export function calculateTScore(sample: number[], confidenceLevel: ConfidenceLev
     }
     return 0;
 }
+
+export function getOptimizationStats(status: number) {
+    const statuses: string[] = []
+    for (let item in OptimizationStatus) {
+        let bitmask = parseInt(item);
+        if(bitmask != NaN){
+            if((status & bitmask) === bitmask){
+                statuses.push(OptimizationStatus[bitmask])
+            }
+        }   
+    }
+
+    return statuses;
+}
+
+export enum OptimizationStatus {
+    IsFunction = 1 << 0,
+    NeverOptimize = 1 << 1,
+    AlwaysOptimize = 1 << 2,
+    MaybeDeopted = 1 << 3,
+    Optimized = 1 << 4,
+    TurboFanned = 1 << 5,
+    Interpreted = 1 << 6,
+    MarkedForOptimization = 1 << 7,
+    MarkedForConcurrentOptimization = 1 << 8,
+    OptimizingConcurrently = 1 << 9,
+    IsExecuting = 1 << 10,
+    TopmostFrameIsTurboFanned = 1 << 11,
+    LiteMode = 1 << 12,
+}

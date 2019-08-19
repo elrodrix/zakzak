@@ -1,7 +1,7 @@
 import process from "process";
 import _ from "lodash";
 import { TimeUnit } from "./time";
-import { calculateMedian, calculateMarginOfError, calculateStandardError } from "./util";
+import { calculateMedian, calculateMarginOfError, calculateStandardError, getOptimizationStats } from "./util";
 import v8natives from "v8-natives";
 
 export default class Benchmark {
@@ -78,6 +78,7 @@ export default class Benchmark {
         let iterations = 1
         let total = 0;
         let times: { time: number, iter: number }[] = [];
+        let optStats = [];
         do {
             iterations *= 2;
             const startTime = Benchmark.getTime();
@@ -87,11 +88,14 @@ export default class Benchmark {
             const endTime = Benchmark.getTime();
             total = endTime - startTime;
             let currentTime = (endTime - startTime) / iterations;
+            optStats.push({ stat: v8natives.getOptimizationStatus(fn), time: currentTime });
             times.push({ time: currentTime, iter: iterations });
             // console.log(`time: ${currentTime} iter: ${iterations}`)
         } while (total < maxTime)
         const min = _.minBy(times, t => t.time);
         const best = _.minBy(_.filter(times, t => t.time / min.time < 1.1), t => t.iter);
+
+        console.log(optStats.map((v) => { return { stats: getOptimizationStats(v.stat), time: v.time } }));
 
         return best.iter;
     }

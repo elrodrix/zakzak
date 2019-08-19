@@ -1,4 +1,6 @@
 import _ from "lodash";
+import fs from "fs";
+import shell from "shelljs";
 
 
 /**
@@ -104,11 +106,11 @@ export function getOptimizationStats(status: number) {
     const statuses: string[] = []
     for (let item in OptimizationStatus) {
         let bitmask = parseInt(item);
-        if(bitmask != NaN){
-            if((status & bitmask) === bitmask){
+        if (bitmask != NaN) {
+            if ((status & bitmask) === bitmask) {
                 statuses.push(OptimizationStatus[bitmask])
             }
-        }   
+        }
     }
 
     return statuses;
@@ -128,4 +130,40 @@ export enum OptimizationStatus {
     IsExecuting = 1 << 10,
     TopmostFrameIsTurboFanned = 1 << 11,
     LiteMode = 1 << 12,
+}
+
+export function calculateMode(numbers: number[]) {
+    // as result can be bimodal or multi-modal,
+    // the returned result is provided as an array
+    // mode of [3, 5, 4, 4, 1, 1, 2, 3] = [1, 3, 4]
+    let modes:number[] = [];
+    let count:number[] = [];
+    let maxIndex = 0;
+
+    for (let i = 0, l = numbers.length; i < l; i++) {
+        let number = numbers[i];
+        count[number] = (count[number] || 0) + 1;
+        if (count[number] > maxIndex) {
+            maxIndex = count[number];
+        }
+    }
+
+    for (let i in count)
+        if (count.hasOwnProperty(i)) {
+            if (count[i] === maxIndex) {
+                modes.push(Number(i));
+            }
+        }
+
+    return modes;
+}
+
+export function writeToJson(data: any, filename = "data.json"){
+    const text = JSON.stringify(data);
+    fs.writeFileSync(filename, text, "utf8");
+}
+
+export function plotData(data: {x: number[], y: number[]}){
+    writeToJson(data);   
+    shell.exec("./plot.sh");
 }

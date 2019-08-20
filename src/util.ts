@@ -136,8 +136,8 @@ export function calculateMode(numbers: number[]) {
     // as result can be bimodal or multi-modal,
     // the returned result is provided as an array
     // mode of [3, 5, 4, 4, 1, 1, 2, 3] = [1, 3, 4]
-    let modes:number[] = [];
-    let count:number[] = [];
+    let modes: number[] = [];
+    let count: number[] = [];
     let maxIndex = 0;
 
     for (let i = 0, l = numbers.length; i < l; i++) {
@@ -158,12 +158,12 @@ export function calculateMode(numbers: number[]) {
     return modes;
 }
 
-export function writeToJson(data: any, filename = "data.json"){
+export function writeToJson(data: any, filename = "data.json") {
     const text = JSON.stringify(data);
     fs.writeFileSync(filename, text, "utf8");
 }
 
-export function plotData(data: {x: number[], y: number[]}){
-    writeToJson(data);   
+export function plotData(data: { x: number[], y: number[], color: string}[]) {
+    writeToJson(data);
     shell.exec("./plot.sh");
 }

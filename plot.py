@@ -2,13 +2,14 @@ import json
 import matplotlib.pyplot as plt
 data = json.loads(open("data.json").read())
 
+length = len(data)
 
-x = data["x"]
-y = data["y"]
+for i in range(length):
+    x = data[i]["x"]
+    y = data[i]["y"]
+    color = data[i]["color"]
+    plt.plot(x,y, color=color)
 
-fig, ax = plt.subplots()
-ax.plot(x,y)
-# ax.ticklabel_format(useOffset=False, style='plain')
 plt.show()
 
 

@@ -1,5 +1,6 @@
 import Benchmark, { BenchmarkOptions } from "./benchmark";
 import Table from "cli-table";
+import { startChildProcess } from "./parent";
 
 interface BenchmarkData {
     name: string,
@@ -10,8 +11,15 @@ export default class BenchmarkManager {
 
     private benchmarks: Benchmark[];
 
-    constructor() {
+    private isMasterProcess: boolean;
+
+    constructor(private entryFileName: string) {
         this.benchmarks = [];
+
+        this.isMasterProcess = false;
+        if (process.send === undefined) { // Master process has no send
+            this.isMasterProcess = true;
+        }
     }
 
     /**
@@ -30,16 +38,23 @@ export default class BenchmarkManager {
      * Run all the benchmarks and print them out
      */
     public run() {
+
         let table = new Table({
             head: ["Name", "Execution time", "Margin of Error", "Standard Error", "Min", "Max", "Median"],
         });
 
-        this.benchmarks.forEach((b) => {
-            b.run();
-            table.push(
-                [b.name, b.mean.toFixed(3), b.marginOfError.toFixed(3), b.standardError.toFixed(3), b.min.toFixed(3), b.max.toFixed(3), b.median.toFixed(3)]
-            )
-        })
+        if (this.isMasterProcess) {
+
+            this.benchmarks.forEach((b) => {
+                startChildProcess(this.entryFileName, [String(b.id)],{})
+                b.run();
+                table.push(
+                    [b.name, b.mean.toFixed(3), b.marginOfError.toFixed(3), b.standardError.toFixed(3), b.min.toFixed(3), b.max.toFixed(3), b.median.toFixed(3)]
+                )
+            })
+        }
+
+
 
         console.log(table.toString());
     }

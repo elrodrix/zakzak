@@ -163,7 +163,7 @@ export function writeToJson(data: any, filename = "data.json") {
     fs.writeFileSync(filename, text, "utf8");
 }
 
-export function plotData(data: { x: number[], y: number[], color: string}[]) {
+export function plotData(data: { x: number[], y: number[], color: string }[]) {
     writeToJson(data);
     shell.exec("./plot.sh");
 }

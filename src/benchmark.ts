@@ -65,9 +65,6 @@ export default class Benchmark {
             const noOptim = () => { fn(); }
             v8natives.neverOptimizeFunction(noOptim);
             this.fn = noOptim;
-        } else {
-            const possibleOptim = () => { fn(); }
-            this.fn = possibleOptim;
         }
     }
 

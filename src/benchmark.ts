@@ -8,7 +8,7 @@ export default class Benchmark {
 
     private static idCounter = 0;
 
-    private id: number;
+    public id: number;
 
     /**
      * The margin of error in nanoseconds

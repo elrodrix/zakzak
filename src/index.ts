@@ -1,8 +1,7 @@
 import crypto from "crypto";
 import BenchmarkManager from "./manager";
-
 import _ from "lodash";
-import { Parent } from "./process/parent";
+
 
 const pbkdf2 = () => {
     const key = crypto.pbkdf2Sync("correct horse battery staple", "pepper", 100000, 128, "sha512");
@@ -60,150 +59,18 @@ const rand16 = () => {
     rand8();
 }
 
-const rand128 = () => {
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-    rand();
-};
+const mng = new BenchmarkManager(__filename);
 
-Parent();
-
-const mng = new BenchmarkManager();
-// mng
-    // .add("rand(jit)", rand, { allowJIT: true })
-    // .add("rand(jit)", rand, { allowJIT: true })
-    // .add("rand(jit)", rand, { allowJIT: true })
-    // .add("rand(no-jit)", rand, { allowJIT: false })
-    // .add("rand(no-jit)", rand, { allowJIT: false })
-    // .add("rand(no-jit)", rand, { allowJIT: false })
-    // .add("rand2", rand2, { allowJIT: true })
-    // .add("rand4", rand4)
-    // .add("rand8", rand8)
-    // .add("rand16", rand16)
-    // .add("rand1k", rand1k)
-    // .run();
+mng
+    .add("rand(jit)", rand, { allowJIT: true })
+    .add("rand(jit)", rand, { allowJIT: true })
+    .add("rand(jit)", rand, { allowJIT: true })
+    .add("rand(no-jit)", rand, { allowJIT: false })
+    .add("rand(no-jit)", rand, { allowJIT: false })
+    .add("rand(no-jit)", rand, { allowJIT: false })
+    .add("rand2", rand2, { allowJIT: true })
+    .add("rand4", rand4)
+    .add("rand8", rand8)
+    .add("rand16", rand16)
+    .add("rand1k", rand1k)
+    .run();

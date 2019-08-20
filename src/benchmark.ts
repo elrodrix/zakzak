@@ -72,6 +72,7 @@ export default class Benchmark {
      * Do a complete Benchmark run
      */
     public run() {
+        // this.warmUpTest(this.fn)
         const warmupIter = this.estimateWarmup(this.fn);
         console.log(`warmupIter = ${warmupIter}`);
         this.overhead = this.measure(() => { }, warmupIter, 100);
@@ -91,7 +92,7 @@ export default class Benchmark {
         let total = 0;
         let times: { time: number, iter: number }[] = [];
         do {
-            iterations *= 2;
+            iterations = Math.ceil(iterations * 1.1);
             const startTime = Benchmark.getTime();
             for (let i = 0; i < iterations; i++) {
                 fn();
@@ -108,6 +109,45 @@ export default class Benchmark {
         // plotData({ x: times.map(t => t.iter), y: times.map(t => t.time) });
 
         return best.iter;
+    }
+
+    private warmUpTest(fn: () => void) {
+        const maxTime = 500 * TimeUnit.Millisecond;
+        let times = []
+        let stats = []
+        const iter = 1000;
+        const startTime = Benchmark.getTime()
+        do {
+            let temp = iter;
+            stats.push(v8natives.getOptimizationStatus(fn))
+            times.push(Benchmark.getTime())
+            while (temp--) {
+                fn()
+            }
+            times.push(Benchmark.getTime())
+
+        } while (Benchmark.getTime() - startTime < maxTime)
+
+        const actualTimes: number[] = [];
+        for (let i = 0, l = times.length; i < l; i += 2) {
+            actualTimes.push((times[i + 1] - times[i]) / iter);
+        }
+        const ignition: number[] = []
+        const turbofannned: number[] = []
+        stats = stats.map(v => getOptimizationStats(v).indexOf("TurboFanned") != -1)
+        stats.forEach((v, i) => {
+            if (v == true) {
+                turbofannned.push(actualTimes[i])
+            } else {
+                ignition.push(actualTimes[i])
+            }
+        })
+
+        const l = ignition.length
+        plotData([
+            { x: ignition.map((_, i) => i), y: ignition, color: "blue" },
+            { x: turbofannned.map((_, i) => i + l), y: turbofannned, color: "red" }
+        ]);
     }
 
     /**

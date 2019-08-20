@@ -6,6 +6,10 @@ import v8natives from "v8-natives";
 
 export default class Benchmark {
 
+    private static idCounter = 0;
+
+    private id: number;
+
     /**
      * The margin of error in nanoseconds
      */
@@ -52,6 +56,8 @@ export default class Benchmark {
     private options: BenchmarkOptions;
 
     public constructor(name: string, private fn: () => void, opts?: BenchmarkOptions) {
+        this.id = Benchmark.idCounter++;
+
         const defaultOptions: BenchmarkOptions = {
             maxCycleTime: 500 * TimeUnit.Millisecond,
             maxCycleNumber: 100,

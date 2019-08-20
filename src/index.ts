@@ -1,7 +1,6 @@
 import crypto from "crypto";
 import BenchmarkManager from "./manager";
-import v8natives from "v8-natives";
-import { getOptimizationStats } from "./util";
+
 import _ from "lodash";
 
 const pbkdf2 = () => {

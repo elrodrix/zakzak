@@ -1,7 +1,7 @@
 import process from "process";
 import _ from "lodash";
 import { TimeUnit } from "./time";
-import { calculateMedian, calculateMarginOfError, calculateStandardError, getOptimizationStats } from "./util";
+import { calculateMedian, calculateMarginOfError, calculateStandardError, getOptimizationStats, calculateMode, writeToJson, plotData } from "./util";
 import v8natives from "v8-natives";
 
 export default class Benchmark {
@@ -20,6 +20,11 @@ export default class Benchmark {
      * Mean of the measurements in nanoseconds
      */
     public mean: number;
+
+    /**
+     * Overhead for the measurement process
+     */
+    public overhead: number;
 
     /**
      * Fastest measurement in nanoseconds
@@ -55,8 +60,14 @@ export default class Benchmark {
         this.options = _.merge(defaultOptions, opts)
         this.name = name;
 
+        v8natives.deoptimizeNow();
         if (this.options.allowJIT === false) {
-            v8natives.neverOptimizeFunction(this.fn);
+            const noOptim = () => { fn(); }
+            v8natives.neverOptimizeFunction(noOptim);
+            this.fn = noOptim;
+        } else {
+            const possibleOptim = () => { fn(); }
+            this.fn = possibleOptim;
         }
     }
 
@@ -65,9 +76,13 @@ export default class Benchmark {
      */
     public run() {
         const warmupIter = this.estimateWarmup(this.fn);
-        const overHead = this.measure(() => { }, warmupIter, 100);
+        console.log(`warmupIter = ${warmupIter}`);
+        this.overhead = this.measure(() => { }, warmupIter, 100);
+        console.log(`overHead = ${this.overhead}`);
         const time = this.measure(this.fn, warmupIter, 100);
-        return Math.max(time - overHead, 0); // incase overhead
+        console.log(`time = ${time}`);
+        this.deductOverhead();
+        return Math.max(time - this.overhead, 0); // incase overhead
     }
 
     /**
@@ -78,7 +93,6 @@ export default class Benchmark {
         let iterations = 1
         let total = 0;
         let times: { time: number, iter: number }[] = [];
-        let optStats = [];
         do {
             iterations *= 2;
             const startTime = Benchmark.getTime();
@@ -88,14 +102,13 @@ export default class Benchmark {
             const endTime = Benchmark.getTime();
             total = endTime - startTime;
             let currentTime = (endTime - startTime) / iterations;
-            optStats.push({ stat: v8natives.getOptimizationStatus(fn), time: currentTime });
             times.push({ time: currentTime, iter: iterations });
             // console.log(`time: ${currentTime} iter: ${iterations}`)
         } while (total < maxTime)
         const min = _.minBy(times, t => t.time);
         const best = _.minBy(_.filter(times, t => t.time / min.time < 1.1), t => t.iter);
 
-        console.log(optStats.map((v) => { return { stats: getOptimizationStats(v.stat), time: v.time } }));
+        // plotData({ x: times.map(t => t.iter), y: times.map(t => t.time) });
 
         return best.iter;
     }
@@ -139,6 +152,13 @@ export default class Benchmark {
         this.mean = execTime;
 
         return execTime;
+    }
+
+    private deductOverhead() {
+        this.mean = Math.max(this.mean - this.overhead, 0);
+        this.min = Math.max(this.min - this.overhead, 0);
+        this.max = Math.max(this.max - this.overhead, 0);
+        this.median = Math.max(this.median - this.overhead, 0);
     }
 
     /**

@@ -1,6 +1,8 @@
-import Benchmark from "./benchmark";
 import crypto from "crypto";
 import BenchmarkManager from "./manager";
+import v8natives from "v8-natives";
+import { getOptimizationStats } from "./util";
+import _ from "lodash";
 
 const pbkdf2 = () => {
     const key = crypto.pbkdf2Sync("correct horse battery staple", "pepper", 100000, 128, "sha512");
@@ -189,14 +191,17 @@ const rand128 = () => {
     rand();
 };
 
-
-
 const mng = new BenchmarkManager();
 mng
-    .add("rand", rand, {allowJIT: true})
-    .add("rand2", rand2, {allowJIT: false})
-    .add("rand4", rand4)
-    .add("rand8", rand8)
-    .add("rand16", rand16)
-    .add("rand1k", rand1k)
+    .add("rand(jit)", rand, { allowJIT: true })
+    // .add("rand(jit)", rand, { allowJIT: true })
+    // .add("rand(jit)", rand, { allowJIT: true })
+    // .add("rand(no-jit)", rand, { allowJIT: false })
+    // .add("rand(no-jit)", rand, { allowJIT: false })
+    // .add("rand(no-jit)", rand, { allowJIT: false })
+    // .add("rand2", rand2, { allowJIT: false })
+    // .add("rand4", rand4)
+    // .add("rand8", rand8)
+    // .add("rand16", rand16)
+    // .add("rand1k", rand1k)
     .run();

@@ -1,4 +1,4 @@
-import Benchmark, { BenchmarkOptions } from "./benchmark";
+import Benchmark, { BenchmarkOptions } from "../benchmark/benchmark";
 import Table from "cli-table";
 
 interface BenchmarkData {

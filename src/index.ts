@@ -1,5 +1,5 @@
 import crypto from "crypto";
-import BenchmarkManager from "./manager";
+import BenchmarkManager from "./manager/manager";
 import _ from "lodash";
 
 const pbkdf2 = () => {

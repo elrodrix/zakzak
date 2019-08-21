@@ -101,12 +101,9 @@ export default class Benchmark {
             total = endTime - startTime;
             let currentTime = (endTime - startTime) / iterations;
             times.push({ time: currentTime, iter: iterations });
-            // console.log(`time: ${currentTime} iter: ${iterations}`)
         } while (total < maxTime)
         const min = _.minBy(times, t => t.time);
         const best = _.minBy(_.filter(times, t => t.time / min.time < 1.1), t => t.iter);
-
-        // plotData({ x: times.map(t => t.iter), y: times.map(t => t.time) });
 
         return best.iter;
     }

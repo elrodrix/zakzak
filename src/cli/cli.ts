@@ -1,11 +1,15 @@
 #!/usr/bin/env node
 
+
+
+// tslint:disable-next-line: no-var-requires
+const x = require("../manager/globals");
+
 import commander from "commander";
 import globby from "globby";
 import path from "path";
 import Configstore from "configstore";
 import fs from "fs";
-
 const defaultConfigPath = "./zakzak.config.json";
 
 commander.version("0.0.1", "-v, --version");
@@ -43,5 +47,4 @@ if (fs.existsSync(path.posix.join(cwd, commander.config))) {
 
 const config = new Configstore(configPath);
 
-
-structure("", () => { console.log(1); });
+structure("", () => { console.log(1); }, { benchmarkOptions: { allowJIT: true } });

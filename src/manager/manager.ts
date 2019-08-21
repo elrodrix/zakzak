@@ -1,6 +1,7 @@
 import Benchmark from "../benchmark/benchmark";
 import Table from "cli-table";
 
+
 export default class BenchmarkManager {
 
 	constructor() {

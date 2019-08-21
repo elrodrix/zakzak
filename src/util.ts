@@ -83,7 +83,7 @@ const tTable = [
 ]
 
 const confidenceLevels = [0, 50, 60, 70, 80, 90, 95, 98, 99, 99.8, 99.9]
-type ConfidenceLevel = 0 | 50 | 60 | 70 | 80 | 90 | 95 | 98 | 99 | 99.8 | 99.9
+export type ConfidenceLevel = 0 | 50 | 60 | 70 | 80 | 90 | 95 | 98 | 99 | 99.8 | 99.9
 
 
 /**

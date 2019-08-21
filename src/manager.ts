@@ -43,6 +43,4 @@ export default class BenchmarkManager {
 
         console.log(table.toString());
     }
-
-
 }

@@ -2,13 +2,14 @@
   "name": "benchmarking-custom",
   "version": "1.0.0",
   "description": "",
-  "main": "dist/index.js",
+  "main": "dist/src/index.js",
+  "types": "dist/src/index.d.ts",
   "scripts": {
-    "start": "tsc && node dist/src/index.js",
-    "start-with-native": "tsc && node --allow-natives-syntax dist/src/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "npm run build && npm run start-with-native",
+    "start-with-native": "node --allow-natives-syntax dist/src/index.js",
+    "build": "tsc"
   },
-  "author": "",
+  "author": "Lukas Kurz",
   "license": "ISC",
   "devDependencies": {
     "@types/cli-table": "^0.3.0",

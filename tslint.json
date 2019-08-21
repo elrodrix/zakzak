@@ -62,6 +62,7 @@
 			true,
 			5
 		],
+		"no-console": false,
 		"no-namespace": false,
 		"no-unnecessary-type-assertion": true,
 		"no-unused-expression": [true, "allow-new"],

@@ -44,6 +44,4 @@ if (fs.existsSync(path.posix.join(cwd, commander.config))) {
 const config = new Configstore(configPath);
 
 
-if (Commander.pattern) { console.log(Commander.pattern); }
-if (Commander.path) { console.log(Commander.path); }
-if (Commander.recursive) { console.log("recursive"); }
+structure("", () => { console.log(1); });

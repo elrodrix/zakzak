@@ -205,9 +205,3 @@ export default class Benchmark {
 		return time[0] * 1e9 + time[1];
 	}
 }
-
-export interface BenchmarkOptions {
-	maxCycleTime?: number;
-	maxCycleNumber?: number;
-	allowJIT?: boolean;
-}

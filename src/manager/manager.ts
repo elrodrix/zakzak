@@ -1,10 +1,5 @@
-import Benchmark, { BenchmarkOptions } from "../benchmark/benchmark";
+import Benchmark from "../benchmark/benchmark";
 import Table from "cli-table";
-
-interface BenchmarkData {
-	name: string;
-	benchmark: Benchmark;
-}
 
 export default class BenchmarkManager {
 

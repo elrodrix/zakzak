@@ -1,7 +1,7 @@
 import process from "process";
 import _ from "lodash";
 import { TimeUnit } from "./time";
-import { calculateMedian, calculateMarginOfError, calculateStandardError, getOptimizationStats, calculateMode, writeToJson, plotData } from "./util";
+import { calculateMedian, calculateMarginOfError, calculateStandardError, getOptimizationStats, plotData } from "./util";
 import v8natives from "v8-natives";
 
 export default class Benchmark {

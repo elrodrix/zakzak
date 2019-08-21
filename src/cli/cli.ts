@@ -45,6 +45,11 @@ if (fs.existsSync(path.posix.join(cwd, commander.config))) {
 	configPath = path.posix.join(__dirname, "./../../", defaultConfigPath);
 }
 
+// Load config
 const config = new Configstore(configPath);
 
-structure("", () => { console.log(1); }, { benchmarkOptions: { allowJIT: true } });
+
+for (const file of files) {
+	// tslint:disable-next-line: no-var-requires
+	require(file);
+}

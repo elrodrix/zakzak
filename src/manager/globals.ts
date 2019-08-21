@@ -16,8 +16,8 @@ declare global {
 // tslint:disable-next-line: variable-name
 const _global = global as any;
 _global.structure = (name: string, callback: Function, options?: StructureOptions) => {
-	console.log("structure!!!");
+	console.log(`structure!!! ${name}`);
 };
 _global.benchmark = (name: string, callback: Function, options?: BenchmarkOptions) => {
-	console.log("benchmark!!!");
+	console.log(`benchmark!!! ${name}`);
 };

@@ -7,8 +7,8 @@
   "scripts": {
     "start": "npm run build && npm run start-with-native",
     "start-with-native": "node --allow-natives-syntax dist/index.js",
-    "build": "tsc",
-    "install-cli": "npm run build && npm install -g"
+    "build": "tsc && ./shebang.sh",
+	"install-cli": "npm run build && npm install -g"
   },
   "bin": {
     "zakzak": "dist/cli/cli.js"

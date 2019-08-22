@@ -1,7 +1,3 @@
-#!/usr/bin/env node
-
-
-
 // tslint:disable-next-line: no-var-requires
 const x = require("../manager/globals");
 
@@ -10,6 +6,7 @@ import globby from "globby";
 import path from "path";
 import Configstore from "configstore";
 import fs from "fs";
+import BenchmarkManager from "./../manager/manager";
 const defaultConfigPath = "./zakzak.config.json";
 
 commander.version("0.0.1", "-v, --version");
@@ -53,3 +50,6 @@ for (const file of files) {
 	// tslint:disable-next-line: no-var-requires
 	require(file);
 }
+
+const manager = BenchmarkManager.getInstance();
+manager.run();

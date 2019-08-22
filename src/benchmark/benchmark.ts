@@ -46,7 +46,7 @@ export default class Benchmark {
 	 */
 	public name: string;
 
-	public constructor(name: string, private fn: () => void, opts?: BenchmarkOptions) {
+	public constructor(name: string, private fn: Function, opts?: BenchmarkOptions) {
 		const defaultOptions: BenchmarkOptions = {
 			maxCycleTime: 500 * TimeUnit.Millisecond,
 			maxCycleNumber: 100,
@@ -88,7 +88,7 @@ export default class Benchmark {
 	 * Estimates how often the function has the be executed in order to be properly warmed up
 	 * @param fn Function that should be warmep up
 	 */
-	private estimateWarmup(fn: () => void, maxTime = 500 * TimeUnit.Millisecond) {
+	private estimateWarmup(fn: Function, maxTime = 500 * TimeUnit.Millisecond) {
 		let iterations = 1;
 		let total = 0;
 		const times: Array<{ time: number, iter: number }> = [];
@@ -109,7 +109,7 @@ export default class Benchmark {
 		return best.iter;
 	}
 
-	private warmUpTest(fn: () => void) {
+	private warmUpTest(fn: Function) {
 		const maxTime = 500 * TimeUnit.Millisecond;
 		const times = [];
 		let stats = [];
@@ -154,7 +154,7 @@ export default class Benchmark {
 	 * @param warmupIterations How often the function needs to be executed, before it is warmed up
 	 * @param cycleIterations How many cycles should be performed
 	 */
-	private measure(fn: () => void, warmupIterations = 100, cycleIterations = 30) {
+	private measure(fn: Function, warmupIterations = 100, cycleIterations = 30) {
 		const times = [];
 		let warmup = warmupIterations;
 		let cycles = cycleIterations;

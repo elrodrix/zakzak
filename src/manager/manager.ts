@@ -1,11 +1,13 @@
 import Benchmark from "../benchmark/benchmark";
 import Table from "cli-table";
+import Structure from "./structure";
 
 
 export default class BenchmarkManager {
 
 	constructor() {
 		this.benchmarks = [];
+		this.structures = [];
 	}
 
 	/**
@@ -13,9 +15,14 @@ export default class BenchmarkManager {
      * @param name Name of the function for display purposes
      * @param fn The function that will be benchmarked
      */
-	public add(name: string, fn: () => void, options?: BenchmarkOptions) {
-		const b = new Benchmark(name, fn, options);
+	public addBenchmark(b: Benchmark) {
 		this.benchmarks.push(b);
+
+		return this;
+	}
+
+	public addStructure(s: Structure) {
+		this.structures.push(s);
 
 		return this;
 	}
@@ -28,6 +35,9 @@ export default class BenchmarkManager {
 			head: ["Name", "Execution time", "Margin of Error", "Standard Error", "Min", "Max", "Median"]
 		});
 
+		this.createStructureTree();
+		console.log(JSON.stringify(this.structures));
+
 		this.benchmarks.forEach((b) => {
 			b.run();
 			table.push(
@@ -38,5 +48,44 @@ export default class BenchmarkManager {
 		console.log(table.toString());
 	}
 
+	public static getInstance() {
+		if (BenchmarkManager.instance == null) {
+			BenchmarkManager.instance = new BenchmarkManager();
+		}
+
+		return BenchmarkManager.instance;
+	}
+
+	private static instance: BenchmarkManager;
+
 	private benchmarks: Benchmark[];
+
+	private structures: Structure[];
+
+	private discoverLayer(s: Structure) {
+		const previousStructLength = this.structures.length;
+		const previousBenchLength = this.benchmarks.length;
+		s.callback();
+		const structs = this.structures.slice(previousStructLength);
+		const benchmarks = this.benchmarks.slice(previousBenchLength);
+		s.addChildren(...structs, ...benchmarks);
+		return structs.length === 0;
+	}
+
+	private discoverAllLayers(s: Structure) {
+		const res = this.discoverLayer(s);
+		if (res === false) {
+			s.children.forEach((value) => {
+				if (value instanceof Structure) {
+					this.discoverAllLayers(value);
+				}
+			});
+		}
+	}
+
+	private createStructureTree() {
+		this.structures.forEach((s) => {
+			this.discoverAllLayers(s);
+		});
+	}
 }

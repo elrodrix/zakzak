@@ -1,3 +1,7 @@
+import BenchmarkManager from "./manager";
+import Structure from "./structure";
+import Benchmark from "./../benchmark/benchmark";
+
 export { };
 
 declare global {
@@ -16,8 +20,14 @@ declare global {
 // tslint:disable-next-line: variable-name
 const _global = global as any;
 _global.structure = (name: string, callback: Function, options?: StructureOptions) => {
-	console.log(`structure!!! ${name}`);
+	const s = new Structure(name, callback, options);
+	const mng = BenchmarkManager.getInstance();
+	mng.addStructure(s);
+	return s;
 };
 _global.benchmark = (name: string, callback: Function, options?: BenchmarkOptions) => {
-	console.log(`benchmark!!! ${name}`);
+	const b = new Benchmark(name, callback, options);
+	const mng = BenchmarkManager.getInstance();
+	mng.addBenchmark(b);
+	return b;
 };

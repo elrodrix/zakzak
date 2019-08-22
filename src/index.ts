@@ -57,18 +57,3 @@ const rand16 = () => {
 	rand8();
 	rand8();
 };
-
-const mng = new BenchmarkManager();
-mng
-	.add("rand(jit)", rand, { allowJIT: true })
-	// .add("rand(jit)", rand, { allowJIT: true })
-	// .add("rand(jit)", rand, { allowJIT: true })
-	// .add("rand(no-jit)", rand, { allowJIT: false })
-	// .add("rand(no-jit)", rand, { allowJIT: false })
-	// .add("rand(no-jit)", rand, { allowJIT: false })
-	// .add("rand2", rand2, { allowJIT: false })
-	// .add("rand4", rand4)
-	// .add("rand8", rand8)
-	// .add("rand16", rand16)
-	// .add("rand1k", rand1k)
-	.run();

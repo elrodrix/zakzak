@@ -1,13 +1,20 @@
-// tslint:disable-next-line: no-var-requires
-const x = require("../manager/globals");
-
 import commander from "commander";
 import globby from "globby";
 import path from "path";
 import Configstore from "configstore";
+import figlet from "figlet";
+import chalk from "chalk";
 import fs from "fs";
 import BenchmarkManager from "./../manager/manager";
 const defaultConfigPath = "./zakzak.config.json";
+
+console.log(
+	chalk.greenBright(
+		figlet.textSync("ZAKZAK", {
+			font: "3D-ASCII"
+		})
+	)
+);
 
 commander.version("0.0.1", "-v, --version");
 commander
@@ -22,7 +29,7 @@ commander.on("--help", () => {
 	console.log(" $ zakzak");
 	console.log(" $ zakzak -P ./src/benchmarks");
 	console.log(" $ zakzak -rP ./src -p *.zakzak-boommboom.js");
-	console.log(" $ zakzak --slave -P ./src/service/cryptominer.js -b 3");
+	console.log(" $ zakzak --slave -P ./src/service/cryptominer.bench.js -b 3");
 });
 
 commander.parse(process.argv);
@@ -45,7 +52,8 @@ if (fs.existsSync(path.posix.join(cwd, commander.config))) {
 // Load config
 const config = new Configstore(configPath);
 
-
+// tslint:disable-next-line: no-var-requires
+const x = require("../manager/globals");
 for (const file of files) {
 	// tslint:disable-next-line: no-var-requires
 	require(file);

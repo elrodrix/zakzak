@@ -45,7 +45,11 @@ export default class BenchmarkManager {
 			);
 		});
 
-		console.log(table.toString());
+		if (this.benchmarks.length === 0) {
+			console.log("no benchmarks found");
+		} else {
+			console.log(table.toString());
+		}
 	}
 
 	public static getInstance() {

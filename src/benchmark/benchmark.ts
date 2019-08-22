@@ -67,14 +67,10 @@ export default class Benchmark {
 	 * Do a complete Benchmark run
 	 */
 	public run() {
-		// this.warmUpTest(this.fn)
 		const warmupIter = this.estimateWarmup(this.fn);
-		console.log(`warmupIter = ${warmupIter}`);
 		// tslint:disable-next-line: no-empty
 		this.overhead = this.measure(() => { }, warmupIter, 100);
-		console.log(`overHead = ${this.overhead}`);
 		const time = this.measure(this.fn, warmupIter, 100);
-		console.log(`time = ${time}`);
 		this.deductOverhead();
 		return Math.max(time - this.overhead, 0); // incase overhead
 	}

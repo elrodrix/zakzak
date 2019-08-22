@@ -36,7 +36,7 @@ export default class BenchmarkManager {
 		});
 
 		this.createStructureTree();
-		console.log(JSON.stringify(this.structures));
+		this.printStructuretree();
 
 		this.benchmarks.forEach((b) => {
 			b.run();
@@ -62,6 +62,8 @@ export default class BenchmarkManager {
 
 	private structures: Structure[];
 
+	private structureTreeRoot: Array<Structure | Benchmark>;
+
 	private discoverLayer(s: Structure) {
 		const previousStructLength = this.structures.length;
 		const previousBenchLength = this.benchmarks.length;
@@ -84,8 +86,30 @@ export default class BenchmarkManager {
 	}
 
 	private createStructureTree() {
+		this.structureTreeRoot = [];
 		this.structures.forEach((s) => {
+			this.structureTreeRoot.push(s);
 			this.discoverAllLayers(s);
 		});
+	}
+
+	private printStructuretree(prepend = "") {
+		this.structureTreeRoot.forEach((v) => {
+			console.log(`${prepend}${v.name}`);
+			if (v instanceof Structure) {
+				v.children.forEach((c) => {
+					this.printStructureNode(c, `* ${prepend}`);
+				});
+			}
+		});
+	}
+
+	private printStructureNode(node: Benchmark | Structure, prepend = "") {
+		console.log(`${prepend}${node.name}`);
+		if (node instanceof Structure) {
+			node.children.forEach((c) => {
+				this.printStructureNode(c, `* ${prepend}`);
+			});
+		}
 	}
 }

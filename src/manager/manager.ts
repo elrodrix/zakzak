@@ -31,6 +31,10 @@ export default class BenchmarkManager {
 		return this;
 	}
 
+	public addExporter(e: Exporter) {
+		this.exporters.push(e);
+	}
+
 	/**
      * Run all the benchmarks and print them out
      */

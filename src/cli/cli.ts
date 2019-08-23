@@ -12,6 +12,7 @@ import figlet from "figlet";
 import chalk from "chalk";
 import fs from "fs";
 import BenchmarkManager from "./../manager/manager";
+import { ConsoleExporter, JsonExporter } from "./../manager/exporter";
 const defaultConfigPath = "./zakzak.config.json";
 
 // Print fancy header
@@ -60,5 +61,7 @@ if (fs.existsSync(path.posix.join(cwd, commander.config))) {
 // Load config
 const config = new Configstore(configPath);
 const manager = BenchmarkManager.getInstance();
+manager.addExporter(new ConsoleExporter());
+manager.addExporter(new JsonExporter());
 manager.findBenchmarks(files);
 manager.run();

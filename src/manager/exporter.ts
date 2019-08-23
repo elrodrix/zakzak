@@ -1,4 +1,5 @@
 import Table from "cli-table";
+import fs from "fs";
 import Benchmark from "./../benchmark/benchmark";
 import { TimeUnit } from "./../benchmark/time";
 import { stringify } from "querystring";
@@ -57,5 +58,13 @@ export class ConsoleExporter extends Exporter {
 		const afterComma = parts.length <= 1 ? "" : parts[1].substr(0, Math.max(0, availableLength - beforeComma.length));
 
 		return `${beforeComma}.${afterComma}${unit}`;
+	}
+}
+
+export class JsonExporter {
+	public write(benchmarks: Benchmark[]) {
+		const text = JSON.stringify(benchmarks);
+		const filename = `${new Date().toISOString()}.json`;
+		fs.writeFileSync(filename, text, "utf8");
 	}
 }

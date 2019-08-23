@@ -1,3 +1,9 @@
+
+// shebang.js will insert a shebang somewhere above this comment
+// shebang hack: http://sambal.org/2014/02/passing-options-node-shebang-line/
+// shebang has to be inserted after transpilation, otherwise tsc will insert semicolons between ":" and //
+// which would make it no longer work
+
 import commander from "commander";
 import globby from "globby";
 import path from "path";
@@ -20,7 +26,7 @@ commander.version("0.0.1", "-v, --version");
 commander
 	.option("-p, --pattern <pattern>", "file pattern to match the benchmarking files", "*.bench.js")
 	.option("-P, --path <path>", "path to look for files", "./")
-	.option("-s, --slave", "start the process as slave process, mainly for internal use")
+	// .option("-s, --slave", "start the process as slave process, mainly for internal use")
 	.option("-b, --benchmark <id>", "id of the benchmark that the slave process will execute")
 	.option("-c, --config <path>", "path to config file", defaultConfigPath);
 
@@ -29,7 +35,7 @@ commander.on("--help", () => {
 	console.log(" $ zakzak");
 	console.log(" $ zakzak -P ./src/benchmarks");
 	console.log(" $ zakzak -rP ./src -p *.zakzak-boommboom.js");
-	console.log(" $ zakzak --slave -P ./src/service/cryptominer.bench.js -b 3");
+	// console.log(" $ zakzak --slave -P ./src/service/cryptominer.bench.js -b 3");
 });
 
 commander.parse(process.argv);

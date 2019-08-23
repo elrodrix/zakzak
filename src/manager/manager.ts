@@ -82,13 +82,23 @@ export default class BenchmarkManager {
 
 	private static instance: BenchmarkManager;
 
+	private static prepend: string = "-";
+
 	private benchmarks: Benchmark[];
 
 	private structures: Structure[];
 
 	private structureTreeRoot: Structure[];
 
-	private static prepend: string = "-";
+	private processes: BenchmarkProcess[];
+
+	private discoverAllLayers(s: Structure) {
+		if (this.discoverLayer(s) === false) {
+			s.children.filter((c) => c instanceof Structure).forEach((c) => {
+				this.discoverAllLayers(c as Structure);
+			});
+		}
+	}
 
 	private discoverLayer(s: Structure) {
 		const [structures, benchmarks] = this.getChangesAfterFunctionCall(s.callback);
@@ -98,12 +108,18 @@ export default class BenchmarkManager {
 		return structures.length === 0;
 	}
 
-	private discoverAllLayers(s: Structure) {
-		if (this.discoverLayer(s) === false) {
-			s.children.filter((c) => c instanceof Structure).forEach((c) => {
-				this.discoverAllLayers(c as Structure);
-			});
+	private getChangesAfterRequire(filename: string): [Structure[], Benchmark[]] {
+		const fn = () => { require(filename); };
+		return this.getChangesAfterFunctionCall(fn);
 		}
+
+	private getChangesAfterFunctionCall(fn: Function): [Structure[], Benchmark[]] {
+		const previousStructLength = this.structures.length;
+		const previousBenchLength = this.benchmarks.length;
+		fn();
+		const structs = this.structures.slice(previousStructLength);
+		const benchmarks = this.benchmarks.slice(previousBenchLength);
+		return [structs, benchmarks];
 	}
 
 	private printStructuretree() {
@@ -133,17 +149,5 @@ export default class BenchmarkManager {
 		});
 	}
 
-	private getChangesAfterRequire(filename: string): [Structure[], Benchmark[]] {
-		const fn = () => { require(filename); };
-		return this.getChangesAfterFunctionCall(fn);
-	}
 
-	private getChangesAfterFunctionCall(fn: Function): [Structure[], Benchmark[]] {
-		const previousStructLength = this.structures.length;
-		const previousBenchLength = this.benchmarks.length;
-		fn();
-		const structs = this.structures.slice(previousStructLength);
-		const benchmarks = this.benchmarks.slice(previousBenchLength);
-		return [structs, benchmarks];
-	}
 }

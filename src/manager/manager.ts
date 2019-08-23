@@ -1,6 +1,9 @@
-import Benchmark from "../benchmark/benchmark";
+// tslint:disable: no-var-requires
 import Table from "cli-table";
+import ChildProcess from "child_process";
+import Benchmark from "../benchmark/benchmark";
 import Structure from "./structure";
+
 
 
 export default class BenchmarkManager {
@@ -35,7 +38,6 @@ export default class BenchmarkManager {
 			head: ["Name", "Execution time", "Margin of Error", "Standard Error", "Min", "Max", "Median"]
 		});
 
-		this.createStructureTree();
 		this.printStructuretree();
 
 		this.benchmarks.forEach((b) => {
@@ -60,60 +62,88 @@ export default class BenchmarkManager {
 		return BenchmarkManager.instance;
 	}
 
+	public findBenchmarks(files: string[]) {
+		this.structureTreeRoot = [];
+		require("./globals");
+		for (const file of files) {
+			const root = new Structure(file, null, file);
+			this.structureTreeRoot.push(root);
+			const [structures, benchmarks] = this.getChangesAfterRequire(file);
+			[...structures, ...benchmarks].forEach((v) => v.filename = file);
+			root.children.push(...structures, ...benchmarks);
+			this.structures.push(...structures);
+			this.benchmarks.push(...benchmarks);
+
+			structures.forEach((s) => {
+				this.discoverAllLayers(s);
+			});
+		}
+	}
+
 	private static instance: BenchmarkManager;
 
 	private benchmarks: Benchmark[];
 
 	private structures: Structure[];
 
-	private structureTreeRoot: Array<Structure | Benchmark>;
+	private structureTreeRoot: Structure[];
+
+	private static prepend: string = "-";
 
 	private discoverLayer(s: Structure) {
-		const previousStructLength = this.structures.length;
-		const previousBenchLength = this.benchmarks.length;
-		s.callback();
-		const structs = this.structures.slice(previousStructLength);
-		const benchmarks = this.benchmarks.slice(previousBenchLength);
-		s.addChildren(...structs, ...benchmarks);
-		return structs.length === 0;
+		const [structures, benchmarks] = this.getChangesAfterFunctionCall(s.callback);
+		const children = [...structures, ...benchmarks];
+		children.forEach((c) => c.filename = s.filename);
+		s.addChildren(...children);
+		return structures.length === 0;
 	}
 
 	private discoverAllLayers(s: Structure) {
-		const res = this.discoverLayer(s);
-		if (res === false) {
-			s.children.forEach((value) => {
-				if (value instanceof Structure) {
-					this.discoverAllLayers(value);
-				}
+		if (this.discoverLayer(s) === false) {
+			s.children.filter((c) => c instanceof Structure).forEach((c) => {
+				this.discoverAllLayers(c as Structure);
 			});
 		}
 	}
 
-	private createStructureTree() {
-		this.structureTreeRoot = [];
-		this.structures.forEach((s) => {
-			this.structureTreeRoot.push(s);
-			this.discoverAllLayers(s);
+	private printStructuretree() {
+		this.structureTreeRoot.forEach((file) => {
+			console.log(`file: ${file.filename}`);
+			file.children.forEach((c) => {
+				this.printStructureNode(c, 1);
+			});
 		});
 	}
 
-	private printStructuretree(prepend = "") {
-		this.structureTreeRoot.forEach((v) => {
-			console.log(`${prepend}${v.name}`);
-			if (v instanceof Structure) {
-				v.children.forEach((c) => {
-					this.printStructureNode(c, `* ${prepend}`);
-				});
-			}
-		});
-	}
-
-	private printStructureNode(node: Benchmark | Structure, prepend = "") {
-		console.log(`${prepend}${node.name}`);
+	private printStructureNode(node: Benchmark | Structure, layer: number) {
+		console.log(`${"".padStart(layer, BenchmarkManager.prepend)}${node.name}`);
 		if (node instanceof Structure) {
 			node.children.forEach((c) => {
-				this.printStructureNode(c, `* ${prepend}`);
+				this.printStructureNode(c, layer + 1);
 			});
 		}
+	}
+
+	private createChild(options: BenchmarkOptions) {
+		const child = ChildProcess.fork("./child", [], { execArgv: ["--allow-natives-syntax"] });
+		child.send(options);
+		child.on("message", (msg) => {
+			console.log(msg);
+			child.kill();
+		});
+	}
+
+	private getChangesAfterRequire(filename: string): [Structure[], Benchmark[]] {
+		const fn = () => { require(filename); };
+		return this.getChangesAfterFunctionCall(fn);
+	}
+
+	private getChangesAfterFunctionCall(fn: Function): [Structure[], Benchmark[]] {
+		const previousStructLength = this.structures.length;
+		const previousBenchLength = this.benchmarks.length;
+		fn();
+		const structs = this.structures.slice(previousStructLength);
+		const benchmarks = this.benchmarks.slice(previousBenchLength);
+		return [structs, benchmarks];
 	}
 }

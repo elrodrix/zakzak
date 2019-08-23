@@ -57,13 +57,6 @@ if (fs.existsSync(path.posix.join(cwd, commander.config))) {
 
 // Load config
 const config = new Configstore(configPath);
-
-// tslint:disable-next-line: no-var-requires
-const x = require("../manager/globals");
-for (const file of files) {
-	// tslint:disable-next-line: no-var-requires
-	require(file);
-}
-
 const manager = BenchmarkManager.getInstance();
+manager.findBenchmarks(files);
 manager.run();

@@ -1,9 +1,8 @@
 // tslint:disable: no-var-requires
-import Table from "cli-table";
-import ChildProcess from "child_process";
 import Benchmark from "../benchmark/benchmark";
 import Structure from "./structure";
 import BenchmarkProcess from "./benchmark-process";
+import { Exporter } from "./exporter";
 
 
 /**
@@ -16,6 +15,7 @@ export default class BenchmarkManager {
 		this.structures = [];
 		this.processes = [];
 		this.structureTreeRoot = [];
+		this.exporters = [];
 	}
 
 	public addBenchmark(b: Benchmark) {
@@ -35,12 +35,7 @@ export default class BenchmarkManager {
      * Run all the benchmarks and print them out
      */
 	public run() {
-		const table = new Table({
-			head: ["Name", "Execution time", "Margin of Error", "Standard Error", "Min", "Max", "Median"]
-		});
-
 		const promises: Array<Promise<Benchmark>> = [];
-
 		this.benchmarks.forEach((b) => {
 			const p = new BenchmarkProcess(b);
 			this.processes.push(p);
@@ -48,20 +43,8 @@ export default class BenchmarkManager {
 		});
 
 		Promise.all(promises).then((benchmarks) => {
-			benchmarks.forEach((b) => {
-				table.push(
-					[b.name, b.mean.toFixed(3), b.marginOfError.toFixed(3), b.standardError.toFixed(3), b.min.toFixed(3), b.max.toFixed(3), b.median.toFixed(3)]
-				);
-			});
-
-			if (this.benchmarks.length === 0) {
-				console.log("no benchmarks found");
-			} else {
-				console.log(table.toString());
-			}
+			this.exporters.forEach((e) => e.write(benchmarks));
 		});
-
-
 	}
 
 	/**
@@ -135,6 +118,11 @@ export default class BenchmarkManager {
 	 * All child processes that will be used for doing the benchmarks
 	 */
 	private processes: BenchmarkProcess[];
+
+	/**
+	 * Exporter used to export the results of the benchmarks
+	 */
+	private exporters: Exporter[];
 
 	/**
 	 * Discover and walk through all layers that are enclosed inside this structure and inside

@@ -4,6 +4,10 @@ import { TimeUnit } from "./time";
 import { calculateMedian, calculateMarginOfError, calculateStandardError, getOptimizationStats, plotData } from "./util";
 import v8natives from "v8-natives";
 
+/**
+ * Benchmark is responsible for the actual benchmarking.
+ * It measures the times, warms the v8 up, saves and interpretes results
+ */
 export default class Benchmark {
 
 	/**
@@ -46,6 +50,13 @@ export default class Benchmark {
 	 */
 	public options: BenchmarkOptions;
 
+	/**
+	 * Creates a new Benchmark instance
+	 * @param name Name of the Benchmark, which will be display in exports
+	 * @param callback Function that will be benchmarked
+	 * @param filename File in which the `benchmark` call was made
+	 * @param opts Additional options for configuring the benchmark
+	 */
 	public constructor(public name: string, private callback: Function, public filename?: string, opts?: BenchmarkOptions) {
 		const defaultOptions: BenchmarkOptions = {
 			maxCycleTime: 500 * TimeUnit.Millisecond,
@@ -63,7 +74,7 @@ export default class Benchmark {
 	}
 
 	/**
-	 * Do a complete Benchmark run
+	 * Does a complete Benchmark run, including warmup and overhead calculation
 	 */
 	public run() {
 		const warmupIter = this.estimateWarmup(this.callback);
@@ -76,7 +87,7 @@ export default class Benchmark {
 
 	/**
 	 * Estimates how often the function has the be executed in order to be properly warmed up
-	 * @param fn Function that should be warmep up
+	 * @param fn Function that for which the v8 will be warmed up
 	 */
 	private estimateWarmup(fn: Function, maxTime = 500 * TimeUnit.Millisecond) {
 		let iterations = 1;
@@ -179,6 +190,9 @@ export default class Benchmark {
 		return execTime;
 	}
 
+	/**
+	 * Decucts the calculated overhead from the results
+	 */
 	private deductOverhead() {
 		this.mean = Math.max(this.mean - this.overhead, 0);
 		this.min = Math.max(this.min - this.overhead, 0);

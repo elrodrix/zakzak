@@ -1,3 +1,7 @@
+/**
+ * Enum for helping with time calculations.
+ * Smallest unit is 1 nanosecond.
+ */
 export enum TimeUnit {
 	Nanosecond = 1,
 	Microsecond = Nanosecond * 1e3,

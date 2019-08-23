@@ -14,6 +14,7 @@ import fs from "fs";
 import BenchmarkManager from "./../manager/manager";
 const defaultConfigPath = "./zakzak.config.json";
 
+// Print fancy header
 console.log(
 	chalk.greenBright(
 		figlet.textSync("ZAKZAK", {
@@ -45,6 +46,7 @@ const pattern = path.posix.join(commander.path, commander.pattern);
 const files = globby.sync(pattern, { absolute: true });
 
 
+// Search for config file. If none found, take default one
 const cwd = process.cwd();
 let configPath: string;
 if (fs.existsSync(path.posix.join(cwd, commander.config))) {

@@ -3,14 +3,18 @@ import Benchmark from "./../benchmark/benchmark";
 import BenchmarkManager from "./manager";
 
 new Promise((res: (value: Benchmark) => void) => {
+	// Wait for the initialization
 	process.on("message", (msg: Benchmark) => {
 		res(msg);
 	});
 }).then((b) => {
+	// Get the actual benchmark function
 	const manager = BenchmarkManager.getInstance();
 	manager.findBenchmarks([b.filename]);
 	const benchmark = manager.getBenchmark(b.name);
+	// Do the benchmarking
 	benchmark.run();
+	// Return results to parent process
 	process.send(benchmark);
 	process.exit(0);
 }).catch(() => {

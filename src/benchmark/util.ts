@@ -2,7 +2,6 @@ import _ from "lodash";
 import fs from "fs";
 import shell from "shelljs";
 
-
 /**
  * Calculates the median of an array of numbers
  * @param array
@@ -42,6 +41,9 @@ export function calculateStandardError(values: number[]) {
 	return standardDeviation / Math.sqrt(values.length);
 }
 
+/**
+ * Table containing all the t-scores
+ */
 const tTable = [
 	{ df: 1, tValues: [0.000, 1.000, 1.376, 1.963, 3.078, 6.314, 12.71, 31.82, 63.66, 318.31, 636.62] },
 	{ df: 2, tValues: [0.000, 0.816, 1.061, 1.386, 1.886, 2.920, 4.303, 6.965, 9.925, 22.327, 31.599] },
@@ -82,6 +84,9 @@ const tTable = [
 ];
 
 const confidenceLevels = [0, 50, 60, 70, 80, 90, 95, 98, 99, 99.8, 99.9];
+/**
+ * Possible Confidence Levels
+ */
 export type ConfidenceLevel = 0 | 50 | 60 | 70 | 80 | 90 | 95 | 98 | 99 | 99.8 | 99.9;
 
 
@@ -101,6 +106,10 @@ export function calculateTScore(sample: number[], confidenceLevel: ConfidenceLev
 	return 0;
 }
 
+/**
+ * Get Optimizations stats from the status provided by v8.
+ * @param status The bitmap containing the status information
+ */
 export function getOptimizationStats(status: number) {
 	const statuses: string[] = [];
 	for (const item in OptimizationStatus) {
@@ -116,6 +125,9 @@ export function getOptimizationStats(status: number) {
 	return statuses;
 }
 
+/**
+ * Bitmaps for all the possible optimizition statuses
+ */
 export enum OptimizationStatus {
 	IsFunction = 1 << 0,
 	NeverOptimize = 1 << 1,
@@ -132,6 +144,9 @@ export enum OptimizationStatus {
 	LiteMode = 1 << 12
 }
 
+/**
+ * Calculate the mode of a number array
+ */
 export function calculateMode(numbers: number[]) {
 	// as result can be bimodal or multi-modal,
 	// the returned result is provided as an array
@@ -159,11 +174,20 @@ export function calculateMode(numbers: number[]) {
 	return modes;
 }
 
+/**
+ * Writes some data to a json file
+ * @param data Data that will be written to a file
+ * @param filename File to which the data will be written
+ */
 export function writeToJson(data: any, filename = "data.json") {
 	const text = JSON.stringify(data);
 	fs.writeFileSync(filename, text, "utf8");
 }
 
+/**
+ * Plot the data, by writing it to a json and then using a shell script which calls a python script with pyplot
+ * @param data the data that will be passed to pyplot for plotting
+ */
 export function plotData(data: Array<{ x: number[], y: number[], color: string }>) {
 	writeToJson(data);
 	shell.exec("./plot.sh");

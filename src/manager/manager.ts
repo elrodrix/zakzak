@@ -3,6 +3,7 @@ import Table from "cli-table";
 import ChildProcess from "child_process";
 import Benchmark from "../benchmark/benchmark";
 import Structure from "./structure";
+import BenchmarkProcess from "./benchmark-process";
 
 
 
@@ -11,6 +12,8 @@ export default class BenchmarkManager {
 	constructor() {
 		this.benchmarks = [];
 		this.structures = [];
+		this.processes = [];
+		this.structureTreeRoot = [];
 	}
 
 	/**
@@ -38,20 +41,29 @@ export default class BenchmarkManager {
 			head: ["Name", "Execution time", "Margin of Error", "Standard Error", "Min", "Max", "Median"]
 		});
 
-		this.printStructuretree();
+		const promises: Array<Promise<Benchmark>> = [];
 
 		this.benchmarks.forEach((b) => {
-			b.run();
-			table.push(
-				[b.name, b.mean.toFixed(3), b.marginOfError.toFixed(3), b.standardError.toFixed(3), b.min.toFixed(3), b.max.toFixed(3), b.median.toFixed(3)]
-			);
+			const p = new BenchmarkProcess(b);
+			this.processes.push(p);
+			promises.push(p.run());
 		});
 
-		if (this.benchmarks.length === 0) {
-			console.log("no benchmarks found");
-		} else {
-			console.log(table.toString());
-		}
+		Promise.all(promises).then((benchmarks) => {
+			benchmarks.forEach((b) => {
+				table.push(
+					[b.name, b.mean.toFixed(3), b.marginOfError.toFixed(3), b.standardError.toFixed(3), b.min.toFixed(3), b.max.toFixed(3), b.median.toFixed(3)]
+				);
+			});
+
+			if (this.benchmarks.length === 0) {
+				console.log("no benchmarks found");
+			} else {
+				console.log(table.toString());
+			}
+		});
+
+
 	}
 
 	public static getInstance() {
@@ -78,6 +90,10 @@ export default class BenchmarkManager {
 				this.discoverAllLayers(s);
 			});
 		}
+	}
+
+	public getBenchmark(name: string) {
+		return this.benchmarks.find((b) => b.name === name);
 	}
 
 	private static instance: BenchmarkManager;
@@ -111,7 +127,7 @@ export default class BenchmarkManager {
 	private getChangesAfterRequire(filename: string): [Structure[], Benchmark[]] {
 		const fn = () => { require(filename); };
 		return this.getChangesAfterFunctionCall(fn);
-		}
+	}
 
 	private getChangesAfterFunctionCall(fn: Function): [Structure[], Benchmark[]] {
 		const previousStructLength = this.structures.length;

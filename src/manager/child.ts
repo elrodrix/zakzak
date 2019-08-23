@@ -1,17 +1,18 @@
 import v8natives from "v8-natives";
+import Benchmark from "./../benchmark/benchmark";
+import BenchmarkManager from "./manager";
 
-process.on("message", (msg) => {
-	const fn = new Function("return " + msg.fn)();
-	console.log((fn));
-	console.log((v8natives.getOptimizationStatus(fn) & (1 << 5)) === (1 << 5));
-	for (let i = 0, l = 50000; i < l; i++) {
-		fn();
-	}
-	console.log(v8natives.getOptimizationStatus(fn));
-	console.log((v8natives.getOptimizationStatus(fn) & (1 << 5)) === (1 << 5));
-	fn();
-	process.send({
-		err: "none",
-		result: "nothing"
+new Promise((res: (value: Benchmark) => void) => {
+	process.on("message", (msg: Benchmark) => {
+		res(msg);
 	});
+}).then((b) => {
+	const manager = BenchmarkManager.getInstance();
+	manager.findBenchmarks([b.filename]);
+	const benchmark = manager.getBenchmark(b.name);
+	benchmark.run();
+	process.send(benchmark);
+	process.exit(0);
+}).catch(() => {
+	process.exit(1);
 });

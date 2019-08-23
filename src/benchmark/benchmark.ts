@@ -41,6 +41,11 @@ export default class Benchmark {
 	 */
 	public median: number;
 
+	/**
+	 * The options set at the beginning for this benchmark
+	 */
+	public options: BenchmarkOptions;
+
 	public constructor(public name: string, private callback: Function, public filename?: string, opts?: BenchmarkOptions) {
 		const defaultOptions: BenchmarkOptions = {
 			maxCycleTime: 500 * TimeUnit.Millisecond,
@@ -68,11 +73,6 @@ export default class Benchmark {
 		this.deductOverhead();
 		return Math.max(time - this.overhead, 0); // incase overhead
 	}
-
-	/**
-	 * The options set at the beginning for this benchmark
-	 */
-	private options: BenchmarkOptions;
 
 	/**
 	 * Estimates how often the function has the be executed in order to be properly warmed up

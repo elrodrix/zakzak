@@ -41,25 +41,19 @@ export default class Benchmark {
 	 */
 	public median: number;
 
-	/**
-	 * The name of the benchmark
-	 */
-	public name: string;
-
-	public constructor(name: string, private fn: Function, opts?: BenchmarkOptions) {
+	public constructor(public name: string, private callback: Function, public filename?: string, opts?: BenchmarkOptions) {
 		const defaultOptions: BenchmarkOptions = {
 			maxCycleTime: 500 * TimeUnit.Millisecond,
 			maxCycleNumber: 100,
 			allowJIT: true
 		};
 		this.options = _.merge(defaultOptions, opts);
-		this.name = name;
 
 		v8natives.deoptimizeNow();
 		if (this.options.allowJIT === false) {
-			const noOptim = () => { fn(); };
+			const noOptim = () => { callback(); };
 			v8natives.neverOptimizeFunction(noOptim);
-			this.fn = noOptim;
+			this.callback = noOptim;
 		}
 	}
 
@@ -67,10 +61,10 @@ export default class Benchmark {
 	 * Do a complete Benchmark run
 	 */
 	public run() {
-		const warmupIter = this.estimateWarmup(this.fn);
+		const warmupIter = this.estimateWarmup(this.callback);
 		// tslint:disable-next-line: no-empty
 		this.overhead = this.measure(() => { }, warmupIter, 100);
-		const time = this.measure(this.fn, warmupIter, 100);
+		const time = this.measure(this.callback, warmupIter, 100);
 		this.deductOverhead();
 		return Math.max(time - this.overhead, 0); // incase overhead
 	}

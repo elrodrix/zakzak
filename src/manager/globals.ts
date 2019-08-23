@@ -20,13 +20,13 @@ declare global {
 // tslint:disable-next-line: variable-name
 const _global = global as any;
 _global.structure = (name: string, callback: Function, options?: StructureOptions) => {
-	const s = new Structure(name, callback, options);
+	const s = new Structure(name, callback, undefined, options);
 	const mng = BenchmarkManager.getInstance();
 	mng.addStructure(s);
 	return s;
 };
 _global.benchmark = (name: string, callback: Function, options?: BenchmarkOptions) => {
-	const b = new Benchmark(name, callback, options);
+	const b = new Benchmark(name, callback, undefined, options);
 	const mng = BenchmarkManager.getInstance();
 	mng.addBenchmark(b);
 	return b;

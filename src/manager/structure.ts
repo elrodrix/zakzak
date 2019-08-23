@@ -4,7 +4,7 @@ export default class Structure {
 
 	public children: Array<Benchmark | Structure>;
 
-	public constructor(public name: string, public callback: Function, private options?: BenchmarkOptions | StructureOptions) {
+	public constructor(public name: string, public callback: Function, public filename?: string, private options?: BenchmarkOptions | StructureOptions) {
 		this.children = new Array();
 	}
 

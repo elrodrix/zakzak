@@ -37,27 +37,26 @@ export class ConsoleExporter extends Exporter {
 	}
 
 	private nsToPrettyString(time: number) {
-		let unit = "";
-		if (time > TimeUnit.Second * 100) {
-			time /= TimeUnit.Second;
+		let unit = "ns";
+		let convertedTime = time;
+		if (time >= TimeUnit.Second) {
 			unit = "s";
-		} else if (time > TimeUnit.Millisecond * 100) {
-			time /= TimeUnit.Millisecond;
+			convertedTime = time / TimeUnit.Second;
+		} else if (time >= TimeUnit.Millisecond) {
 			unit = "ms";
-		} else if (time > TimeUnit.Microsecond * 100) {
-			time /= TimeUnit.Microsecond;
+			convertedTime = time / TimeUnit.Millisecond;
+		} else if (time >= TimeUnit.Microsecond) {
 			unit = "µs";
-		} else if (time > TimeUnit.Nanosecond * 100) {
-			time /= TimeUnit.Nanosecond;
-			unit = "ns";
+			convertedTime = time / TimeUnit.Microsecond;
 		}
 
-		const availableLength = 7;
-		const parts = time.toString().split(".");
+		const maxLength = 3;
+		const timeString = convertedTime.toString();
+		const parts = timeString.split(".");
 		const beforeComma = parts[0];
-		const afterComma = parts.length <= 1 ? "" : parts[1].substr(0, Math.max(0, availableLength - beforeComma.length));
-
-		return `${beforeComma}.${afterComma}${unit}`;
+		const afterComma = parts[1];
+		const availableLength = Math.max(0, maxLength - beforeComma.length);
+		return `${beforeComma}${availableLength === 0 ? "" : "."}${afterComma.substring(0, availableLength)}${unit}`;
 	}
 }
 

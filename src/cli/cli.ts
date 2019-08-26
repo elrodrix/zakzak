@@ -60,8 +60,12 @@ if (fs.existsSync(path.posix.join(cwd, commander.config))) {
 
 // Load config
 const config = new Configstore(configPath);
-const manager = BenchmarkManager.getInstance();
-manager.addExporter(new ConsoleExporter());
-manager.addExporter(new JsonExporter());
-manager.findBenchmarks(files);
-manager.run();
+const manager = BenchmarkManager
+.getInstance()
+.useOptions({
+	exporters: [new ConsoleExporter(), new JsonExporter()],
+	runParallel: false,
+	printStructure: true
+})
+.findBenchmarks(files)
+.run();

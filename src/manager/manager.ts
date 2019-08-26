@@ -1,8 +1,9 @@
 // tslint:disable: no-var-requires
+import _ from "lodash";
 import Benchmark from "../benchmark/benchmark";
 import Structure from "./structure";
 import BenchmarkProcess from "./benchmark-process";
-import { Exporter } from "./exporter";
+import { Exporter, ConsoleExporter } from "./exporter";
 
 
 /**
@@ -15,7 +16,11 @@ export default class BenchmarkManager {
 		this.structures = [];
 		this.processes = [];
 		this.structureTreeRoot = [];
-		this.exporters = [];
+		this.options = {
+			exporters: [new ConsoleExporter()],
+			runParallel: false,
+			printStructure: true
+		};
 	}
 
 	public addBenchmark(b: Benchmark) {
@@ -31,24 +36,59 @@ export default class BenchmarkManager {
 		return this;
 	}
 
-	public addExporter(e: Exporter) {
-		this.exporters.push(e);
-	}
-
 	/**
      * Run all the benchmarks and print them out
      */
 	public run() {
-		const promises: Array<Promise<Benchmark>> = [];
-		this.benchmarks.forEach((b) => {
-			const p = new BenchmarkProcess(b);
-			this.processes.push(p);
-			promises.push(p.run());
-		});
+		if (this.benchmarks.length === 0) {
+			console.log("no benchmarks provided");
+			return;
+		}
+		if (this.options.printStructure === true) {
+			this.printStructuretree();
+		}
+		if (this.options.runParallel === true) {
+			const promises: Array<Promise<Benchmark>> = [];
 
-		Promise.all(promises).then((benchmarks) => {
-			this.exporters.forEach((e) => e.write(benchmarks));
-		});
+			this.benchmarks.forEach((b) => {
+				const p = new BenchmarkProcess(b);
+				this.processes.push(p);
+				_.last(promises).then(() => p.run());
+				promises.push(p.run());
+			});
+
+			Promise.all(promises).then((benchmarks) => {
+				this.options.exporters.forEach((e) => e.write(benchmarks));
+			});
+		} else {
+			const promises: Array<Promise<Benchmark>> = [];
+			const results: Benchmark[] = [];
+
+			this.benchmarks.forEach((b) => {
+				const p = new BenchmarkProcess(b);
+				this.processes.push(p);
+			});
+
+			let last = _.first(this.processes).run().then((b) => {
+				return [b];
+			});
+			this.processes.forEach((p) => {
+				last = last.then((benchmarks) => {
+					return p.run().then((b) => {
+						benchmarks.push(b);
+						return benchmarks;
+					});
+				});
+			});
+
+
+
+			last.then((benchmarks) => {
+				this.options.exporters.forEach((e) => e.write(benchmarks));
+			});
+		}
+
+
 	}
 
 	/**
@@ -83,6 +123,8 @@ export default class BenchmarkManager {
 				this.discoverAllLayers(s);
 			});
 		}
+
+		return this;
 	}
 
 	/**
@@ -91,6 +133,11 @@ export default class BenchmarkManager {
 	 */
 	public getBenchmark(name: string) {
 		return this.benchmarks.find((b) => b.name === name);
+	}
+
+	public useOptions(options: BenchmarkManagerOptions) {
+		this.options = _.merge(this.options, options);
+		return this;
 	}
 
 	/**
@@ -124,9 +171,9 @@ export default class BenchmarkManager {
 	private processes: BenchmarkProcess[];
 
 	/**
-	 * Exporter used to export the results of the benchmarks
+	 * Options for the benchmark manager
 	 */
-	private exporters: Exporter[];
+	private options: BenchmarkManagerOptions;
 
 	/**
 	 * Discover and walk through all layers that are enclosed inside this structure and inside
@@ -201,4 +248,10 @@ export default class BenchmarkManager {
 			});
 		}
 	}
+}
+
+export interface BenchmarkManagerOptions {
+	runParallel?: boolean;
+	exporters?: Exporter[];
+	printStructure?: boolean;
 }

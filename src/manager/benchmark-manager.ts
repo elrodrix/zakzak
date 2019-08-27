@@ -3,7 +3,9 @@ import _ from "lodash";
 import Benchmark from "../benchmark/benchmark";
 import Structure from "./structure";
 import BenchmarkProcess from "./benchmark-process";
-import { Exporter, ConsoleExporter } from "./exporter";
+import OptionsManager from "../config/options-manager";
+import { BenchmarkManagerOptions } from "../config/options";
+import { ConsoleExporter } from "./exporter";
 
 
 /**
@@ -16,11 +18,7 @@ export default class BenchmarkManager {
 		this.structures = [];
 		this.processes = [];
 		this.structureTreeRoot = [];
-		this.options = {
-			exporters: [new ConsoleExporter()],
-			runParallel: false,
-			printStructure: true
-		};
+		this.options = OptionsManager.benchmarkManagerOptions;
 	}
 
 	public addBenchmark(b: Benchmark) {
@@ -44,7 +42,7 @@ export default class BenchmarkManager {
 			console.log("no benchmarks provided");
 			return;
 		}
-		if (this.options.printStructure === true) {
+		if (this.options.printTree === true) {
 			this.printStructuretree();
 		}
 		if (this.options.runParallel === true) {
@@ -58,7 +56,8 @@ export default class BenchmarkManager {
 			});
 
 			Promise.all(promises).then((benchmarks) => {
-				this.options.exporters.forEach((e) => e.write(benchmarks));
+				// this.options.exporters.forEach((e) => e.write(benchmarks));
+				new ConsoleExporter().write(benchmarks);
 			});
 		} else {
 			const promises: Array<Promise<Benchmark>> = [];
@@ -84,7 +83,8 @@ export default class BenchmarkManager {
 
 
 			last.then((benchmarks) => {
-				this.options.exporters.forEach((e) => e.write(benchmarks));
+				// this.options.exporters.forEach((e) => e.write(benchmarks));
+				new ConsoleExporter().write(benchmarks);
 			});
 		}
 
@@ -111,11 +111,10 @@ export default class BenchmarkManager {
 		// get `structure` and `benchmark` so that they can be used by the files
 		require("./globals");
 		for (const file of files) {
-			const root = new Structure(file, null, file); // used for keeping track of files
+			const root = new Structure(file, null, file, OptionsManager.benchmarkOptions); // used for keeping track of files
 			this.structureTreeRoot.push(root);
 			const [structures, benchmarks] = this.getChangesAfterRequire(file);
-			[...structures, ...benchmarks].forEach((v) => v.filename = file);
-			root.children.push(...structures, ...benchmarks);
+			root.addChildren(...structures, ...benchmarks);
 			this.structures.push(...structures);
 			this.benchmarks.push(...benchmarks);
 
@@ -133,11 +132,6 @@ export default class BenchmarkManager {
 	 */
 	public getBenchmark(name: string) {
 		return this.benchmarks.find((b) => b.name === name);
-	}
-
-	public useOptions(options: BenchmarkManagerOptions) {
-		this.options = _.merge(this.options, options);
-		return this;
 	}
 
 	/**
@@ -195,9 +189,7 @@ export default class BenchmarkManager {
 	 */
 	private discoverLayer(s: Structure) {
 		const [structures, benchmarks] = this.getChangesAfterFunctionCall(s.callback);
-		const children = [...structures, ...benchmarks];
-		children.forEach((c) => c.filename = s.filename);
-		s.addChildren(...children);
+		s.addChildren(...[...structures, ...benchmarks]);
 		return structures.length === 0;
 	}
 
@@ -248,10 +240,4 @@ export default class BenchmarkManager {
 			});
 		}
 	}
-}
-
-export interface BenchmarkManagerOptions {
-	runParallel?: boolean;
-	exporters?: Exporter[];
-	printStructure?: boolean;
 }

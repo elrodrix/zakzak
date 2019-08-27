@@ -3,6 +3,7 @@ import _ from "lodash";
 import { TimeUnit } from "./time";
 import { calculateMedian, calculateMarginOfError, calculateStandardError, getOptimizationStats, plotData } from "./util";
 import v8natives from "v8-natives";
+import { BenchmarkOptions } from "../config/options";
 
 /**
  * Benchmark is responsible for the actual benchmarking.
@@ -57,26 +58,19 @@ export default class Benchmark {
 	 * @param filename File in which the `benchmark` call was made
 	 * @param opts Additional options for configuring the benchmark
 	 */
-	public constructor(public name: string, private callback: Function, public filename?: string, opts?: BenchmarkOptions) {
-		const defaultOptions: BenchmarkOptions = {
-			maxCycleTime: 500 * TimeUnit.Millisecond,
-			maxCycleNumber: 100,
-			allowJIT: true
-		};
-		this.options = _.merge(defaultOptions, opts);
-
-		v8natives.deoptimizeNow();
-		if (this.options.allowJIT === false) {
-			const noOptim = () => { callback(); };
-			v8natives.neverOptimizeFunction(noOptim);
-			this.callback = noOptim;
-		}
-	}
+	public constructor(public name: string, private callback: Function, public filename?: string, options: BenchmarkOptions = {}) { }
 
 	/**
 	 * Does a complete Benchmark run, including warmup and overhead calculation
 	 */
 	public run() {
+		v8natives.deoptimizeNow();
+		if (this.options.warmup.allowJIT === false) {
+			const noOptim = () => { this.callback(); };
+			v8natives.neverOptimizeFunction(noOptim);
+			this.callback = noOptim;
+		}
+
 		const warmupIter = this.estimateWarmup(this.callback);
 		// tslint:disable-next-line: no-empty
 		this.overhead = this.measure(() => { }, warmupIter, 100);

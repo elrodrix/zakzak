@@ -1,6 +1,6 @@
 import v8natives from "v8-natives";
 import Benchmark from "./../benchmark/benchmark";
-import BenchmarkManager from "./manager";
+import BenchmarkManager from "./benchmark-manager";
 
 new Promise((res: (value: Benchmark) => void) => {
 	// Wait for the initialization
@@ -12,6 +12,7 @@ new Promise((res: (value: Benchmark) => void) => {
 	const manager = BenchmarkManager.getInstance();
 	manager.findBenchmarks([b.filename]);
 	const benchmark = manager.getBenchmark(b.name);
+	benchmark.options = b.options;
 	// Do the benchmarking
 	benchmark.run();
 	// Return results to parent process

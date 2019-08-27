@@ -2,7 +2,6 @@ import Table from "cli-table";
 import fs from "fs";
 import Benchmark from "./../benchmark/benchmark";
 import { TimeUnit } from "./../benchmark/time";
-import { stringify } from "querystring";
 
 export abstract class Exporter {
 	public abstract write(benchmarks: Benchmark[]): void;

@@ -1,8 +1,35 @@
 {
 	"manager": {
-		"options": {
-			"runParallel": false,
-			"printStructure": true
+		"runParallel": false,
+		"printStructure": true
+	},
+	"benchmark": {
+		"statistics": {
+			"moe": true,
+			"stderr": true,
+			"mean": true,
+			"median": true,
+			"min": true,
+			"max": true
+		},
+		"warmup": {
+			"allowWarmup": true,
+			"maxWarmupTime" : 500000000,
+			"allowJIT": true
+		},
+		"overhead": {
+			"deductOverhead": true,
+			"saveTimes": false
+		},
+		"measure": {
+			"cycles": 100,
+			"saveTimes": false
 		}
+	},
+	"cli": {
+		"verbose": false,
+		"quiet": false,
+		"pattern": "*.bench.js",
+		"path": "./"
 	}
 }

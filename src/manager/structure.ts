@@ -1,4 +1,6 @@
+import _ from "lodash";
 import Benchmark from "./../benchmark/benchmark";
+import { BenchmarkOptions } from "../config/options";
 
 /**
  * Structure is used to literally structure benchmarking files.
@@ -19,15 +21,21 @@ export default class Structure {
 	 * @param filename Name of the file, in which this structure is found
 	 * @param options Options that will be applied to this structure and all children inside it
 	 */
-	public constructor(public name: string, public callback: Function, public filename?: string, private options?: BenchmarkOptions | StructureOptions) {
+	public constructor(public name: string, public callback: Function, public filename: string, public options: BenchmarkOptions = {}) {
 		this.children = new Array();
 	}
 
 	/**
-	 * Add discovered children to the structure
+	 * Add discovered children to the structure.
+	 * Updates the filenames and option fields.
+	 * Option from parent are used and overwritten by the childs own options.
 	 * @param args List of children
 	 */
 	public addChildren(...args: Array<Benchmark | Structure>) {
+		args.forEach((v) => {
+			v.filename = this.filename;
+			v.options = _.merge(this.options, v.options);
+		});
 		this.children.push(...args);
 	}
 }

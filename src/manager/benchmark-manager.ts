@@ -161,7 +161,7 @@ export default class BenchmarkManager {
 		runningBenchmark.then((benchmarks) => {
 			this.exporters.forEach((e) => e.write(benchmarks));
 		}).catch((err) => {
-			console.error(`\n${JSON.stringify(err)}\n`);
+			console.error(`\nError in benchmarks: ${JSON.stringify(err)}\n`);
 		});
 	}
 }

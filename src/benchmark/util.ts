@@ -192,3 +192,13 @@ export function plotData(data: Array<{ x: number[], y: number[], color: string }
 	writeToJson(data);
 	shell.exec("./plot.sh");
 }
+
+/**
+ * Checks if a number is withing X percent of another number
+ * @param target Target value around which the number should be
+ * @param value Value that gets checked if it is in range
+ * @param percent Percent written in like in decimal. example: 10% = 0.1
+ */
+export function isWithin(target: number, value: number, percent: number) {
+	return Math.abs(target - value) <= (target * percent);
+}

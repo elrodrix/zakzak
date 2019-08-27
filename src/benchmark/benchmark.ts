@@ -1,6 +1,6 @@
 import process from "process";
 import _ from "lodash";
-import { calculateMedian, calculateMarginOfError, calculateStandardError, getOptimizationStats, plotData } from "./util";
+import { calculateMedian, calculateMarginOfError, calculateStandardError, getOptimizationStats, plotData, isWithin } from "./util";
 import v8natives from "v8-natives";
 import { BenchmarkOptions } from "../config/options";
 
@@ -55,24 +55,24 @@ export default class Benchmark {
 			return 0;
 		}
 
-		let iterations = 1;
 		let total = 0;
-		const times: Array<{ time: number, iterations: number }> = [];
-		do {
-			iterations = Math.ceil(iterations * this.options.warmup.increaseFactor);
-			const startTime = getTime();
-			for (let i = 0; i < iterations; i++) {
-				this.fn();
-			}
-			const endTime = getTime();
-			total = endTime - startTime;
-			const currentTime = (endTime - startTime) / iterations;
-			times.push({ time: currentTime, iterations: iterations });
-		} while (total < this.options.warmup.maxTime);
-		const min = _.minBy(times, (t) => t.time);
-		const best = _.minBy(_.filter(times, (t) => t.time / min.time < 1.1), (t) => t.iterations);
 
-		return _.maxBy(times, (t) => t.iterations).iterations;
+		let startTime = 0;
+		this.warmup = 1;
+		do {
+			v8natives.deoptimizeFunction(this.fn);
+			v8natives.deoptimizeNow();
+			startTime = getTime();
+			this.warmup = Math.ceil(this.warmup * this.options.warmup.increaseFactor);
+			const results = this.getMeasurement();
+			total += this.warmup + (this.options.measure.cycles * this.warmup);
+			if (results.marginOfError <= (results.mean * 0.1) && isWithin(results.median, results.mean, 0.1)) {
+				break;
+			}
+
+		} while ((getTime() - startTime) < this.options.warmup.maxTime);
+
+		return total;
 	}
 
 	private getOverhead() {

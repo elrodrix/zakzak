@@ -31,11 +31,11 @@ export default class Structure {
 	 * Option from parent are used and overwritten by the childs own options.
 	 * @param args List of children
 	 */
-	public addChildren(...args: Array<Benchmark | Structure>) {
-		args.forEach((v) => {
-			v.filename = this.filename;
-			v.options = _.merge(this.options, v.options);
+	public addChildren(children: Array<Benchmark | Structure>) {
+		children.forEach((child) => {
+			child.filename = this.filename;
+			child.options = _.merge(this.options, child.options);
 		});
-		this.children.push(...args);
+		this.children = this.children.concat(children);
 	}
 }

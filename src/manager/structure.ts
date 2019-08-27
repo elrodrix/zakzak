@@ -34,7 +34,7 @@ export default class Structure {
 	public addChildren(children: Array<Benchmark | Structure>) {
 		children.forEach((child) => {
 			child.filename = this.filename;
-			child.options = _.merge(this.options, child.options);
+			child.options = _.merge({}, this.options, child.options);
 		});
 		this.children = this.children.concat(children);
 	}

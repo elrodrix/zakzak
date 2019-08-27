@@ -1,6 +1,5 @@
 import process from "process";
 import _ from "lodash";
-import { TimeUnit } from "./time";
 import { calculateMedian, calculateMarginOfError, calculateStandardError, getOptimizationStats, plotData } from "./util";
 import v8natives from "v8-natives";
 import { BenchmarkOptions } from "../config/options";
@@ -73,7 +72,7 @@ export default class Benchmark {
 		const min = _.minBy(times, (t) => t.time);
 		const best = _.minBy(_.filter(times, (t) => t.time / min.time < 1.1), (t) => t.iterations);
 
-		return best.iterations;
+		return _.maxBy(times, (t) => t.iterations).iterations;
 	}
 
 	private getOverhead() {

@@ -20,16 +20,19 @@ export default class BenchmarkProcess {
 	 * Once the process is finished it will return the benchmark object with the updated results
 	 */
 	public run() {
+		console.log(`process with benchmark ${this.benchmark.name} is starting`);
 		const childPath = path.posix.join(__dirname, "./child");
 		const child = ChildProcess.fork(childPath, [], { execArgv: ["--allow-natives-syntax"] });
 		child.send(this.benchmark);
 
 		return new Promise((res: (value: Benchmark) => void, err) => {
 			child.on("message", (msg: Benchmark) => {
+				console.log(`process with benchmark ${this.benchmark.name} finished`);
 				res(msg);
 			});
 
 			child.on("error", (e) => {
+				console.log(`process with benchmark ${this.benchmark.name} has an error`);
 				err(e);
 			});
 

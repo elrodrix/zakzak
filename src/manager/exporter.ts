@@ -16,7 +16,7 @@ export class ConsoleExporter extends Exporter {
 		}
 
 		const table = new Table({
-			head: ["Name", "Execution time", "Margin of Error", "Standard Error", "Min", "Max", "Median"]
+			head: ["Name", "Execution time", "Margin of Error", "Standard Error", "Min", "Max", "Median", "Overhead", "Warmup"]
 		});
 
 		benchmarks.forEach((b) => {
@@ -28,7 +28,9 @@ export class ConsoleExporter extends Exporter {
 					this.nsToPrettyString(b.results.standardError),
 					this.nsToPrettyString(b.results.min),
 					this.nsToPrettyString(b.results.max),
-					this.nsToPrettyString(b.results.median)
+					this.nsToPrettyString(b.results.median),
+					this.nsToPrettyString(b.overhead),
+					b.warmup
 				]
 			);
 		});

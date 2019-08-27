@@ -47,9 +47,9 @@ export default class Benchmark {
 	public filename: string;
 	public results: MeasurementResult;
 	public options: BenchmarkOptions;
-	private fn: Function;
-	private warmup: number;
-	private overhead: number;
+	public fn: Function;
+	public warmup: number;
+	public overhead: number;
 
 	private getWarmup() {
 		if (!this.options.warmup.enable) {
@@ -60,7 +60,7 @@ export default class Benchmark {
 		let total = 0;
 		const times: Array<{ time: number, iterations: number }> = [];
 		do {
-			iterations = Math.ceil(iterations * 1.1);
+			iterations = Math.ceil(iterations * this.options.warmup.increaseFactor);
 			const startTime = getTime();
 			for (let i = 0; i < iterations; i++) {
 				this.fn();
@@ -92,6 +92,7 @@ export default class Benchmark {
 	private getMeasurement(fn = this.fn): MeasurementResult {
 		let times = [];
 		let warmup = this.warmup;
+		v8natives.optimizeFunctionOnNextCall(fn);
 		while (warmup--) {
 			fn();
 		}

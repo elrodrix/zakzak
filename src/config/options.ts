@@ -4,6 +4,7 @@ export interface BenchmarkOptions {
 	warmup?: {
 		enable?: boolean;
 		maxTime?: number;
+		increaseFactor?: number;
 		allowJIT?: boolean;
 	};
 	measure?: {
@@ -29,6 +30,7 @@ export const DefaultBenchmarkOptions: BenchmarkOptions = {
 	warmup: {
 		enable: true,
 		maxTime: 500 * TimeUnit.Millisecond,
+		increaseFactor: 2,
 		allowJIT: true
 	},
 	measure: {

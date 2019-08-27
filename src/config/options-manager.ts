@@ -1,5 +1,4 @@
 import _ from "lodash";
-import Configstore from "configstore";
 import { CommanderStatic } from "commander";
 import { DefaultBenchmarkOptions, DefaultBenchmarkManagerOptions, DefaultCLIOptions, BenchmarkOptions, BenchmarkManagerOptions, CLIOptions } from "./options";
 
@@ -15,15 +14,15 @@ export default class OptionsManager {
 		OptionsManager.cliOptions = _.merge(OptionsManager.cliOptions, cliOptions);
 	}
 
-	public static changeFromConfigstore(store: Configstore) {
-		if (store.has("benchmark")) {
-			OptionsManager.benchmarkOptions = _.merge(OptionsManager.benchmarkOptions, store.get("benchmark"));
+	public static changeFromConfigFile(config: { benchmark?: BenchmarkOptions, manager?: BenchmarkManagerOptions, cli?: CLIOptions }) {
+		if (config.benchmark) {
+			OptionsManager.benchmarkOptions = _.merge(OptionsManager.benchmarkOptions, config.benchmark);
 		}
-		if (store.has("manager")) {
-			OptionsManager.benchmarkManagerOptions = _.merge(OptionsManager.benchmarkManagerOptions, store.get("manager"));
+		if (config.manager) {
+			OptionsManager.benchmarkManagerOptions = _.merge(OptionsManager.benchmarkManagerOptions, config.manager);
 		}
-		if (store.has("cli")) {
-			OptionsManager.cliOptions = _.merge(OptionsManager.cliOptions, store.get("cli"));
+		if (config.cli) {
+			OptionsManager.cliOptions = _.merge(OptionsManager.cliOptions, config.cli);
 		}
 	}
 

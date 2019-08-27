@@ -42,6 +42,8 @@ export class TreeStructure {
 	 * @param filename
 	 */
 	public addFile(filename: string) {
+		this.currentPath = [];
+
 		const fileStructure = new Structure(
 			filename,
 			() => { require(filename); },
@@ -51,7 +53,7 @@ export class TreeStructure {
 
 		this.findAllChildren(fileStructure);
 
-		this.files.push();
+		this.files.push(fileStructure);
 	}
 
 	/**
@@ -67,6 +69,24 @@ export class TreeStructure {
 	}
 
 	/**
+	 * Finds a single benchmark
+	 * @param b
+	 */
+	public findBenchmark(b: Benchmark) {
+		const path = b.id.split(":");
+		let current: Benchmark | Structure = this.files.find((s) => s.name === path[0]);
+		for (let i = 1, l = path.length; i < l; i++) {
+			if (current instanceof Benchmark) {
+				break;
+			}
+			current = current.children.find((child) => child.name === path[i]);
+		}
+		return current as Benchmark;
+	}
+
+	private currentPath: string[] = [];
+
+	/**
 	 * Returns the immediate children of a structure
 	 * @param structure the structure whose children will be searched for
 	 */
@@ -80,8 +100,12 @@ export class TreeStructure {
 	 * @param structure the structure whose children will be searched for
 	 */
 	private findAllChildren(structure: Structure) {
+		this.currentPath.push(structure.name);
 		const children = this.getChildren(structure);
 		structure.addChildren(children);
+		structure.children.filter((child) => child instanceof Benchmark).forEach((child) => {
+			(child as Benchmark).id = [...this.currentPath, child.name].join(":");
+		});
 		structure.children.filter((child) => child instanceof Structure).forEach((child) => {
 			this.findAllChildren(child as Structure);
 		});

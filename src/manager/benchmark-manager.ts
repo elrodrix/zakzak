@@ -1,6 +1,6 @@
 // tslint:disable: no-var-requires
 import _ from "lodash";
-import Benchmark from "../benchmark/benchmark";
+import Benchmark, { MeasurementResult } from "../benchmark/benchmark";
 import Structure from "./structure";
 import BenchmarkProcess from "./benchmark-process";
 import OptionsManager from "../config/options-manager";
@@ -13,6 +13,8 @@ import { TreeStructure } from "./tree-structure/tree-structure";
  * Manages multiple benchmarks, their configuration, runtime seperation and exporting
  */
 export default class BenchmarkManager {
+
+	public results: MeasurementResult[] = [];
 
 	constructor() {
 		this.structureTreeRoot = [];
@@ -46,6 +48,8 @@ export default class BenchmarkManager {
 		files.forEach((file) => {
 			this.tree.addFile(file);
 		});
+
+		return this;
 	}
 
 	public printTree() {
@@ -67,8 +71,10 @@ export default class BenchmarkManager {
 		} else {
 			this.runSync();
 		}
+	}
 
-
+	public findBenchmark(b: Benchmark) {
+		return this.tree.findBenchmark(b);
 	}
 
 	/**
@@ -115,6 +121,7 @@ export default class BenchmarkManager {
 
 		Promise.all(promises).then((benchmarks) => {
 			// this.options.exporters.forEach((e) => e.write(benchmarks));
+			this.results = benchmarks.map((b) => b.results);
 			new ConsoleExporter().write(benchmarks);
 		});
 	}
@@ -146,7 +153,10 @@ export default class BenchmarkManager {
 
 		runningBenchmark.then((benchmarks) => {
 			// this.options.exporters.forEach((e) => e.write(benchmarks));
+			this.results = benchmarks.map((b) => b.results);
 			new ConsoleExporter().write(benchmarks);
+		}).catch((err) => {
+			console.error(`\n${JSON.stringify(err)}\n`);
 		});
 	}
 }

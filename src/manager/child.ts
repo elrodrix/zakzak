@@ -10,14 +10,15 @@ new Promise((res: (value: Benchmark) => void) => {
 }).then((b) => {
 	// Get the actual benchmark function
 	const manager = BenchmarkManager.getInstance();
-	manager.findBenchmarks([b.filename]);
-	const benchmark = manager.getBenchmark(b.name);
+	manager.readFiles([b.filename]);
+	const benchmark = manager.findBenchmark(b);
 	benchmark.options = b.options;
 	// Do the benchmarking
 	benchmark.run();
 	// Return results to parent process
 	process.send(benchmark);
 	process.exit(0);
-}).catch(() => {
+}).catch((err) => {
+	process.stderr.write(JSON.stringify(err));
 	process.exit(1);
 });

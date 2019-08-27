@@ -10,5 +10,6 @@ const files = new CLIManager().getFiles();
 
 BenchmarkManager
 	.getInstance()
-	.findBenchmarks(files)
+	.readFiles(files)
 	.run();
+

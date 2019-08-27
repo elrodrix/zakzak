@@ -1,14 +1,6 @@
 import { TimeUnit } from "../benchmark/time";
 
 export interface BenchmarkOptions {
-	statistics?: {
-		mean?: boolean;
-		moe?: boolean;
-		stderr?: boolean;
-		median?: boolean;
-		min?: boolean;
-		max?: boolean;
-	};
 	warmup?: {
 		enable?: boolean;
 		maxTime?: number;
@@ -34,14 +26,6 @@ export interface CLIOptions {
 }
 
 export const DefaultBenchmarkOptions: BenchmarkOptions = {
-	statistics: {
-		mean: true,
-		moe: true,
-		stderr: true,
-		median: true,
-		min: true,
-		max: true
-	},
 	warmup: {
 		enable: true,
 		maxTime: 500 * TimeUnit.Millisecond,
@@ -49,7 +33,7 @@ export const DefaultBenchmarkOptions: BenchmarkOptions = {
 	},
 	measure: {
 		cycles: 100,
-		saveTimes: false
+		saveTimes: true
 	},
 	overhead: {
 		enable: true

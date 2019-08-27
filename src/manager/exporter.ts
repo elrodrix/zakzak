@@ -1,5 +1,6 @@
 import Table from "cli-table";
 import fs from "fs";
+import util from "util";
 import Benchmark from "./../benchmark/benchmark";
 import { TimeUnit } from "./../benchmark/time";
 
@@ -22,17 +23,22 @@ export class ConsoleExporter extends Exporter {
 			table.push(
 				[
 					b.name,
-					this.nsToPrettyString(b.mean),
-					this.nsToPrettyString(b.marginOfError),
-					this.nsToPrettyString(b.standardError),
-					this.nsToPrettyString(b.min),
-					this.nsToPrettyString(b.max),
-					this.nsToPrettyString(b.median)
+					this.nsToPrettyString(b.results.mean),
+					this.nsToPrettyString(b.results.marginOfError),
+					this.nsToPrettyString(b.results.standardError),
+					this.nsToPrettyString(b.results.min),
+					this.nsToPrettyString(b.results.max),
+					this.nsToPrettyString(b.results.median)
 				]
 			);
 		});
 
 		console.log(table.toString());
+
+		// console.log();
+		// benchmarks.forEach((b) => {
+		// 	console.log(util.inspect(b, { showHidden: false, depth: null }));
+		// });
 	}
 
 	private nsToPrettyString(time: number) {

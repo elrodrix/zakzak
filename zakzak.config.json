@@ -1,35 +1,27 @@
 {
-	"manager": {
-		"runParallel": false,
-		"printStructure": true
-	},
-	"benchmark": {
-		"statistics": {
-			"moe": true,
-			"stderr": true,
-			"mean": true,
-			"median": true,
-			"min": true,
-			"max": true
-		},
-		"warmup": {
-			"allowWarmup": true,
-			"maxWarmupTime" : 500000000,
-			"allowJIT": true
-		},
-		"overhead": {
-			"deductOverhead": true,
-			"saveTimes": false
-		},
-		"measure": {
-			"cycles": 100,
-			"saveTimes": false
-		}
-	},
-	"cli": {
-		"verbose": false,
-		"quiet": false,
-		"pattern": "*.bench.js",
-		"path": "./"
-	}
+    "benchmark": {
+        "warmup": {
+            "enable": true,
+			"maxTime": 500000000,
+			"increaseFactor": 2,
+            "allowJIT": true
+        },
+        "measure": {
+            "cycles": 100,
+            "saveTimes": true
+        },
+        "overhead": {
+            "enable": true
+        }
+    },
+    "manager": {
+        "runParallel": false,
+        "printTree": true
+    },
+    "cli": {
+        "verbose": false,
+        "quiet": false,
+        "pattern": "*.bench.js",
+        "path": "./"
+    }
 }

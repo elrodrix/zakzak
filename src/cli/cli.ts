@@ -5,11 +5,14 @@
 // which would make it no longer work
 import BenchmarkManager from "../manager/benchmark-manager";
 import CLIManager from "./cli-manager";
+import { ConsoleExporter } from "../manager/exporter";
+import { JsonExporter } from "../manager/exporter";
 
 const files = new CLIManager().getFiles();
 
 BenchmarkManager
 	.getInstance()
+	.addExporter(new ConsoleExporter(), new JsonExporter())
 	.readFiles(files)
 	.run();
 

@@ -5,7 +5,7 @@ import Structure from "./structure";
 import BenchmarkProcess from "./benchmark-process";
 import OptionsManager from "../config/options-manager";
 import { BenchmarkManagerOptions } from "../config/options";
-import { ConsoleExporter } from "./exporter";
+import { ConsoleExporter, Exporter } from "./exporter";
 import { TreeStructure } from "./tree-structure/tree-structure";
 
 
@@ -77,6 +77,11 @@ export default class BenchmarkManager {
 		return this.tree.findBenchmark(b);
 	}
 
+	public addExporter(...arg: Exporter[]) {
+		this.exporters.push(...arg);
+		return this;
+	}
+
 	/**
 	 * Get the singleton instance of the benchmark manager
 	 */
@@ -108,6 +113,11 @@ export default class BenchmarkManager {
 	 */
 	private tree: TreeStructure;
 
+	/**
+	 * List of exporters applied to results
+	 */
+	private exporters: Exporter[] = [];
+
 	private runAsync() {
 		const promises: Array<Promise<Benchmark>> = [];
 		const processes: BenchmarkProcess[] = [];
@@ -115,14 +125,11 @@ export default class BenchmarkManager {
 		this.tree.benchmarks.forEach((benchmark) => {
 			const p = new BenchmarkProcess(benchmark);
 			processes.push(p);
-			_.last(promises).then(() => p.run());
 			promises.push(p.run());
 		});
 
 		Promise.all(promises).then((benchmarks) => {
-			// this.options.exporters.forEach((e) => e.write(benchmarks));
-			this.results = benchmarks.map((b) => b.results);
-			new ConsoleExporter().write(benchmarks);
+			this.exporters.forEach((e) => e.write(benchmarks));
 		});
 	}
 
@@ -152,9 +159,7 @@ export default class BenchmarkManager {
 		});
 
 		runningBenchmark.then((benchmarks) => {
-			// this.options.exporters.forEach((e) => e.write(benchmarks));
-			this.results = benchmarks.map((b) => b.results);
-			new ConsoleExporter().write(benchmarks);
+			this.exporters.forEach((e) => e.write(benchmarks));
 		}).catch((err) => {
 			console.error(`\n${JSON.stringify(err)}\n`);
 		});

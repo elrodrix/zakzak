@@ -2,7 +2,6 @@ import figlet from "figlet";
 import chalk from "chalk";
 import commander from "commander";
 import path from "path";
-import Configstore from "configstore";
 import fs from "fs";
 import globby from "globby";
 import OptionsManager from "../config/options-manager";
@@ -63,8 +62,8 @@ export default class CLIManager {
 			const cwd = process.cwd();
 			const configPath = path.posix.join(cwd, commander.config);
 			if (fs.existsSync(configPath)) {
-				const config = new Configstore(configPath);
-				OptionsManager.changeFromConfigstore(config);
+				const config = JSON.parse(fs.readFileSync(configPath).toString());
+				OptionsManager.changeFromConfigFile(config);
 			}
 		}
 	}

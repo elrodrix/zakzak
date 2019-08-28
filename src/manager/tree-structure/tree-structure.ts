@@ -120,6 +120,7 @@ export class TreeStructure {
 		structure.children.filter((child) => child instanceof Structure).forEach((child) => {
 			this.findAllChildren(child as Structure);
 		});
+		this.currentPath.splice(this.currentPath.length - 1);
 	}
 
 	/**

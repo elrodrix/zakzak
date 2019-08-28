@@ -9,9 +9,14 @@ export abstract class Exporter {
 }
 
 export class ConsoleExporter extends Exporter {
+	constructor() {
+		super();
+		console.debug("created new console exporter");
+	}
 	public write(benchmarks: Benchmark[]) {
+		console.debug("exporting benchmarks into console");
 		if (benchmarks.length === 0) {
-			console.log("no benchmarks found");
+			console.info("no benchmarks found");
 			return;
 		}
 
@@ -36,11 +41,6 @@ export class ConsoleExporter extends Exporter {
 		});
 
 		console.log(table.toString());
-
-		// console.log();
-		// benchmarks.forEach((b) => {
-		// 	console.log(util.inspect(b, { showHidden: false, depth: null }));
-		// });
 	}
 
 	private nsToPrettyString(time: number) {
@@ -67,8 +67,13 @@ export class ConsoleExporter extends Exporter {
 	}
 }
 
-export class JsonExporter {
+export class JsonExporter extends Exporter {
+	constructor() {
+		super();
+		console.debug("created new json exporter");
+	}
 	public write(benchmarks: Benchmark[]) {
+		console.debug("exporting benchmarks into json");
 		const text = JSON.stringify(benchmarks);
 		const filename = `${new Date().toISOString()}.json`;
 		fs.writeFileSync(filename, text, "utf8");

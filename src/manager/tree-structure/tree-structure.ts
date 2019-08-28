@@ -44,9 +44,14 @@ export class TreeStructure {
 	public addFile(filename: string) {
 		this.currentPath = [];
 
+		console.debug(`reading file ${filename} into structure tree`);
+
 		const fileStructure = new Structure(
 			filename,
-			() => { require(filename); },
+			() => {
+				console.debug(`requiring file ${filename}`);
+				require(filename);
+			},
 			filename,
 			OptionsManager.benchmarkOptions
 		);
@@ -73,10 +78,12 @@ export class TreeStructure {
 	 * @param b
 	 */
 	public findBenchmark(b: Benchmark) {
+		console.debug(`searching benchmark with id ${b.id}`);
 		const path = b.id.split(":");
 		let current: Benchmark | Structure = this.files.find((s) => s.name === path[0]);
 		for (let i = 1, l = path.length; i < l; i++) {
 			if (current instanceof Benchmark) {
+				console.debug(`found benchmark`);
 				break;
 			}
 			current = current.children.find((child) => child.name === path[i]);
@@ -91,6 +98,7 @@ export class TreeStructure {
 	 * @param structure the structure whose children will be searched for
 	 */
 	private getChildren(structure: Structure): Array<Structure | Benchmark> {
+		console.debug(`finding direct children of structure ${structure.name}`);
 		const [structures, benchmarks] = this.getChangesAfterFunctionCall(structure.callback);
 		return [].concat(structures, benchmarks);
 	}
@@ -100,10 +108,13 @@ export class TreeStructure {
 	 * @param structure the structure whose children will be searched for
 	 */
 	private findAllChildren(structure: Structure) {
+		console.debug(`finding all children of structure ${structure.name}`);
 		this.currentPath.push(structure.name);
+		console.debug("adding structure name to current path");
 		const children = this.getChildren(structure);
 		structure.addChildren(children);
 		structure.children.filter((child) => child instanceof Benchmark).forEach((child) => {
+			console.debug(`setting id of benchmark ${child.name}`);
 			(child as Benchmark).id = [...this.currentPath, child.name].join(":");
 		});
 		structure.children.filter((child) => child instanceof Structure).forEach((child) => {

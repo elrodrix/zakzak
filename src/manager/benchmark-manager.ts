@@ -45,6 +45,7 @@ export default class BenchmarkManager {
 	 * @param files List of files containing benchmarks
 	 */
 	public readFiles(files: string[]) {
+		console.debug("reading files into manager");
 		files.forEach((file) => {
 			this.tree.addFile(file);
 		});
@@ -60,14 +61,17 @@ export default class BenchmarkManager {
      * Run all the benchmarks and print them out
      */
 	public run() {
+		console.debug("running benchmarks from manager now");
 		if (this.tree.benchmarks.length === 0) {
+			console.info("no benchmarks found");
 			return;
 		}
 		if (this.options.printTree === true) {
+			console.debug("printing structure tree");
 			this.printTree();
 		}
 		if (this.options.runParallel === true) {
-			this.runAsync();
+			this.runParallel();
 		} else {
 			this.runSync();
 		}
@@ -78,6 +82,7 @@ export default class BenchmarkManager {
 	}
 
 	public addExporter(...arg: Exporter[]) {
+		console.debug("adding exporters to manager");
 		this.exporters.push(...arg);
 		return this;
 	}
@@ -87,6 +92,7 @@ export default class BenchmarkManager {
 	 */
 	public static getInstance() {
 		if (BenchmarkManager.instance == null) {
+			console.debug("creating new benchmarkmanager instance");
 			BenchmarkManager.instance = new BenchmarkManager();
 		}
 
@@ -118,7 +124,8 @@ export default class BenchmarkManager {
 	 */
 	private exporters: Exporter[] = [];
 
-	private runAsync() {
+	private runParallel() {
+		console.debug("running benchmarks in parallel mode");
 		const promises: Array<Promise<Benchmark>> = [];
 		const processes: BenchmarkProcess[] = [];
 
@@ -129,6 +136,7 @@ export default class BenchmarkManager {
 		});
 
 		Promise.all(promises).then((benchmarks) => {
+			console.debug("all benchmarks have finished");
 			this.exporters.forEach((e) => e.write(benchmarks));
 		});
 	}
@@ -137,6 +145,7 @@ export default class BenchmarkManager {
 	 * Runs the benchmarks in a synchronous fashion
 	 */
 	private runSync() {
+		console.debug("running benchmarks in serial mode");
 		const processes: BenchmarkProcess[] = [];
 		this.tree.benchmarks.forEach((benchmark) => {
 			const p = new BenchmarkProcess(benchmark);
@@ -161,7 +170,7 @@ export default class BenchmarkManager {
 		runningBenchmark.then((benchmarks) => {
 			this.exporters.forEach((e) => e.write(benchmarks));
 		}).catch((err) => {
-			console.error(`\nError in benchmarks: ${JSON.stringify(err)}\n`);
+			console.info(`\nError in benchmarks: ${JSON.stringify(err)}\n`);
 		});
 	}
 }

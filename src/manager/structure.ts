@@ -32,8 +32,10 @@ export default class Structure {
 	 * @param args List of children
 	 */
 	public addChildren(children: Array<Benchmark | Structure>) {
+		console.debug(`adding children to structure ${this.name}`);
 		children.forEach((child) => {
 			child.filename = this.filename;
+			console.debug(`applying structure options to ${child.name}`);
 			child.options = _.merge({}, this.options, child.options);
 		});
 		this.children = this.children.concat(children);

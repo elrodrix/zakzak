@@ -18,6 +18,7 @@ export default class Benchmark {
 		filename?: string,
 		options: BenchmarkOptions = {}
 	) {
+		console.debug(`creating new benchmark ${name}`);
 		this.name = name;
 		this.fn = fn;
 		if (filename) {
@@ -27,13 +28,16 @@ export default class Benchmark {
 	}
 
 	public run() {
+		console.debug(`running benchmark ${this.name}`);
 		if (!this.options.warmup.allowJIT) {
 			const fn = this.fn;
+			console.debug("wrapping function and disabling optimization for it");
 			const neverOptimize = () => { fn(); };
 			v8natives.neverOptimizeFunction(neverOptimize);
 			this.fn = neverOptimize;
 		}
 
+		console.debug("starting core part of the benchmark");
 		do {
 			this.warmup = this.getWarmup();
 			this.overhead = this.getOverhead();
@@ -43,6 +47,7 @@ export default class Benchmark {
 			}
 		} while (!this.areResultsAcceptable());
 
+		console.debug(`finished benchmark ${this.name}`);
 		return this.results;
 	}
 
@@ -56,6 +61,7 @@ export default class Benchmark {
 
 	private getWarmup() {
 		if (!this.options.warmup.enable) {
+			console.debug("warmup 0 due to warmup disabled in options");
 			return 0;
 		}
 
@@ -63,28 +69,35 @@ export default class Benchmark {
 
 		let startTime = 0;
 		this.warmup = 1;
+		console.debug("starting warmup estimation process");
 		do {
+			console.debug("deoptimizing function");
 			v8natives.deoptimizeFunction(this.fn);
 			v8natives.deoptimizeNow();
+			console.debug("increasing warmup time");
 			startTime = getTime();
 			this.warmup = Math.ceil(this.warmup * this.options.warmup.increaseFactor);
 			const results = this.getMeasurement();
 			total += this.warmup + (this.options.measure.cycles * this.warmup);
 			if (this.areResultsAcceptable(results)) {
-				break;
+				console.debug("warmup measurement results are within acceptable range");
+				return total;
 			}
 
 		} while ((getTime() - startTime) < this.options.warmup.maxTime);
 
+		console.debug("warmup hit maxtime duration");
 		return total;
 	}
 
 	private getOverhead() {
+		console.debug("measuring benchmarking overhead");
 		// tslint:disable-next-line: no-empty
 		return this.getMeasurement(() => { }).mean;
 	}
 
 	private deductOverhead() {
+		console.debug("deducting calculated overhead from results");
 		this.results.max -= this.overhead;
 		this.results.mean -= this.overhead;
 		this.results.median -= this.overhead;
@@ -93,6 +106,7 @@ export default class Benchmark {
 	}
 
 	private getMeasurement(fn = this.fn): MeasurementResult {
+		console.debug("starting measurement");
 		let times = [];
 		let warmup = this.warmup;
 		v8natives.optimizeFunctionOnNextCall(fn);
@@ -116,6 +130,8 @@ export default class Benchmark {
 		}
 		times = actualTimes;
 
+		console.debug("finished measurement");
+
 		return {
 			marginOfError: calculateMarginOfError(times, 99.9),
 			min: _.min(times),
@@ -128,6 +144,7 @@ export default class Benchmark {
 	}
 
 	private areResultsAcceptable(results: MeasurementResult = this.results) {
+		console.debug("checking if measurement results are acceptable");
 		return results.marginOfError <= (results.mean * 0.1) && isWithin(results.median, results.mean, 0.1);
 	}
 }

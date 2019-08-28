@@ -26,6 +26,12 @@ export interface CLIOptions {
 	path?: string;
 }
 
+export interface OptionsWrapper {
+	benchmark: BenchmarkOptions;
+	manager: BenchmarkManagerOptions;
+	cli: CLIOptions;
+}
+
 export const DefaultBenchmarkOptions: BenchmarkOptions = {
 	warmup: {
 		enable: true,

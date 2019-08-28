@@ -32,12 +32,15 @@ export default class Benchmark {
 			v8natives.neverOptimizeFunction(neverOptimize);
 			this.fn = neverOptimize;
 		}
-		this.warmup = this.getWarmup();
-		this.overhead = this.getOverhead();
-		this.results = this.getMeasurement();
-		if (this.options.overhead.enable) {
-			this.deductOverhead();
-		}
+
+		do {
+			this.warmup = this.getWarmup();
+			this.overhead = this.getOverhead();
+			this.results = this.getMeasurement();
+			if (this.options.overhead.enable) {
+				this.deductOverhead();
+			}
+		} while (!this.areResultsAcceptable());
 
 		return this.results;
 	}
@@ -66,7 +69,7 @@ export default class Benchmark {
 			this.warmup = Math.ceil(this.warmup * this.options.warmup.increaseFactor);
 			const results = this.getMeasurement();
 			total += this.warmup + (this.options.measure.cycles * this.warmup);
-			if (results.marginOfError <= (results.mean * 0.1) && isWithin(results.median, results.mean, 0.1)) {
+			if (this.areResultsAcceptable(results)) {
 				break;
 			}
 
@@ -121,6 +124,10 @@ export default class Benchmark {
 			mean: _.mean(times),
 			times: this.options.measure.saveTimes === true ? times : []
 		};
+	}
+
+	private areResultsAcceptable(results: MeasurementResult = this.results) {
+		return results.marginOfError <= (results.mean * 0.1) && isWithin(results.median, results.mean, 0.1);
 	}
 }
 

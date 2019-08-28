@@ -28,7 +28,8 @@ export default class Benchmark {
 
 	public run() {
 		if (!this.options.warmup.allowJIT) {
-			const neverOptimize = () => { this.fn(); };
+			const fn = this.fn;
+			const neverOptimize = () => { fn(); };
 			v8natives.neverOptimizeFunction(neverOptimize);
 			this.fn = neverOptimize;
 		}

@@ -149,7 +149,7 @@ export default class BenchmarkManager {
 				return [b];
 			});
 
-		processes.forEach((p) => {
+		processes.slice(1).forEach((p) => {
 			runningBenchmark = runningBenchmark.then((benchmarks) => {
 				return p.run().then((b) => {
 					benchmarks.push(b);

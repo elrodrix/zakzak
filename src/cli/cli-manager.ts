@@ -12,7 +12,6 @@ export default class CLIManager {
 		this.setParams();
 		this.setExample();
 		this.processArgs();
-		this.printHeader();
 		this.loadConfig();
 		this.loadParams();
 	}
@@ -24,7 +23,7 @@ export default class CLIManager {
 		return files;
 	}
 
-	private printHeader() {
+	public printHeader() {
 		console.log(
 			chalk.greenBright(
 				figlet.textSync("ZAKZAK", {

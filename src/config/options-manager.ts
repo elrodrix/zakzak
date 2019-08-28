@@ -1,6 +1,6 @@
 import _ from "lodash";
 import { CommanderStatic } from "commander";
-import { DefaultBenchmarkOptions, DefaultBenchmarkManagerOptions, DefaultCLIOptions, BenchmarkOptions, BenchmarkManagerOptions, CLIOptions } from "./options";
+import { DefaultBenchmarkOptions, DefaultBenchmarkManagerOptions, DefaultCLIOptions, BenchmarkOptions, BenchmarkManagerOptions, CLIOptions, OptionsWrapper } from "./options";
 
 export default class OptionsManager {
 
@@ -26,6 +26,14 @@ export default class OptionsManager {
 		}
 	}
 
+	public static getOptions(): OptionsWrapper {
+		return {
+			benchmark: OptionsManager.benchmarkOptions,
+			manager: OptionsManager.benchmarkManagerOptions,
+			cli: OptionsManager.cliOptions
+		};
+	}
+
 	public static changeFromCommander(commander: CommanderStatic) {
 		const cliOptions: CLIOptions = {
 			verbose: commander.verbose,
@@ -34,31 +42,5 @@ export default class OptionsManager {
 			path: commander.path
 		};
 		OptionsManager.cliOptions = _.merge({}, OptionsManager.cliOptions, cliOptions);
-	}
-
-	public static overrideConsole() {
-		const oldLog = console.log.bind(console);
-		// tslint:disable-next-line: only-arrow-functions
-		console.log = function() {
-			if (OptionsManager.cliOptions.quiet === false) {
-				oldLog(...arguments);
-			}
-		};
-		const oldInfo = console.info.bind(console);
-		// tslint:disable-next-line: only-arrow-functions
-		console.info = function() {
-			if (OptionsManager.cliOptions.quiet === false) {
-				oldInfo(`${new Date().toISOString()}:`, ...arguments);
-			}
-		};
-		const oldDebug = console.debug.bind(console);
-		// tslint:disable-next-line: only-arrow-functions
-		console.debug = function() {
-			if (OptionsManager.cliOptions.quiet === false) {
-				if (OptionsManager.cliOptions.verbose === true) {
-					oldDebug(`${new Date().toISOString()}:`, ...arguments);
-				}
-			}
-		};
 	}
 }

@@ -1,6 +1,7 @@
 import Structure from "../structure";
 import Benchmark from "../../benchmark/benchmark";
 import OptionsManager from "../../config/options-manager";
+import { ExportEmitter } from "../exporter/emitter";
 
 // tslint:disable-next-line: no-var-requires
 require("../globals");
@@ -44,12 +45,12 @@ export class TreeStructure {
 	public addFile(filename: string) {
 		this.currentPath = [];
 
-		console.debug(`reading file ${filename} into structure tree`);
+		this.em.debug(`reading file ${filename} into structure tree`);
 
 		const fileStructure = new Structure(
 			filename,
 			() => {
-				console.debug(`requiring file ${filename}`);
+				this.em.debug(`requiring file ${filename}`);
 				require(filename);
 			},
 			filename,
@@ -62,34 +63,24 @@ export class TreeStructure {
 	}
 
 	/**
-	 * Print out the currently discovered structure tree to the console
-	 */
-	public print() {
-		this.files.forEach((file) => {
-			console.log(`file: ${file.filename}`);
-			file.children.forEach((child) => {
-				this.printNode(child, 1);
-			});
-		});
-	}
-
-	/**
 	 * Finds a single benchmark
 	 * @param b
 	 */
 	public findBenchmark(b: Benchmark) {
-		console.debug(`searching benchmark with id ${b.id}`);
+		this.em.debug(`searching benchmark with id ${b.id}`);
 		const path = b.id.split(":");
 		let current: Benchmark | Structure = this.files.find((s) => s.name === path[0]);
 		for (let i = 1, l = path.length; i < l; i++) {
 			if (current instanceof Benchmark) {
-				console.debug(`found benchmark`);
+				this.em.debug(`found benchmark`);
 				break;
 			}
 			current = current.children.find((child) => child.name === path[i]);
 		}
 		return current as Benchmark;
 	}
+
+	private em = ExportEmitter.getInstance();
 
 	private currentPath: string[] = [];
 
@@ -98,7 +89,7 @@ export class TreeStructure {
 	 * @param structure the structure whose children will be searched for
 	 */
 	private getChildren(structure: Structure): Array<Structure | Benchmark> {
-		console.debug(`finding direct children of structure ${structure.name}`);
+		this.em.debug(`finding direct children of structure ${structure.name}`);
 		const [structures, benchmarks] = this.getChangesAfterFunctionCall(structure.callback);
 		return [].concat(structures, benchmarks);
 	}
@@ -108,13 +99,13 @@ export class TreeStructure {
 	 * @param structure the structure whose children will be searched for
 	 */
 	private findAllChildren(structure: Structure) {
-		console.debug(`finding all children of structure ${structure.name}`);
+		this.em.debug(`finding all children of structure ${structure.name}`);
 		this.currentPath.push(structure.name);
-		console.debug("adding structure name to current path");
+		this.em.debug("adding structure name to current path");
 		const children = this.getChildren(structure);
 		structure.addChildren(children);
 		structure.children.filter((child) => child instanceof Benchmark).forEach((child) => {
-			console.debug(`setting id of benchmark ${child.name}`);
+			this.em.debug(`setting id of benchmark ${child.name}`);
 			(child as Benchmark).id = [...this.currentPath, child.name].join(":");
 		});
 		structure.children.filter((child) => child instanceof Structure).forEach((child) => {
@@ -134,19 +125,5 @@ export class TreeStructure {
 		const structs = this.structures.slice(previousStructLength);
 		const benchmarks = this.benchmarks.slice(previousBenchLength);
 		return [structs, benchmarks];
-	}
-
-	/**
-	 * Print a node and all its children recursively to the console
-	 * @param node Current node from which we will traverse downwards
-	 * @param layer Current layer in which the node is
-	 */
-	private printNode(node: Benchmark | Structure, layer: number) {
-		console.log(`${"".padStart(layer, "-")}${node.name}`);
-		if (node instanceof Structure) {
-			node.children.forEach((child) => {
-				this.printNode(child, layer + 1);
-			});
-		}
 	}
 }

@@ -5,6 +5,7 @@ import path from "path";
 import fs from "fs";
 import globby from "globby";
 import OptionsManager from "../config/options-manager";
+import { ExportEmitter } from "../manager/exporter/emitter";
 
 export default class CLIManager {
 
@@ -24,7 +25,7 @@ export default class CLIManager {
 	}
 
 	public printHeader() {
-		console.log(
+		this.em.log(
 			chalk.greenBright(
 				figlet.textSync("ZAKZAK", {
 					font: "3D-ASCII"
@@ -32,6 +33,8 @@ export default class CLIManager {
 			)
 		);
 	}
+
+	private em = ExportEmitter.getInstance();
 
 	private setParams() {
 		commander.version("0.0.1", "-v, --version");

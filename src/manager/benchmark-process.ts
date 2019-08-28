@@ -3,6 +3,7 @@ import Benchmark from "../benchmark/benchmark";
 import path from "path";
 import OptionsManager from "../config/options-manager";
 import { OptionsWrapper } from "../config/options";
+import { ExportEmitter } from "./exporter/emitter";
 
 /**
  * Wrapper for child process that is executing a single benchmark
@@ -16,7 +17,7 @@ export default class BenchmarkProcess {
 	 * so all information besides the actual function will be passed on
 	 */
 	constructor(private benchmark: Benchmark) {
-		console.debug(`creating new benchmark process for benchmark ${benchmark.name}`);
+		this.em.debug(`creating new benchmark process for benchmark ${benchmark.name}`);
 	}
 
 	/**
@@ -24,11 +25,11 @@ export default class BenchmarkProcess {
 	 * Once the process is finished it will return the benchmark object with the updated results
 	 */
 	public run() {
-		console.debug(`process with benchmark ${this.benchmark.name} is starting`);
+		this.em.debug(`process with benchmark ${this.benchmark.name} is starting`);
 		const childPath = path.posix.join(__dirname, "./child");
-		console.debug("forking process now");
+		this.em.debug("forking process now");
 		const child = ChildProcess.fork(childPath, [], { execArgv: ["--allow-natives-syntax"] });
-		console.debug("passing benchmark data to child process");
+		this.em.debug("passing benchmark data to child process");
 		const options: OptionsWrapper = {
 			benchmark: OptionsManager.benchmarkOptions,
 			manager: OptionsManager.benchmarkManagerOptions,
@@ -39,21 +40,22 @@ export default class BenchmarkProcess {
 
 		return new Promise((res: (value: Benchmark) => void, err) => {
 			child.on("message", (msg: Benchmark) => {
-				console.debug(`process with benchmark ${this.benchmark.name} finished`);
+				this.em.debug(`process with benchmark ${this.benchmark.name} finished`);
 				res(msg);
 			});
 
 			child.on("error", (e) => {
-				console.debug(`process with benchmark ${this.benchmark.name} has an error`);
+				this.em.debug(`process with benchmark ${this.benchmark.name} has an error`);
 				err(e);
 			});
 
 			child.on("exit", (code) => {
-				console.debug(`process with benchmark ${this.benchmark.name} has exited with code ${code}`);
+				this.em.debug(`process with benchmark ${this.benchmark.name} has exited with code ${code}`);
 				if (code !== 0) {
 					err(`exit status ${code}`);
 				}
 			});
 		});
 	}
+	private em = ExportEmitter.getInstance();
 }

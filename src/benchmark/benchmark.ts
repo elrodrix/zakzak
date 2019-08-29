@@ -42,14 +42,16 @@ export default class Benchmark {
 		}
 
 		zak.debug("starting core part of the benchmark");
+		let currentTry = 0;
 		do {
+			currentTry++;
 			this.warmup = this.getWarmup();
 			this.overhead = this.getOverhead();
 			this.results = this.getMeasurement();
 			if (this.options.overhead.enable) {
 				this.deductOverhead();
 			}
-		} while (!this.areResultsAcceptable());
+		} while (!this.areResultsAcceptable() && !this.isMaxTriesReached(currentTry));
 
 		zak.debug(`finished benchmark ${this.name}`);
 		this.endTime = getTime();
@@ -153,6 +155,15 @@ export default class Benchmark {
 	private areResultsAcceptable(results: MeasurementResult = this.results) {
 		zak.debug("checking if measurement results are acceptable");
 		return results.marginOfError <= (results.mean * 0.1) && isWithin(results.median, results.mean, 0.1);
+	}
+
+	private isMaxTriesReached(currentTry: number) {
+		zak.debug("checking maxtries limit");
+		const reached = currentTry >= this.options.maxTries;
+		if (reached) {
+			zak.debug("max tries has been reached");
+		}
+		return reached;
 	}
 }
 

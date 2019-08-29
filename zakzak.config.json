@@ -12,7 +12,8 @@
         },
         "overhead": {
             "enable": true
-        }
+		},
+		"maxTries": 3
     },
     "manager": {
         "runParallel": false,
@@ -22,6 +23,7 @@
         "verbose": false,
         "quiet": false,
         "pattern": "*.bench.js",
-        "path": "./"
+		"path": "./",
+		"exporter": ""
     }
 }

@@ -14,6 +14,7 @@ export interface BenchmarkOptions {
 	overhead?: {
 		enable?: boolean;
 	};
+	maxTries?: number;
 }
 export interface BenchmarkManagerOptions {
 	runParallel?: boolean;
@@ -46,7 +47,8 @@ export const DefaultBenchmarkOptions: BenchmarkOptions = {
 	},
 	overhead: {
 		enable: true
-	}
+	},
+	maxTries: 3
 };
 export const DefaultBenchmarkManagerOptions: BenchmarkManagerOptions = {
 	runParallel: false,

@@ -27,11 +27,13 @@ export class Exporter {
 export class ConsoleExporter extends Exporter {
 	constructor(private emitter: ExportEmitter, private options: OptionsWrapper) {
 		super(emitter);
-		emitter.on(EVENT_RESULTS, (args) => {
-			this.writeBenchmarkResults(args);
-		});
+		if  (this.options.cli.quiet === false) {
+			emitter.on(EVENT_RESULTS, (args) => {
+				this.writeBenchmarkResults(args);
+			});
+		}
 
-		if (this.options.manager.printTree) {
+		if (this.options.manager.printTree === true && this.options.cli.quiet === false) {
 			emitter.on(EVENT_TREE, (args) => {
 				this.printTree(args);
 			});
@@ -49,12 +51,10 @@ export class ConsoleExporter extends Exporter {
 			});
 		}
 
-		if (this.options.cli.quiet === false) {
-			if (this.options.cli.verbose === true) {
-				emitter.on(EVENT_DEBUG, (...args: any[]) => {
-					console.log(`${new Date().toISOString()}:`, ...args);
-				});
-			}
+		if (this.options.cli.quiet === false && this.options.cli.verbose === true) {
+			emitter.on(EVENT_DEBUG, (...args: any[]) => {
+				console.log(`${new Date().toISOString()}:`, ...args);
+			});
 		}
 
 	}

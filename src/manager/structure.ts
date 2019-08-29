@@ -1,7 +1,7 @@
 import _ from "lodash";
-import Benchmark from "./../benchmark/benchmark";
-import { BenchmarkOptions } from "../config/options";
-import { ExportEmitter } from "./exporter/emitter";
+import Benchmark from "@zakzak/benchmark/benchmark";
+import { BenchmarkOptions } from "@zakzak/config/options";
+import "@zakzak/logging";
 
 /**
  * Structure is used to literally structure benchmarking files.
@@ -33,13 +33,12 @@ export default class Structure {
 	 * @param args List of children
 	 */
 	public addChildren(children: Array<Benchmark | Structure>) {
-		this.em.debug(`adding children to structure ${this.name}`);
+		zak.debug(`adding children to structure ${this.name}`);
 		children.forEach((child) => {
 			child.filename = this.filename;
-			this.em.debug(`applying structure options to ${child.name}`);
+			zak.debug(`applying structure options to ${child.name}`);
 			child.options = _.merge({}, this.options, child.options);
 		});
 		this.children = this.children.concat(children);
 	}
-	private em = ExportEmitter.getInstance();
 }

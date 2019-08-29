@@ -1,9 +1,9 @@
 import process from "process";
 import _ from "lodash";
-import { calculateMedian, calculateMarginOfError, calculateStandardError, getOptimizationStats, plotData, isWithin } from "./util";
 import v8natives from "v8-natives";
-import { BenchmarkOptions } from "../config/options";
-import { ExportEmitter } from "../manager/exporter/emitter";
+import { calculateMedian, calculateMarginOfError, calculateStandardError, isWithin } from "@util";
+import { BenchmarkOptions } from "@zakzak/config/options";
+import "@zakzak/logging";
 
 /**
  * Benchmark is responsible for the actual benchmarking.
@@ -19,26 +19,29 @@ export default class Benchmark {
 		filename?: string,
 		options: BenchmarkOptions = {}
 	) {
-		this.em.debug(`creating new benchmark ${name}`);
+		zak.debug(`creating new benchmark ${name}`);
 		this.name = name;
 		this.fn = fn;
 		if (filename) {
 			this.filename = filename;
 		}
 		this.options = options;
+		this.startTime = 0;
+		this.endTime = 0;
 	}
 
 	public run() {
-		this.em.debug(`running benchmark ${this.name}`);
+		this.startTime = getTime();
+		zak.debug(`running benchmark ${this.name}`);
 		if (!this.options.warmup.allowJIT) {
 			const fn = this.fn;
-			this.em.debug("wrapping function and disabling optimization for it");
+			zak.debug("wrapping function and disabling optimization for it");
 			const neverOptimize = () => { fn(); };
 			v8natives.neverOptimizeFunction(neverOptimize);
 			this.fn = neverOptimize;
 		}
 
-		this.em.debug("starting core part of the benchmark");
+		zak.debug("starting core part of the benchmark");
 		do {
 			this.warmup = this.getWarmup();
 			this.overhead = this.getOverhead();
@@ -48,7 +51,8 @@ export default class Benchmark {
 			}
 		} while (!this.areResultsAcceptable());
 
-		this.em.debug(`finished benchmark ${this.name}`);
+		zak.debug(`finished benchmark ${this.name}`);
+		this.endTime = getTime();
 		return this.results;
 	}
 
@@ -59,12 +63,12 @@ export default class Benchmark {
 	public fn: Function;
 	public warmup: number;
 	public overhead: number;
-
-	private em = ExportEmitter.getInstance();
+	public startTime: number;
+	public endTime: number;
 
 	private getWarmup() {
 		if (!this.options.warmup.enable) {
-			this.em.debug("warmup 0 due to warmup disabled in options");
+			zak.debug("warmup 0 due to warmup disabled in options");
 			return 0;
 		}
 
@@ -72,35 +76,35 @@ export default class Benchmark {
 
 		let startTime = 0;
 		this.warmup = 1;
-		this.em.debug("starting warmup estimation process");
+		zak.debug("starting warmup estimation process");
 		do {
-			this.em.debug("deoptimizing function");
+			zak.debug("deoptimizing function");
 			v8natives.deoptimizeFunction(this.fn);
 			v8natives.deoptimizeNow();
-			this.em.debug("increasing warmup time");
+			zak.debug("increasing warmup time");
 			startTime = getTime();
 			this.warmup = Math.ceil(this.warmup * this.options.warmup.increaseFactor);
 			const results = this.getMeasurement();
 			total += this.warmup + (this.options.measure.cycles * this.warmup);
 			if (this.areResultsAcceptable(results)) {
-				this.em.debug("warmup measurement results are within acceptable range");
+				zak.debug("warmup measurement results are within acceptable range");
 				return total;
 			}
 
 		} while ((getTime() - startTime) < this.options.warmup.maxTime);
 
-		this.em.debug("warmup hit maxtime duration");
+		zak.debug("warmup hit maxtime duration");
 		return total;
 	}
 
 	private getOverhead() {
-		this.em.debug("measuring benchmarking overhead");
+		zak.debug("measuring benchmarking overhead");
 		// tslint:disable-next-line: no-empty
 		return this.getMeasurement(() => { }).mean;
 	}
 
 	private deductOverhead() {
-		this.em.debug("deducting calculated overhead from results");
+		zak.debug("deducting calculated overhead from results");
 		this.results.max -= this.overhead;
 		this.results.mean -= this.overhead;
 		this.results.median -= this.overhead;
@@ -109,7 +113,7 @@ export default class Benchmark {
 	}
 
 	private getMeasurement(fn = this.fn): MeasurementResult {
-		this.em.debug("starting measurement");
+		zak.debug("starting measurement");
 		let times = [];
 		let warmup = this.warmup;
 		v8natives.optimizeFunctionOnNextCall(fn);
@@ -133,7 +137,7 @@ export default class Benchmark {
 		}
 		times = actualTimes;
 
-		this.em.debug("finished measurement");
+		zak.debug("finished measurement");
 
 		return {
 			marginOfError: calculateMarginOfError(times, 99.9),
@@ -147,7 +151,7 @@ export default class Benchmark {
 	}
 
 	private areResultsAcceptable(results: MeasurementResult = this.results) {
-		this.em.debug("checking if measurement results are acceptable");
+		zak.debug("checking if measurement results are acceptable");
 		return results.marginOfError <= (results.mean * 0.1) && isWithin(results.median, results.mean, 0.1);
 	}
 }

@@ -1,10 +1,10 @@
 import Table from "cli-table";
-import Benchmark from "../../benchmark/benchmark";
-import { TimeUnit } from "../../benchmark/time";
-import Structure from "../structure";
-import { OptionsWrapper } from "../../config/options";
-import { ExportEmitter, EVENT_RESULTS, EVENT_TREE, EVENT_LOG, EVENT_INFO, EVENT_DEBUG } from "./emitter";
 import { EventEmitter } from "events";
+import Benchmark from "@zakzak/benchmark/benchmark";
+import TimeUnit from "@timeunit";
+import Structure from "@zakzak/manager/structure";
+import { OptionsWrapper } from "@zakzak/config/options";
+import { ExportEmitter, EVENT_RESULTS, EVENT_TREE, EVENT_LOG, EVENT_INFO, EVENT_DEBUG } from "@zakzak/exporter/emitter";
 
 export class ExporterRepository {
 	public static addExporter(exporter: Exporter) {
@@ -38,21 +38,21 @@ export class ConsoleExporter extends Exporter {
 		}
 
 		if (this.options.cli.quiet === false) {
-			emitter.on(EVENT_LOG, (msg: string) => {
-				console.log(msg);
+			emitter.on(EVENT_LOG, (...args: any[]) => {
+				console.log(...args);
 			});
 		}
 
 		if (this.options.cli.quiet === false) {
-			emitter.on(EVENT_INFO, (msg: string) => {
-				console.log(`${new Date().toISOString()}:`, msg);
+			emitter.on(EVENT_INFO, (...args: any[]) => {
+				console.log(`${new Date().toISOString()}:`, ...args);
 			});
 		}
 
 		if (this.options.cli.quiet === false) {
 			if (this.options.cli.verbose === true) {
-				emitter.on(EVENT_DEBUG, (msg: string) => {
-					console.log(`${new Date().toISOString()}:`, msg);
+				emitter.on(EVENT_DEBUG, (...args: any[]) => {
+					console.log(`${new Date().toISOString()}:`, ...args);
 				});
 			}
 		}
@@ -66,7 +66,7 @@ export class ConsoleExporter extends Exporter {
 		}
 
 		const table = new Table({
-			head: ["Name", "Execution time", "Margin of Error", "Standard Error", "Min", "Max", "Median", "Overhead", "Warmup"]
+			head: ["Name", "Execution time", "Margin of Error", "Standard Error", "Min", "Max", "Median", "Overhead", "Warmup", "Total"]
 		});
 
 		benchmarks.forEach((b) => {
@@ -80,7 +80,8 @@ export class ConsoleExporter extends Exporter {
 					this.nsToPrettyString(b.results.max),
 					this.nsToPrettyString(b.results.median),
 					this.nsToPrettyString(b.overhead),
-					b.warmup
+					b.warmup,
+					this.nsToPrettyString(b.endTime - b.startTime)
 				]
 			);
 		});
@@ -106,7 +107,7 @@ export class ConsoleExporter extends Exporter {
 		const timeString = convertedTime.toString();
 		const parts = timeString.split(".");
 		const beforeComma = parts[0];
-		const afterComma = parts[1];
+		const afterComma = parts[1] !== undefined ? parts[1] : "";
 		const availableLength = Math.max(0, maxLength - beforeComma.length);
 		return `${beforeComma}${availableLength === 0 ? "" : "."}${afterComma.substring(0, availableLength)}${unit}`;
 	}

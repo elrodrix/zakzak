@@ -1,6 +1,6 @@
 import _ from "lodash";
 import { CommanderStatic } from "commander";
-import { DefaultBenchmarkOptions, DefaultBenchmarkManagerOptions, DefaultCLIOptions, BenchmarkOptions, BenchmarkManagerOptions, CLIOptions, OptionsWrapper } from "./options";
+import { DefaultBenchmarkOptions, DefaultBenchmarkManagerOptions, DefaultCLIOptions, BenchmarkOptions, BenchmarkManagerOptions, CLIOptions, OptionsWrapper } from "@zakzak/config/options";
 
 export default class OptionsManager {
 

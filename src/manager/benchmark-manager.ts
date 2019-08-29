@@ -1,12 +1,12 @@
 // tslint:disable: no-var-requires
 import _ from "lodash";
-import Benchmark, { MeasurementResult } from "../benchmark/benchmark";
-import Structure from "./structure";
-import BenchmarkProcess from "./benchmark-process";
-import OptionsManager from "../config/options-manager";
-import { BenchmarkManagerOptions } from "../config/options";
-import { TreeStructure } from "./tree-structure/tree-structure";
-import { ExportEmitter } from "./exporter/emitter";
+import Benchmark, { MeasurementResult } from "@zakzak/benchmark/benchmark";
+import Structure from "@zakzak/manager/structure";
+import BenchmarkProcess from "@zakzak/manager/benchmark-process";
+import OptionsManager from "@zakzak/config/options-manager";
+import { BenchmarkManagerOptions } from "@zakzak/config/options";
+import { TreeStructure } from "@zakzak/manager/tree-structure";
+import "@zakzak/logging";
 
 
 /**
@@ -45,7 +45,7 @@ export default class BenchmarkManager {
 	 * @param files List of files containing benchmarks
 	 */
 	public readFiles(files: string[]) {
-		this.em.debug("reading files into manager");
+		zak.debug("reading files into manager");
 		files.forEach((file) => {
 			this.tree.addFile(file);
 		});
@@ -54,7 +54,7 @@ export default class BenchmarkManager {
 	}
 
 	public printTree() {
-		this.em.printTree(this.tree.files);
+		zak.tree(this.tree.files);
 		return this;
 	}
 
@@ -62,13 +62,13 @@ export default class BenchmarkManager {
      * Run all the benchmarks and print them out
      */
 	public run() {
-		this.em.debug("running benchmarks from manager now");
+		zak.debug("running benchmarks from manager now");
 		if (this.tree.benchmarks.length === 0) {
-			this.em.info("no benchmarks found");
+			zak.info("no benchmarks found");
 			return;
 		}
 		if (this.options.printTree === true) {
-			this.em.debug("printing structure tree");
+			zak.debug("printing structure tree");
 			this.printTree();
 		}
 		if (this.options.runParallel === true) {
@@ -87,13 +87,12 @@ export default class BenchmarkManager {
 	 */
 	public static getInstance() {
 		if (BenchmarkManager.instance == null) {
-			ExportEmitter.getInstance().debug("creating new benchmarkmanager instance");
+			zak.debug("creating new benchmarkmanager instance");
 			BenchmarkManager.instance = new BenchmarkManager();
 		}
 
 		return BenchmarkManager.instance;
 	}
-	private em = ExportEmitter.getInstance();
 
 	/**
 	 * Singleton instance of the benchmark manager
@@ -116,7 +115,7 @@ export default class BenchmarkManager {
 	private tree: TreeStructure;
 
 	private runParallel() {
-		this.em.debug("running benchmarks in parallel mode");
+		zak.debug("running benchmarks in parallel mode");
 		const promises: Array<Promise<Benchmark>> = [];
 		const processes: BenchmarkProcess[] = [];
 
@@ -127,9 +126,9 @@ export default class BenchmarkManager {
 		});
 
 		Promise.all(promises).then((benchmarks) => {
-			this.em.debug("all benchmarks have finished");
-			this.em.debug("exporting results");
-			this.em.exportResults(benchmarks);
+			zak.debug("all benchmarks have finished");
+			zak.debug("exporting results");
+			zak.results(benchmarks);
 		});
 	}
 
@@ -137,7 +136,7 @@ export default class BenchmarkManager {
 	 * Runs the benchmarks in a synchronous fashion
 	 */
 	private runSync() {
-		this.em.debug("running benchmarks in serial mode");
+		zak.debug("running benchmarks in serial mode");
 		const processes: BenchmarkProcess[] = [];
 		this.tree.benchmarks.forEach((benchmark) => {
 			const p = new BenchmarkProcess(benchmark);
@@ -160,11 +159,11 @@ export default class BenchmarkManager {
 		});
 
 		runningBenchmark.then((benchmarks) => {
-			this.em.debug("all benchmarks have finished");
-			this.em.debug("exporting results");
-			this.em.exportResults(benchmarks);
+			zak.debug("all benchmarks have finished");
+			zak.debug("exporting results");
+			zak.results(benchmarks);
 		}).catch((err) => {
-			this.em.info(`\nError in benchmarks: ${JSON.stringify(err)}\n`);
+			zak.info(`\nError in benchmarks: ${JSON.stringify(err)}\n`);
 		});
 	}
 }

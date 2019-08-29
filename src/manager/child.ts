@@ -1,18 +1,16 @@
-import Benchmark from "./../benchmark/benchmark";
-import BenchmarkManager from "./benchmark-manager";
-import OptionsManager from "../config/options-manager";
-import { OptionsWrapper } from "../config/options";
-import { ExportEmitter } from "./exporter/emitter";
-import { ExporterRepository, ConsoleExporter } from "./exporter/exporter";
-
-const em = ExportEmitter.getInstance();
+import Benchmark from "@zakzak/benchmark/benchmark";
+import BenchmarkManager from "@zakzak/manager/benchmark-manager";
+import OptionsManager from "@zakzak/config/options-manager";
+import { OptionsWrapper } from "@zakzak/config/options";
+import { ExporterRepository, ConsoleExporter } from "@zakzak/exporter/exporter";
+import "@zakzak/logging";
 
 new Promise((res: (value: Benchmark) => void) => {
 	// Wait for the initialization
 	process.on("message", (msg: { benchmark: Benchmark, options: OptionsWrapper }) => {
 		OptionsManager.change(msg.options.benchmark, msg.options.manager, msg.options.cli);
-		ExporterRepository.addExporter(new ConsoleExporter(em, OptionsManager.getOptions()));
-		em.debug("received benchmark from parent process");
+		ExporterRepository.addExporter(new ConsoleExporter(zak.init(), OptionsManager.getOptions()));
+		zak.debug("received benchmark from parent process");
 		res(msg.benchmark);
 	});
 }).then((b) => {
@@ -24,12 +22,12 @@ new Promise((res: (value: Benchmark) => void) => {
 	// Do the benchmarking
 	benchmark.run();
 	// Return results to parent process
-	em.debug("sending benchmark with results to parent");
+	zak.debug("sending benchmark with results to parent");
 	process.send(benchmark);
-	em.debug("exiting process with 0");
+	zak.debug("exiting process with 0");
 	process.exit(0);
 }).catch((err) => {
-	em.debug("caught error while trying to execute benchmark");
+	zak.debug("caught error while trying to execute benchmark");
 	process.stderr.write(JSON.stringify(err));
 	process.exit(1);
 });

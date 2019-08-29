@@ -1,4 +1,4 @@
-import { TimeUnit } from "../benchmark/time";
+import TimeUnit from "@timeunit";
 
 export interface BenchmarkOptions {
 	warmup?: {

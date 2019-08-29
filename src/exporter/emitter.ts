@@ -1,6 +1,6 @@
 import { EventEmitter } from "events";
-import Benchmark from "../../benchmark/benchmark";
-import Structure from "../structure";
+import Benchmark from "@zakzak/benchmark/benchmark";
+import Structure from "@zakzak/manager/structure";
 
 export const EVENT_RESULTS = "EVENT_RESULTS";
 export const EVENT_TREE = "EVENT_TREE";
@@ -35,16 +35,16 @@ export class ExportEmitter extends EventEmitter {
 		super.emit(EVENT_TREE, rootNodes);
 	}
 
-	public log(msg: string) {
-		super.emit(EVENT_LOG, msg);
+	public log(message: any, ...optionalParams: any[]) {
+		super.emit(EVENT_LOG, message, ...optionalParams);
 	}
 
-	public info(msg: string) {
-		super.emit(EVENT_INFO, msg);
+	public info(message: any, ...optionalParams: any[]) {
+		super.emit(EVENT_INFO, message, ...optionalParams);
 	}
 
-	public debug(msg: string) {
-		super.emit(EVENT_DEBUG, msg);
+	public debug(message: any, ...optionalParams: any[]) {
+		super.emit(EVENT_DEBUG, message, ...optionalParams);
 	}
 
 	private static instance: ExportEmitter;

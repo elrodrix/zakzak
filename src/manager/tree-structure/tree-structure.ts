@@ -1,7 +1,7 @@
-import Structure from "../structure";
-import Benchmark from "../../benchmark/benchmark";
-import OptionsManager from "../../config/options-manager";
-import { ExportEmitter } from "../exporter/emitter";
+import Structure from "@zakzak/manager/structure";
+import Benchmark from "@zakzak/benchmark/benchmark";
+import OptionsManager from "@zakzak/config/options-manager";
+import "@zakzak/logging";
 
 // tslint:disable-next-line: no-var-requires
 require("../globals");
@@ -45,12 +45,12 @@ export class TreeStructure {
 	public addFile(filename: string) {
 		this.currentPath = [];
 
-		this.em.debug(`reading file ${filename} into structure tree`);
+		zak.debug(`reading file ${filename} into structure tree`);
 
 		const fileStructure = new Structure(
 			filename,
 			() => {
-				this.em.debug(`requiring file ${filename}`);
+				zak.debug(`requiring file ${filename}`);
 				require(filename);
 			},
 			filename,
@@ -67,20 +67,18 @@ export class TreeStructure {
 	 * @param b
 	 */
 	public findBenchmark(b: Benchmark) {
-		this.em.debug(`searching benchmark with id ${b.id}`);
+		zak.debug(`searching benchmark with id ${b.id}`);
 		const path = b.id.split(":");
 		let current: Benchmark | Structure = this.files.find((s) => s.name === path[0]);
 		for (let i = 1, l = path.length; i < l; i++) {
 			if (current instanceof Benchmark) {
-				this.em.debug(`found benchmark`);
+				zak.debug(`found benchmark`);
 				break;
 			}
 			current = current.children.find((child) => child.name === path[i]);
 		}
 		return current as Benchmark;
 	}
-
-	private em = ExportEmitter.getInstance();
 
 	private currentPath: string[] = [];
 
@@ -89,7 +87,7 @@ export class TreeStructure {
 	 * @param structure the structure whose children will be searched for
 	 */
 	private getChildren(structure: Structure): Array<Structure | Benchmark> {
-		this.em.debug(`finding direct children of structure ${structure.name}`);
+		zak.debug(`finding direct children of structure ${structure.name}`);
 		const [structures, benchmarks] = this.getChangesAfterFunctionCall(structure.callback);
 		return [].concat(structures, benchmarks);
 	}
@@ -99,13 +97,13 @@ export class TreeStructure {
 	 * @param structure the structure whose children will be searched for
 	 */
 	private findAllChildren(structure: Structure) {
-		this.em.debug(`finding all children of structure ${structure.name}`);
+		zak.debug(`finding all children of structure ${structure.name}`);
 		this.currentPath.push(structure.name);
-		this.em.debug("adding structure name to current path");
+		zak.debug("adding structure name to current path");
 		const children = this.getChildren(structure);
 		structure.addChildren(children);
 		structure.children.filter((child) => child instanceof Benchmark).forEach((child) => {
-			this.em.debug(`setting id of benchmark ${child.name}`);
+			zak.debug(`setting id of benchmark ${child.name}`);
 			(child as Benchmark).id = [...this.currentPath, child.name].join(":");
 		});
 		structure.children.filter((child) => child instanceof Structure).forEach((child) => {

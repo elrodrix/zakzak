@@ -5,7 +5,7 @@ import Structure from "@zakzak/manager/structure";
 import BenchmarkProcess from "@zakzak/manager/benchmark-process";
 import OptionsManager from "@zakzak/config/options-manager";
 import { BenchmarkManagerOptions } from "@zakzak/config/options";
-import { TreeStructure } from "@zakzak/manager/tree-structure";
+import { TreeStructure } from "@zakzak/manager/tree-structure/tree-structure";
 import "@zakzak/logging";
 
 

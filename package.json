@@ -7,7 +7,7 @@
   "scripts": {
     "start": "npm run build && npm run start-with-native",
     "start-with-native": "node --allow-natives-syntax dist/cli/cli.js",
-    "build": "tsc && ./shebang.sh",
+    "build": "tsc --project tsconfig.json && tscpaths -p tsconfig.json -s ./src -o ./dist && ./shebang.sh",
     "install-cli": "npm run build && npm install -g"
   },
   "bin": {
@@ -24,6 +24,7 @@
     "@types/node": "^12.7.1",
     "@types/shelljs": "^0.8.5",
     "shelljs": "^0.8.3",
+    "tscpaths": "0.0.9",
     "tslint": "^5.19.0",
     "typescript": "^3.5.3"
   },

@@ -13,6 +13,9 @@ zak.init();
 
 const cli = new CLIManager();
 const files = cli.getFiles();
+if (cli.hasCustomExporter()) {
+	ExporterRepository.addFromFile(cli.getCustomExporter());
+}
 
 ExporterRepository.addExporter(new ConsoleExporter(zak.get(), OptionsManager.getOptions()));
 

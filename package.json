@@ -14,7 +14,7 @@
     "zakzak": "dist/cli/cli.js"
   },
   "author": "Lukas Kurz",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
     "@types/chalk": "^2.2.0",
     "@types/cli-table": "^0.3.0",

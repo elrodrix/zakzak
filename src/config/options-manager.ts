@@ -39,7 +39,8 @@ export default class OptionsManager {
 			verbose: commander.verbose,
 			quiet: commander.quiet,
 			pattern: commander.pattern,
-			path: commander.path
+			path: commander.path,
+			exporter: commander.exporter ? commander.exporter : ""
 		};
 		OptionsManager.cliOptions = _.merge({}, OptionsManager.cliOptions, cliOptions);
 	}

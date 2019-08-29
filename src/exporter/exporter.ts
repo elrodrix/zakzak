@@ -5,29 +5,32 @@ import TimeUnit from "@timeunit";
 import Structure from "@zakzak/manager/structure";
 import { OptionsWrapper } from "@zakzak/config/options";
 import { ExportEmitter, EVENT_RESULTS, EVENT_TREE, EVENT_LOG, EVENT_INFO, EVENT_DEBUG } from "@zakzak/exporter/emitter";
+import "@zakzak/logging";
+import OptionsManager from "@zakzak/config/options-manager";
 
 export class ExporterRepository {
 	public static addExporter(exporter: Exporter) {
 		ExporterRepository.exporters.push(exporter);
 	}
 	public static addFromFile(filename: string) {
-		const em = ExportEmitter.getInstance();
+		const em = zak.get();
+		const options = OptionsManager.getOptions();
 		const exports = require(filename);
-		const exporters = Object.keys(exports).filter((v) => new exports[v](new EventEmitter()) instanceof Exporter);
-		ExporterRepository.exporters.push(...(exporters.map((v) => new exports[v](em))));
+		const exporters: Exporter[] = Object.keys(exports).map((v) => new exports[v](em, options));
+		ExporterRepository.exporters.push(...exporters);
 	}
 	private static exporters: Exporter[] = [];
 }
 
 export class Exporter {
 	// tslint:disable-next-line: no-empty
-	constructor(emitter: ExportEmitter) { }
+	constructor(emitter: ExportEmitter, options?: OptionsWrapper) { }
 }
 
 export class ConsoleExporter extends Exporter {
 	constructor(private emitter: ExportEmitter, private options: OptionsWrapper) {
-		super(emitter);
-		if  (this.options.cli.quiet === false) {
+		super(emitter, options);
+		if (this.options.cli.quiet === false) {
 			emitter.on(EVENT_RESULTS, (args) => {
 				this.writeBenchmarkResults(args);
 			});

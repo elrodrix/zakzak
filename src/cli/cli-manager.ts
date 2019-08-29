@@ -24,6 +24,14 @@ export default class CLIManager {
 		return files;
 	}
 
+	public hasCustomExporter() {
+		return !(OptionsManager.cliOptions.exporter === "" || OptionsManager.cliOptions.exporter == null);
+	}
+
+	public getCustomExporter() {
+		return path.posix.join(process.cwd(), OptionsManager.cliOptions.exporter);
+	}
+
 	public printHeader() {
 		zak.log(
 			chalk.greenBright(
@@ -41,7 +49,8 @@ export default class CLIManager {
 			.option("-P, --path <path>", "path to look for files", "./")
 			.option("-V, --verbose", "enable verbose mode to output more information")
 			.option("-Q, --quiet", "enable quiet mode to completely disabled console output")
-			.option("-c, --config <path>", "path to config file");
+			.option("-c, --config <path>", "path to config file")
+			.option("-e --exporter <path>", "path to custom exporter");
 	}
 
 	private setExample() {
@@ -49,7 +58,8 @@ export default class CLIManager {
 			console.log("\nExamples:");
 			console.log(" $ zakzak");
 			console.log(" $ zakzak -P ./src/benchmarks");
-			console.log(" $ zakzak -rP ./src -p *.zakzak-boommboom.js");
+			console.log(" $ zakzak -P ./src -p *.zakzak-boommboom.js");
+			console.log(" $ zakzak -p *.benchmark-this.js -e serial-exporter.js");
 		});
 	}
 

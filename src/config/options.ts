@@ -24,6 +24,7 @@ export interface CLIOptions {
 	quiet?: boolean;
 	pattern?: string;
 	path?: string;
+	exporter?: string;
 }
 
 export interface OptionsWrapper {
@@ -55,5 +56,6 @@ export const DefaultCLIOptions: CLIOptions = {
 	verbose: false,
 	quiet: false,
 	pattern: "*.bench.js",
-	path: "./"
+	path: "./",
+	exporter: ""
 };

@@ -70,33 +70,34 @@ export default class Benchmark {
 
 	private getWarmup() {
 		if (!this.options.warmup.enable) {
-			zak.debug("warmup 0 due to warmup disabled in options");
-			return 0;
+			zak.debug("warmup 1 due to warmup disabled in options");
+			return 1;
 		}
 
-		let total = 0;
-
-		let startTime = 0;
-		this.warmup = 1;
 		zak.debug("starting warmup estimation process");
+		let count = 0;
+		let times: number[] = [];
+		const increaseFactor = this.options.warmup.increaseFactor;
+		const startTime = getTime();
 		do {
-			zak.debug("deoptimizing function");
-			v8natives.deoptimizeFunction(this.fn);
-			v8natives.deoptimizeNow();
-			zak.debug("increasing warmup time");
-			startTime = getTime();
-			this.warmup = Math.ceil(this.warmup * this.options.warmup.increaseFactor);
-			const results = this.getMeasurement();
-			total += this.warmup + (this.options.measure.cycles * this.warmup);
-			if (this.areResultsAcceptable(results)) {
-				zak.debug("warmup measurement results are within acceptable range");
-				return total;
+			count++;
+			const a = getTime();
+			this.fn();
+			times.push(getTime() - a);
+			if (count % increaseFactor === 0) {
+				const marginOfError = calculateMarginOfError(times, 99.9);
+				const median = calculateMedian(times);
+				const mean = _.mean(times);
+				const acceptable = marginOfError <= (mean * 0.1) && isWithin(median, mean, 0.1);
+				if (acceptable) {
+					this.warmup = count;
+					break;
+				}
+				times = [];
 			}
-
 		} while ((getTime() - startTime) < this.options.warmup.maxTime);
 
-		zak.debug("warmup hit maxtime duration");
-		return total;
+		return count;
 	}
 
 	private getOverhead() {

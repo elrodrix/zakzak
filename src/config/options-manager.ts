@@ -1,4 +1,5 @@
 import _ from "lodash";
+import path from "path";
 import { CommanderStatic } from "commander";
 import { DefaultBenchmarkOptions, DefaultBenchmarkManagerOptions, DefaultCLIOptions, BenchmarkOptions, BenchmarkManagerOptions, CLIOptions, OptionsWrapper } from "@zakzak/config/options";
 
@@ -22,6 +23,9 @@ export default class OptionsManager {
 			OptionsManager.benchmarkManagerOptions = _.merge({}, OptionsManager.benchmarkManagerOptions, config.manager);
 		}
 		if (config.cli) {
+			if (config.cli.exporter !== "" && config.cli.exporter != null) {
+				config.cli.exporter = path.resolve(path.posix.join(process.cwd(), config.cli.exporter));
+			}
 			OptionsManager.cliOptions = _.merge({}, OptionsManager.cliOptions, config.cli);
 		}
 	}
@@ -40,8 +44,17 @@ export default class OptionsManager {
 			quiet: commander.quiet,
 			pattern: commander.pattern,
 			path: commander.path,
-			exporter: commander.exporter ? commander.exporter : ""
+			exporter: commander.exporter
 		};
+
+		if (cliOptions.exporter !== "" && cliOptions.exporter != null) {
+			cliOptions.exporter = path.resolve(path.posix.join(process.cwd(), cliOptions.exporter));
+		}
+
 		OptionsManager.cliOptions = _.merge({}, OptionsManager.cliOptions, cliOptions);
+	}
+
+	public static definesCustomExporter() {
+		return OptionsManager.cliOptions.exporter !== "";
 	}
 }

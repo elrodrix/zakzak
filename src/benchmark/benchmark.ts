@@ -154,7 +154,11 @@ export default class Benchmark {
 
 	private areResultsAcceptable(results: MeasurementResult = this.results) {
 		zak.debug("checking if measurement results are acceptable");
-		return results.marginOfError <= (results.mean * 0.1) && isWithin(results.median, results.mean, 0.1);
+		const acceptable = results.marginOfError <= (results.mean * 0.1) && isWithin(results.median, results.mean, 0.1);
+		if (!acceptable) {
+			zak.debug("measurement results not acceptable");
+		}
+		return acceptable;
 	}
 
 	private isMaxTriesReached(currentTry: number) {

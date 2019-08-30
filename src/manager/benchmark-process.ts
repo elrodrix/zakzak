@@ -5,6 +5,8 @@ import OptionsManager from "@zakzak/config/options-manager";
 import { OptionsWrapper } from "@zakzak/config/options";
 import "@zakzak/logging";
 import "@globals";
+import { EventMessage } from "@zakzak/exporter/exporter";
+import { EVENT_RESULTS, EVENT_TREE, EVENT_LOG, EVENT_INFO, EVENT_DEBUG } from "@zakzak/exporter/emitter";
 
 /**
  * Wrapper for child process that is executing a single benchmark
@@ -40,9 +42,10 @@ export default class BenchmarkProcess {
 		child.send({ benchmark: this.benchmark, options: options });
 
 		return new Promise((res: (value: Benchmark) => void, err) => {
-			child.on("message", (msg: Benchmark) => {
+			child.on("message", (msg: { events: EventMessage[], benchmark: Benchmark }) => {
+				this.handleMessages(msg.events);
 				zak.debug(`process with benchmark ${this.benchmark.name} finished`);
-				res(msg);
+				res(msg.benchmark);
 			});
 
 			child.on("error", (e) => {
@@ -57,5 +60,22 @@ export default class BenchmarkProcess {
 				}
 			});
 		});
+	}
+
+	private handleMessages(events: EventMessage[]) {
+		for (let i = 0, l = events.length; i < l; i++) {
+			const current = events[i];
+			if (current.event === EVENT_RESULTS) {
+				zak.results(current.args);
+			} else if (current.event === EVENT_TREE) {
+				zak.tree(current.args);
+			} else if (current.event === EVENT_LOG) {
+				zak.log(current.args);
+			} else if (current.event === EVENT_INFO) {
+				zak.info(current.args);
+			} else if (current.event === EVENT_DEBUG) {
+				zak.debug(current.args);
+			}
+		}
 	}
 }

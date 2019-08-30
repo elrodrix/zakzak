@@ -141,3 +141,41 @@ export class ConsoleExporter extends Exporter {
 		}
 	}
 }
+
+export interface EventMessage {
+	event: string;
+	args: any;
+}
+
+export class ChildOutputExporter extends Exporter {
+
+	constructor(private emitter: ExportEmitter, private options: OptionsWrapper) {
+		super(emitter, options);
+		emitter.on(EVENT_RESULTS, (args) => {
+			this.events.push({ event: EVENT_RESULTS, args: args });
+		});
+
+		emitter.on(EVENT_TREE, (args) => {
+			this.events.push({ event: EVENT_TREE, args: args });
+		});
+
+		emitter.on(EVENT_LOG, (...args: any[]) => {
+			this.events.push({ event: EVENT_LOG, args: args });
+		});
+
+		emitter.on(EVENT_INFO, (...args: any[]) => {
+			this.events.push({ event: EVENT_INFO, args: args });
+		});
+
+		emitter.on(EVENT_DEBUG, (...args: any[]) => {
+			this.events.push({ event: EVENT_DEBUG, args: args });
+		});
+
+	}
+
+	public getEvents() {
+		return this.events;
+	}
+
+	private events: EventMessage[] = [];
+}

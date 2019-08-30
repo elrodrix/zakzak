@@ -24,14 +24,6 @@ export default class CLIManager {
 		return files;
 	}
 
-	public hasCustomExporter() {
-		return !(OptionsManager.cliOptions.exporter === "" || OptionsManager.cliOptions.exporter == null);
-	}
-
-	public getCustomExporter() {
-		return path.posix.join(process.cwd(), OptionsManager.cliOptions.exporter);
-	}
-
 	public printHeader() {
 		zak.log(
 			chalk.greenBright(

@@ -4,6 +4,7 @@ import v8natives from "v8-natives";
 import { calculateMedian, calculateMarginOfError, calculateStandardError, isWithin } from "@util";
 import { BenchmarkOptions } from "@zakzak/config/options";
 import "@zakzak/logging";
+import TimeUnit from "@timeunit";
 
 /**
  * Benchmark is responsible for the actual benchmarking.
@@ -28,6 +29,7 @@ export default class Benchmark {
 		this.options = options;
 		this.startTime = 0;
 		this.endTime = 0;
+		this.currentTry = 0;
 	}
 
 	public run() {
@@ -42,16 +44,16 @@ export default class Benchmark {
 		}
 
 		zak.debug("starting core part of the benchmark");
-		let currentTry = 0;
+		this.currentTry = 0;
 		do {
-			currentTry++;
+			this.currentTry++;
 			this.warmup = this.getWarmup();
 			this.overhead = this.getOverhead();
 			this.results = this.getMeasurement();
 			if (this.options.overhead.enable) {
 				this.deductOverhead();
 			}
-		} while (!this.areResultsAcceptable() && !this.isMaxTriesReached(currentTry));
+		} while (!this.areResultsAcceptable() && !this.isMaxTriesReached(this.currentTry));
 
 		zak.debug(`finished benchmark ${this.name}`);
 		this.endTime = getTime();
@@ -67,6 +69,7 @@ export default class Benchmark {
 	public overhead: number;
 	public startTime: number;
 	public endTime: number;
+	public currentTry: number;
 
 	private getWarmup() {
 		if (!this.options.warmup.enable) {

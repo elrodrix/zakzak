@@ -1,9 +1,7 @@
 import _ from "lodash";
-import { DefaultBenchmarkOptions, BenchmarkOptions } from "@zakzak/config/options";
-import "@zakzak/logging";
+import { BenchmarkOptions } from "@zakzak/config/options";
 import Timer from "./timer";
 import Analytics, { FullAnalysis } from "./analytics";
-import OptionsManager from "@zakzak/config/options-manager";
 
 /**
  * Benchmark is responsible for the actual benchmarking.
@@ -15,7 +13,7 @@ export class Benchmark {
 		public name: string,
 		public fn: Function,
 		public filename: string,
-		public options = OptionsManager.benchmarkOptions
+		public options: BenchmarkOptions
 	) { }
 
 	public start(): BenchmarkResult {
@@ -37,6 +35,10 @@ export class Benchmark {
 			times: samples,
 			options: this.options
 		};
+	}
+
+	public changeOptions(options: BenchmarkOptions) {
+		this.options = _.merge({}, this.options, options);
 	}
 
 	private cycle(minTime: number): number {

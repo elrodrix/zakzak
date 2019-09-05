@@ -9,15 +9,13 @@ import OptionsManager from "@zakzak/config/options-manager";
 import { ExporterRepository, ConsoleExporter } from "@zakzak/exporter/exporter";
 import "@zakzak/logging";
 
-zak.init();
+
 
 const cli = new CLIManager();
 const files = cli.getFiles();
 if (OptionsManager.definesCustomExporter()) {
 	ExporterRepository.addFromFile(OptionsManager.cliOptions.exporter);
 }
-
-ExporterRepository.addExporter(new ConsoleExporter(zak.get(), OptionsManager.getOptions()));
 
 cli.printHeader();
 

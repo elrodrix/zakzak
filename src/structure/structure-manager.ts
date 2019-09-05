@@ -79,6 +79,10 @@ export class StructureManager {
 		});
 	}
 
+	public getBenchmark(id: string) {
+		return this.benchmarks.find((b) => b.id === id);
+	}
+
 	private static instance: StructureManager;
 
 	private currentPath: Structure[] = [];

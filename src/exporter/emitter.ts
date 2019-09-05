@@ -1,6 +1,6 @@
 import { EventEmitter } from "events";
 import Benchmark from "@zakzak/benchmark/benchmark";
-import Structure from "@zakzak/manager/structure";
+import Structure from "structure/structure";
 
 export const EVENT_RESULTS = "EVENT_RESULTS";
 export const EVENT_TREE = "EVENT_TREE";

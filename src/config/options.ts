@@ -3,12 +3,13 @@ import TimeUnit from "@timeunit";
 export interface BenchmarkOptions {
 	warmup?: {
 		enable?: boolean;
+		minTime?: number;
+		minSamples?: number;
 		maxTime?: number;
-		increaseFactor?: number;
+		maxSamples?: number;
 		allowJIT?: boolean;
 	};
 	measure?: {
-		cycles?: number;
 		saveTimes?: boolean;
 	};
 	overhead?: {
@@ -37,12 +38,13 @@ export interface OptionsWrapper {
 export const DefaultBenchmarkOptions: BenchmarkOptions = {
 	warmup: {
 		enable: true,
-		maxTime: 500 * TimeUnit.Millisecond,
-		increaseFactor: 2,
+		minTime: 50 * TimeUnit.Millisecond,
+		minSamples: 5,
+		maxTime: 5 * TimeUnit.Second,
+		maxSamples: 5,
 		allowJIT: true
 	},
 	measure: {
-		cycles: 100,
 		saveTimes: true
 	},
 	overhead: {

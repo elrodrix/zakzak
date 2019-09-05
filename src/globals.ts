@@ -1,6 +1,7 @@
-import BenchmarkManager from "./benchmark-manager";
-import { BenchmarkOptions } from "../config/options";
+import BenchmarkManager from "./manager/benchmark-manager";
+import { BenchmarkOptions } from "./config/options";
 import OptionsManager from "@zakzak/config/options-manager";
+import { StructureManager } from "structure/structure-manager";
 
 export { };
 
@@ -25,10 +26,10 @@ declare global {
 // tslint:disable-next-line: variable-name
 const _global = global as any;
 _global.structure = (name: string, fn: Function, options: BenchmarkOptions = OptionsManager.benchmarkOptions) => {
-	const mng = BenchmarkManager.getInstance();
+	const mng = StructureManager.getInstance();
 	mng.addStructure(name, fn, options);
 };
 _global.benchmark = (name: string, fn: Function, options: BenchmarkOptions = OptionsManager.benchmarkOptions) => {
-	const mng = BenchmarkManager.getInstance();
+	const mng = StructureManager.getInstance();
 	mng.addBenchmark(name, fn, options);
 };

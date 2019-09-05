@@ -4,7 +4,7 @@ import Benchmark from "@zakzak/benchmark/benchmark";
 import OptionsManager from "@zakzak/config/options-manager";
 import { OptionsWrapper } from "@zakzak/config/options";
 import "@zakzak/logging";
-import "@globals";
+import "globals";
 import { EventMessage } from "@zakzak/exporter/exporter";
 import { EVENT_RESULTS, EVENT_TREE, EVENT_LOG, EVENT_INFO, EVENT_DEBUG } from "@zakzak/exporter/emitter";
 

@@ -1,11 +1,11 @@
 // tslint:disable: no-var-requires
 import _ from "lodash";
-import Benchmark, { MeasurementResult } from "@zakzak/benchmark/benchmark";
-import Structure from "@zakzak/manager/structure";
+import Benchmark from "@zakzak/benchmark/benchmark";
+import Structure from "structure/structure";
 import BenchmarkProcess from "@zakzak/manager/benchmark-process";
 import OptionsManager from "@zakzak/config/options-manager";
-import { BenchmarkManagerOptions } from "@zakzak/config/options";
-import { TreeStructure } from "@zakzak/manager/tree-structure/tree-structure";
+import { BenchmarkManagerOptions, BenchmarkOptions } from "@zakzak/config/options";
+import { TreeStructure } from "structure/structure-manager";
 import "@zakzak/logging";
 
 
@@ -13,21 +13,15 @@ import "@zakzak/logging";
  * Manages multiple benchmarks, their configuration, runtime seperation and exporting
  */
 export default class BenchmarkManager {
-
-	public results: MeasurementResult[] = [];
-
 	constructor() {
-		this.structureTreeRoot = [];
-		this.options = OptionsManager.benchmarkManagerOptions;
-		this.tree = new TreeStructure();
 	}
 
 	/**
 	 * Add benchmark to list of found benchmarks
 	 * @param benchmark found benchmark
 	 */
-	public addBenchmark(benchmark: Benchmark) {
-		this.tree.addBenchmark(benchmark);
+	public addBenchmark(name: string, fn: Function, options = OptionsManager.benchmarkOptions) {
+		this.tree.addBenchmark(name, fn, options);
 		return this;
 	}
 
@@ -35,8 +29,8 @@ export default class BenchmarkManager {
 	 * Add structure to list of found structures
 	 * @param structure found structure
 	 */
-	public addStructure(structure: Structure) {
-		this.tree.addStructure(structure);
+	public addStructure(name: string, fn: Function, options = OptionsManager.benchmarkOptions) {
+		this.tree.addStructure(name, fn , options);
 		return this;
 	}
 

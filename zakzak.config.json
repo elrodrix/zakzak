@@ -1,13 +1,12 @@
 {
     "benchmark": {
         "warmup": {
-            "enable": true,
-			"maxTime": 500000000,
-			"increaseFactor": 2,
+			"enable": true,
+			"minTime": 50000000,
+			"maxTime": 5000000000,
             "allowJIT": true
         },
         "measure": {
-            "cycles": 100,
             "saveTimes": true
         },
         "overhead": {

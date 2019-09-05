@@ -2,7 +2,7 @@ import Table from "cli-table";
 import { EventEmitter } from "events";
 import Benchmark from "@zakzak/benchmark/benchmark";
 import TimeUnit from "@timeunit";
-import Structure from "@zakzak/manager/structure";
+import Structure from "structure/structure";
 import { OptionsWrapper } from "@zakzak/config/options";
 import { ExportEmitter, EVENT_RESULTS, EVENT_TREE, EVENT_LOG, EVENT_INFO, EVENT_DEBUG } from "@zakzak/exporter/emitter";
 import "@zakzak/logging";

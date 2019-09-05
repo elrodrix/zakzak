@@ -1,6 +1,6 @@
 import { ExportEmitter } from "@zakzak/exporter/emitter";
 import Benchmark from "@zakzak/benchmark/benchmark";
-import Structure from "@zakzak/manager/structure";
+import Structure from "structure/structure";
 
 export { };
 

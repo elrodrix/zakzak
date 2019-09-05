@@ -3,6 +3,7 @@ import { DefaultBenchmarkOptions, BenchmarkOptions } from "@zakzak/config/option
 import "@zakzak/logging";
 import Timer from "./timer";
 import Analytics, { FullAnalysis } from "./analytics";
+import OptionsManager from "@zakzak/config/options-manager";
 
 /**
  * Benchmark is responsible for the actual benchmarking.
@@ -14,7 +15,7 @@ export class Benchmark {
 		public name: string,
 		public fn: Function,
 		public filename: string,
-		public options = DefaultBenchmarkOptions
+		public options = OptionsManager.benchmarkOptions
 	) { }
 
 	public start(): BenchmarkResult {

@@ -48,15 +48,18 @@ export class BenchmarkManager {
 				const msg = await p.run();
 				if (msg.result) {
 					results.push(msg.result);
+					console.log(`${msg.result.name}: ${msg.result.stats.mean}`);
 				}
 			}
 			return results;
 		};
 
 		benchmarkSequence().then((results) => {
-
+			results.forEach((r) => {
+				// console.log(`${r.name}: ${r.stats.mean}`);
+			});
 		}).catch((err) => {
-
+			console.error(err);
 		});
 	}
 }

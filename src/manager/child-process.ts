@@ -43,7 +43,6 @@ export class ChildProcessHandler {
 		const message: ExitMessage = {
 			error: error
 		};
-		console.error(error);
 		process.send(message);
 		this.exit(1);
 	}

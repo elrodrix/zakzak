@@ -48,7 +48,7 @@ export class Benchmark {
 			const timeLeft = (minTime - time);
 			const nextCount = time <= 0 ? count * 100 : Math.floor(timeLeft / period);
 
-			if (time >= minTime) {
+			if (time <= minTime) {
 				return { count: nextCount, finished: false };
 			} else {
 				return { count: count, finished: true };

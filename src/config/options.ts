@@ -41,7 +41,7 @@ export const DefaultBenchmarkOptions: BenchmarkOptions = {
 		minTime: 50 * TimeUnit.Millisecond,
 		minSamples: 5,
 		maxTime: 5 * TimeUnit.Second,
-		maxSamples: 5,
+		maxSamples: 5000,
 		allowJIT: true
 	},
 	measure: {

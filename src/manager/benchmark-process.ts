@@ -28,7 +28,6 @@ export class BenchmarkProcess {
 	private setEventHandlers() {
 		this.child.on("message", (msg: ExitMessage) => {
 			this.message = msg;
-			console.log(msg);
 		});
 	}
 

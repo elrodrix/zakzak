@@ -1,6 +1,7 @@
 import { Benchmark, BenchmarkResult } from "@zakzak/benchmark/benchmark";
 import { BenchmarkProcess } from "@zakzak/manager/benchmark-process";
 import { BenchmarkManagerOptions } from "@zakzak/config/options";
+import { ExitMessage } from "./child-process";
 
 
 /**
@@ -13,12 +14,16 @@ export class BenchmarkManager {
 	/**
      * Run all the benchmarks and print them out
      */
-	public run() {
+	public async run() {
+		let messages: ExitMessage[] = [];
 		if (this.options.runParallel === true) {
-			this.runParallel();
+			messages = await this.runParallel();
 		} else {
-			this.runSync();
+			messages = await this.runSync();
 		}
+		messages.filter((m) => m.error !== null).forEach((m) => { throw m.error; });
+		const results = messages.filter((m) => m.result !== null).map((m) => m.result);
+		return results;
 	}
 
 	private getProcesses(): BenchmarkProcess[] {
@@ -29,11 +34,7 @@ export class BenchmarkManager {
 		const processes = this.getProcesses();
 		const promises = processes.map((p) => p.run());
 
-		Promise.all(promises).then((benchmarks) => {
-
-		}).catch((err) => {
-
-		});
+		return Promise.all(promises);
 	}
 
 	/**
@@ -43,23 +44,14 @@ export class BenchmarkManager {
 		const processes = this.getProcesses();
 
 		const benchmarkSequence = async () => {
-			const results: BenchmarkResult[] = [];
+			const results: ExitMessage[] = [];
 			for (const p of processes) {
 				const msg = await p.run();
-				if (msg.result) {
-					results.push(msg.result);
-					console.log(`${msg.result.name}: ${msg.result.stats.mean}`);
-				}
+				results.push(msg);
 			}
 			return results;
 		};
 
-		benchmarkSequence().then((results) => {
-			results.forEach((r) => {
-				// console.log(`${r.name}: ${r.stats.mean}`);
-			});
-		}).catch((err) => {
-			console.error(err);
-		});
+		return benchmarkSequence();
 	}
 }

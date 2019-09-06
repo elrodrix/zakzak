@@ -9,6 +9,7 @@ import { BenchmarkManager } from "@zakzak/manager/benchmark-manager";
 import { CLIManager } from "@zakzak/cli/cli-manager";
 import { OptionsManager } from "@zakzak/config/options-manager";
 import { StructureManager } from "@zakzak/structure/structure-manager";
+import { ExportManager } from "@zakzak/exporter/export-manager";
 
 const cli = new CLIManager();
 const configOptions = cli.getConfigOptions();
@@ -27,4 +28,7 @@ const structure = new StructureManager(options.benchmarkOptions);
 structure.addFiles(files);
 
 const manager = new BenchmarkManager(structure.benchmarks, options.benchmarkManagerOptions);
-manager.run();
+const results = manager.run();
+
+const exporter = new ExportManager(options.cliOptions);
+(async () => { exporter.write(await results); })().catch((err) => console.error(err));

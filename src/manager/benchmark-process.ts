@@ -17,6 +17,7 @@ export class BenchmarkProcess {
 			filename: this.filename,
 			options: this.options
 		};
+
 		this.child.send(message);
 
 		return promise;

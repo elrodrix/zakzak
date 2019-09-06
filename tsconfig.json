@@ -22,6 +22,9 @@
 			"@zakzak/structure/*": [
 				"structure/*"
 			],
+			"@zakzak/exporter/*": [
+				"exporter/*"
+			],
 			"@zakzak/config/*": [
 				"config/*"
 			],

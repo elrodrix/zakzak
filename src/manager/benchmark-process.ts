@@ -28,15 +28,16 @@ export class BenchmarkProcess {
 	private setEventHandlers() {
 		this.child.on("message", (msg: ExitMessage) => {
 			this.message = msg;
+			console.log(msg);
 		});
 	}
 
 	private startProcess() {
 		const childPath = path.posix.join(__dirname, "./child");
-		const child = ChildProcess.fork(childPath, [], { execArgv: ["--allow-natives-syntax"] });
+		this.child = ChildProcess.fork(childPath, [], { execArgv: ["--allow-natives-syntax"] });
 
 		const promise = new Promise((res: (msg: ExitMessage) => void, err) => {
-			child.on("exit", (code) => {
+			this.child.on("exit", (code) => {
 				if (code === 0) {
 					res(this.message);
 				} else {

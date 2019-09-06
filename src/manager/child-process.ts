@@ -1,5 +1,5 @@
 import { Benchmark, BenchmarkResult } from "@zakzak/benchmark/benchmark";
-import { BenchmarkOptions } from "@zakzak/config/options";
+import { BenchmarkOptions, DefaultBenchmarkOptions } from "@zakzak/config/options";
 import { StructureManager } from "@zakzak/structure/structure-manager";
 
 export class ChildProcessHandler {
@@ -9,17 +9,17 @@ export class ChildProcessHandler {
 	public options: BenchmarkOptions;
 
 	constructor() {
-		this.manager = StructureManager.getInstance();
 		this.setEventHandlers();
 	}
 
 	private setEventHandlers() {
-		process.on("message", this.onStart);
-		process.on("uncaughtException", this.onError);
+		process.on("message", this.onStart.bind(this));
+		process.on("uncaughtException", this.onError.bind(this));
 	}
 
 	private onStart(message: StartMessage) {
 		this.options = message.options;
+		this.manager = new StructureManager(this.options);
 		this.manager.addFiles([message.filename]);
 		this.benchmark = this.manager.getBenchmark(message.benchmarkID);
 		if (this.benchmark == null) {
@@ -43,6 +43,7 @@ export class ChildProcessHandler {
 		const message: ExitMessage = {
 			error: error
 		};
+		console.error(error);
 		process.send(message);
 		this.exit(1);
 	}

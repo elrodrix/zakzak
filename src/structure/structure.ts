@@ -1,14 +1,13 @@
 import _ from "lodash";
-import Benchmark from "@zakzak/benchmark/benchmark";
+import { Benchmark } from "@zakzak/benchmark/benchmark";
 import { BenchmarkOptions } from "@zakzak/config/options";
-import "@zakzak/logging";
 
 /**
  * Structure is used to literally structure benchmarking files.
  * They can be used nested and beside each other.
  * They are used to group all enclosed structure and benchmark statements
  */
-export default class Structure {
+export class Structure {
 
 	/**
 	 * All the children that are enclosed in this structure. Not recursive

@@ -2,8 +2,8 @@
   "name": "zakzak",
   "version": "1.0.0",
   "description": "",
-  "main": "dist/cli/cli.js",
-  "types": "dist/cli/cli.d.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
     "start": "npm run build && npm run start-with-native",
     "start-with-native": "node --allow-natives-syntax dist/cli/cli.js",
@@ -11,7 +11,7 @@
     "install-cli": "npm run build && npm install -g"
   },
   "bin": {
-    "zakzak": "dist/cli/cli.js"
+    "zakzak": "dist/index.js"
   },
   "author": "Lukas Kurz",
   "license": "MIT",

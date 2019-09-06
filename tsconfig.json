@@ -16,11 +16,11 @@
 		"moduleResolution": "node",
 		"baseUrl": "src",
 		"paths": {
-			"@zakzak/logging": [
-				"exporter/logging"
-			],
 			"@zakzak/manager/*": [
 				"manager/*"
+			],
+			"@zakzak/structure/*": [
+				"structure/*"
 			],
 			"@zakzak/config/*": [
 				"config/*"
@@ -31,9 +31,6 @@
 			"@zakzak/benchmark/*": [
 				"benchmark/*"
 			],
-			"@zakzak/exporter/*": [
-				"exporter/*"
-			],
 			"@util": [
 				"util"
 			],
@@ -41,7 +38,7 @@
 				"time"
 			],
 			"@globals": [
-				"manager/globals"
+				"globals"
 			]
 		},
 		"typeRoots": [

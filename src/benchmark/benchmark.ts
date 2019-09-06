@@ -1,7 +1,7 @@
 import _ from "lodash";
 import { BenchmarkOptions } from "@zakzak/config/options";
-import Timer from "./timer";
-import Analytics, { FullAnalysis } from "./analytics";
+import { Timer } from "./timer";
+import { Analytics, FullAnalysis } from "./analytics";
 
 /**
  * Benchmark is responsible for the actual benchmarking.

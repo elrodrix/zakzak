@@ -1,7 +1,7 @@
-import TimeUnit from "@timeunit";
+import {TimeUnit} from "@timeunit";
 import _ from "lodash";
 
-export default class Timer {
+export class Timer {
 	public static getTime(unit: TimeUnit = TimeUnit.Nanosecond) {
 		const time = process.hrtime();
 		return (time[0] * TimeUnit.Second + time[1]) / unit;

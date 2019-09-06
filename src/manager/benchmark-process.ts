@@ -1,18 +1,16 @@
 import ChildProcess from "child_process";
 import path from "path";
 import { BenchmarkOptions } from "@zakzak/config/options";
-import "@zakzak/logging";
-import "globals";
 import { StartMessage, ExitMessage } from "./child-process";
 
 /**
  * Wrapper for child process that is executing a single benchmark
  */
-export default class BenchmarkProcess {
+export class BenchmarkProcess {
 	constructor(private benchmarkID: string, private filename: string, private options: BenchmarkOptions) { }
 
 	public run() {
-		this.startProcess();
+		const promise = this.startProcess();
 		this.setEventHandlers();
 		const message: StartMessage = {
 			benchmarkID: this.benchmarkID,
@@ -20,7 +18,10 @@ export default class BenchmarkProcess {
 			options: this.options
 		};
 		this.child.send(message);
+
+		return promise;
 	}
+
 	private child: ChildProcess.ChildProcess;
 	private message: ExitMessage;
 

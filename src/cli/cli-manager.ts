@@ -3,35 +3,56 @@ import chalk from "chalk";
 import commander from "commander";
 import path from "path";
 import fs from "fs";
-import globby from "globby";
-import OptionsManager from "@zakzak/config/options-manager";
-import "@zakzak/logging";
+import { CLIOptions, OptionsWrapper } from "@zakzak/config/options";
 
-export default class CLIManager {
+export class CLIManager {
 
 	constructor() {
 		this.setParams();
 		this.setExample();
 		this.processArgs();
-		this.loadConfig();
-		this.loadParams();
 	}
 
-	public getFiles() {
-		// Combine search path and pattern
-		const pattern = path.posix.join(OptionsManager.cliOptions.path, OptionsManager.cliOptions.pattern);
-		const files = globby.sync(pattern, { absolute: true });
-		return files;
+	public getConfigOptions(): OptionsWrapper {
+		if (!!commander.config) {
+			const cwd = process.cwd();
+			const configPath = path.posix.join(cwd, commander.config);
+			if (fs.existsSync(configPath)) {
+				const config: OptionsWrapper = JSON.parse(fs.readFileSync(configPath).toString());
+
+				if (config.cli.exporter !== "" && config.cli.exporter != null) {
+					config.cli.exporter = path.resolve(path.posix.join(process.cwd(), config.cli.exporter));
+				}
+
+				return config;
+			}
+		}
+		return { benchmark: {}, cli: {}, manager: {} };
+	}
+
+	public getParamOptions(): OptionsWrapper {
+		const cliOptions: CLIOptions = {
+			verbose: commander.verbose,
+			quiet: commander.quiet,
+			pattern: commander.pattern,
+			path: commander.path,
+			exporter: commander.exporter
+		};
+
+		if (cliOptions.exporter !== "" && cliOptions.exporter != null) {
+			cliOptions.exporter = path.resolve(path.posix.join(process.cwd(), cliOptions.exporter));
+		}
+
+		return { benchmark: {}, cli: cliOptions, manager: {} };
 	}
 
 	public printHeader() {
-		zak.log(
+		console.log(
 			chalk.greenBright(
 				figlet.textSync("ZAKZAK", {
 					font: "3D-ASCII"
 				})
-			)
-		);
+			));
 	}
 
 	private setParams() {
@@ -57,20 +78,5 @@ export default class CLIManager {
 
 	private processArgs() {
 		commander.parse(process.argv);
-	}
-
-	private loadConfig() {
-		if (!!commander.config) {
-			const cwd = process.cwd();
-			const configPath = path.posix.join(cwd, commander.config);
-			if (fs.existsSync(configPath)) {
-				const config = JSON.parse(fs.readFileSync(configPath).toString());
-				OptionsManager.changeFromConfigFile(config);
-			}
-		}
-	}
-
-	private loadParams() {
-		OptionsManager.changeFromCommander(commander);
 	}
 }

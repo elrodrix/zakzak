@@ -1,6 +1,6 @@
 import _ from "lodash";
 
-export default class Analytics {
+export class Analytics {
 
 	/**
 	 * Calculates the minimum value a measurement has to have to 1

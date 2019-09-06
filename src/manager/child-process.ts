@@ -1,6 +1,6 @@
 import { Benchmark, BenchmarkResult } from "@zakzak/benchmark/benchmark";
-import {  BenchmarkOptions } from "@zakzak/config/options";
-import { StructureManager } from "structure/structure-manager";
+import { BenchmarkOptions } from "@zakzak/config/options";
+import { StructureManager } from "@zakzak/structure/structure-manager";
 
 export class ChildProcessHandler {
 	public manager: StructureManager;

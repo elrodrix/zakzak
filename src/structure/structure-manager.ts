@@ -1,11 +1,9 @@
 import _ from "lodash";
-import Structure from "structure/structure";
-import OptionsManager from "@zakzak/config/options-manager";
-import "@zakzak/logging";
+import { Structure } from "@zakzak/structure/structure";
 import { Benchmark } from "@zakzak/benchmark/benchmark";
+import { BenchmarkOptions, DefaultBenchmarkOptions } from "@zakzak/config/options";
+import "@globals";
 
-// tslint:disable-next-line: no-var-requires
-require("../globals");
 
 export class StructureManager {
 	/**
@@ -22,14 +20,17 @@ export class StructureManager {
 	 */
 	public structures: Structure[] = [];
 
+	constructor(private options: BenchmarkOptions) {
+		StructureManager.instance = this;
+	}
+
 	/**
 	 * Get the singleton instance of the benchmark manager
 	 */
 	public static getInstance() {
-		if (StructureManager.instance == null) {
-			StructureManager.instance = new StructureManager();
+		if (this.instance == null) {
+			StructureManager.instance = new StructureManager(DefaultBenchmarkOptions);
 		}
-
 		return StructureManager.instance;
 	}
 
@@ -37,11 +38,11 @@ export class StructureManager {
 	 * Add structure to list of found structures
 	 * @param structure found structure
 	 */
-	public addStructure(name: string, fn: Function, options = OptionsManager.benchmarkOptions) {
+	public addStructure(name: string, fn: Function, options: BenchmarkOptions) {
 		const currentPath = this.currentPath.map((v) => v.name).concat(name);
 		const id = _.join(currentPath, ":");
 		const filename = this.currentPath[0].name;
-		const structure = new Structure(id, name, fn, filename, options);
+		const structure = new Structure(id, name, fn, filename, _.merge({}, this.options, options));
 
 		const parent = _.last(this.currentPath);
 		parent.addChild(structure);
@@ -57,11 +58,13 @@ export class StructureManager {
 	 * Add benchmark to list of found benchmarks
 	 * @param benchmark found benchmark
 	 */
-	public addBenchmark(name: string, fn: Function, options = OptionsManager.benchmarkOptions) {
+	public addBenchmark(name: string, fn: Function, options: BenchmarkOptions) {
 		const currentPath = this.currentPath.map((v) => v.name).concat(name);
 		const id = _.join(currentPath, ":");
 		const filename = this.currentPath[0].name;
-		const benchmark = new Benchmark(id, name, fn, filename, options);
+		const benchmark = new Benchmark(id, name, fn, filename, _.merge({}, this.options, options));
+
+		// TODO: parent to child options passing
 
 		const parent = _.last(this.currentPath);
 		parent.addChild(benchmark);

@@ -23,6 +23,6 @@
         "quiet": false,
         "pattern": "seperation.benchmark.js",
 		"path": "/home/lukas/Workspaces/mocha-test/test/",
-		"exporter": "../mocha-test/custom-exporter.js"
+		"exporter": "console"
     }
 }

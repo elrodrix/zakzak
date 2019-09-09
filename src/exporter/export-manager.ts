@@ -1,6 +1,6 @@
 import path from "path";
 import { CLIOptions } from "@zakzak/config/options";
-import { Exporter } from "./exporter";
+import { Exporter, ConsoleExporter, JsonExporter, CsvExporter, XmlExporter } from "./exporter";
 import { BenchmarkResult } from "@zakzak/benchmark/benchmark";
 
 export class ExportManager {
@@ -18,15 +18,19 @@ export class ExportManager {
 		if (this.options.exporter !== "" && this.options.exporter != null) {
 			switch (this.options.exporter) {
 				case "console":
+					exporter = new ConsoleExporter();
 					break;
 				case "json":
+					exporter = new JsonExporter();
 					break;
 				case "csv":
+					exporter = new CsvExporter();
 					break;
 				case "xml":
+					exporter = new XmlExporter();
 					break;
 				default:
-					const filepath = this.options.exporter;
+					const filepath = path.resolve(path.posix.join(process.cwd(), this.options.exporter));
 					exporter = this.requireExporter(filepath);
 					break;
 			}

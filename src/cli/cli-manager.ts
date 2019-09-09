@@ -20,11 +20,6 @@ export class CLIManager {
 			const configPath = path.posix.join(cwd, c);
 			if (fs.existsSync(configPath)) {
 				const config: OptionsWrapper = JSON.parse(fs.readFileSync(configPath).toString());
-
-				if (config.cli.exporter !== "" && config.cli.exporter != null) {
-					config.cli.exporter = path.resolve(path.posix.join(process.cwd(), config.cli.exporter));
-				}
-
 				return config;
 			}
 		}
@@ -39,11 +34,6 @@ export class CLIManager {
 			path: commander.path === DefaultCLIOptions.path ? undefined : commander.path,
 			exporter: commander.exporter
 		};
-
-		if (cliOptions.exporter !== "" && cliOptions.exporter != null) {
-			cliOptions.exporter = path.resolve(path.posix.join(process.cwd(), cliOptions.exporter));
-		}
-
 		return { benchmark: {}, cli: cliOptions, manager: {} };
 	}
 
@@ -59,8 +49,8 @@ export class CLIManager {
 	private setParams() {
 		commander.version("0.0.1", "-v, --version");
 		commander
-			.option("-p, --pattern <pattern>", "file pattern to match the benchmarking files", "*.bench.js")
-			.option("-P, --path <path>", "path to look for files", "./")
+			.option("-p, --pattern <pattern>", "file pattern to match the benchmarking files")
+			.option("-P, --path <path>", "path to look for files")
 			.option("-V, --verbose", "enable verbose mode to output more information")
 			.option("-Q, --quiet", "enable quiet mode to completely disabled console output")
 			.option("-c, --config <path>", "path to config file")

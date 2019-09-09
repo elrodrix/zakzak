@@ -49,7 +49,6 @@ export class BenchmarkManager {
 			const results: ExitMessage[] = [];
 			for (const p of processes) {
 				const msg = await p.run();
-				console.log(msg);
 				results.push(msg);
 			}
 			return results;

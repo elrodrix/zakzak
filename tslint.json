@@ -57,6 +57,8 @@
 				]
 			}
 		],
+		"no-conditional-assignment":false,
+		"no-empty": false,
 		"no-bitwise": false,
 		"no-consecutive-blank-lines": [
 			true,

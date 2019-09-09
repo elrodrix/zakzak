@@ -2,16 +2,20 @@
   "name": "zakzak",
   "version": "1.0.0",
   "description": "",
-  "main": "dist/cli/cli.js",
-  "types": "dist/cli/cli.d.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
     "start": "npm run build && npm run start-with-native",
-    "start-with-native": "node --allow-natives-syntax dist/cli/cli.js",
-    "build": "tsc --project tsconfig.json && tscpaths -p tsconfig.json -s ./src -o ./dist && ./shebang.sh",
+    "start-with-native": "node --allow-natives-syntax dist/index.js",
+    "build": "npm run build-ts && npm run translate-paths && npm run prepend-shebang",
+    "build-debug": "npm run build-ts && npm run translate-paths",
+    "build-ts": "tsc --project tsconfig.json",
+    "translate-paths": "tscpaths -p tsconfig.json -s ./src -o ./dist",
+    "prepend-shebang": "./shebang.sh",
     "install-cli": "npm run build && npm install -g"
   },
   "bin": {
-    "zakzak": "dist/cli/cli.js"
+    "zakzak": "dist/index.js"
   },
   "author": "Lukas Kurz",
   "license": "MIT",
@@ -32,9 +36,11 @@
     "chalk": "^2.4.2",
     "cli-table": "^0.3.1",
     "commander": "^3.0.0",
+    "csv-writer": "^1.5.0",
     "figlet": "^1.2.3",
     "globby": "^10.0.1",
     "lodash": "^4.17.15",
-    "v8-natives": "^1.1.0"
+    "v8-natives": "^1.1.0",
+    "xml-js": "^1.6.11"
   }
 }

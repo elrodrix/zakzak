@@ -1,193 +1,99 @@
-import process from "process";
 import _ from "lodash";
-import v8natives from "v8-natives";
-import { calculateMedian, calculateMarginOfError, calculateStandardError, isWithin } from "@util";
 import { BenchmarkOptions } from "@zakzak/config/options";
-import "@zakzak/logging";
+import { Timer } from "./timer";
+import { Analytics, FullAnalysis } from "./analytics";
 
 /**
  * Benchmark is responsible for the actual benchmarking.
  * It measures the times, warms the v8 up, saves and interpretes results
  */
-export default class Benchmark {
-
-	public id: string;
-
+export class Benchmark {
 	public constructor(
-		name: string,
-		fn: Function,
-		filename?: string,
-		options: BenchmarkOptions = {}
-	) {
-		zak.debug(`creating new benchmark ${name}`);
-		this.name = name;
-		this.fn = fn;
-		if (filename) {
-			this.filename = filename;
-		}
-		this.options = options;
-		this.startTime = 0;
-		this.endTime = 0;
-		this.currentTry = 0;
-	}
+		public id: string,
+		public name: string,
+		public fn: Function,
+		public filename: string,
+		public options: BenchmarkOptions
+	) { }
 
-	public run() {
-		this.startTime = getTime();
-		zak.debug(`running benchmark ${this.name}`);
-		if (!this.options.warmup.allowJIT) {
-			const fn = this.fn;
-			zak.debug("wrapping function and disabling optimization for it");
-			const neverOptimize = () => { fn(); };
-			v8natives.neverOptimizeFunction(neverOptimize);
-			this.fn = neverOptimize;
-		}
+	public start(): BenchmarkResult {
+		const timerResolution = Timer.getResolution();
+		let minTime = Analytics.reduceUncertainty(timerResolution, 0.01);
+		minTime = Math.max(minTime, this.options.warmup.minTime);
 
-		zak.debug("starting core part of the benchmark");
-		this.currentTry = 0;
-		do {
-			this.currentTry++;
-			this.warmup = this.getWarmup();
-			this.overhead = this.getOverhead();
-			this.results = this.getMeasurement();
-			if (this.options.overhead.enable) {
-				this.deductOverhead();
-			}
-		} while (!this.areResultsAcceptable() && !this.isMaxTriesReached(this.currentTry));
+		const optimalCount = this.cycle(minTime);
+		const samples = this.getSamples(optimalCount).map((sample) => sample / optimalCount);
 
-		zak.debug(`finished benchmark ${this.name}`);
-		this.endTime = getTime();
-		return this.results;
-	}
-
-	public name: string;
-	public filename: string;
-	public results: MeasurementResult;
-	public options: BenchmarkOptions;
-	public fn: Function;
-	public warmup: number;
-	public overhead: number;
-	public startTime: number;
-	public endTime: number;
-	public currentTry: number;
-
-	private getWarmup() {
-		if (!this.options.warmup.enable) {
-			zak.debug("warmup 0 due to warmup disabled in options");
-			return 0;
-		}
-
-		let total = 0;
-
-		let startTime = 0;
-		this.warmup = 1;
-		zak.debug("starting warmup estimation process");
-		do {
-			zak.debug("deoptimizing function");
-			v8natives.deoptimizeFunction(this.fn);
-			v8natives.deoptimizeNow();
-			zak.debug("increasing warmup time");
-			startTime = getTime();
-			this.warmup = Math.ceil(this.warmup * this.options.warmup.increaseFactor);
-			const results = this.getMeasurement();
-			total += this.warmup + (this.options.measure.cycles * this.warmup);
-			if (this.areResultsAcceptable(results)) {
-				zak.debug("warmup measurement results are within acceptable range");
-				return total;
-			}
-
-		} while ((getTime() - startTime) < this.options.warmup.maxTime);
-
-		zak.debug("warmup hit maxtime duration");
-		return total;
-	}
-
-	private getOverhead() {
-		zak.debug("measuring benchmarking overhead");
-		// tslint:disable-next-line: no-empty
-		return this.getMeasurement(() => { }).mean;
-	}
-
-	private deductOverhead() {
-		zak.debug("deducting calculated overhead from results");
-		this.results.max -= this.overhead;
-		this.results.mean -= this.overhead;
-		this.results.median -= this.overhead;
-		this.results.min -= this.overhead;
-		this.results.times.map((t) => t - this.overhead);
-	}
-
-	private getMeasurement(fn = this.fn): MeasurementResult {
-		zak.debug("starting measurement");
-		let times = [];
-		let warmup = this.warmup;
-		v8natives.optimizeFunctionOnNextCall(fn);
-		while (warmup--) {
-			fn();
-		}
-
-		let cycles = this.options.measure.cycles;
-		while (cycles--) {
-			let inner = this.warmup;
-			times.push(getTime());
-			while (inner--) {
-				fn();
-			}
-			times.push(getTime());
-		}
-
-		const actualTimes = [];
-		for (let i = 0, l = times.length; i < l; i += 2) {
-			actualTimes.push((times[i + 1] - times[i]) / this.warmup);
-		}
-		times = actualTimes;
-
-		zak.debug("finished measurement");
+		const stats = Analytics.getFullAnalysis(samples);
 
 		return {
-			marginOfError: calculateMarginOfError(times, 99.9),
-			min: _.min(times),
-			max: _.max(times),
-			median: calculateMedian(times),
-			standardError: calculateStandardError(times),
-			mean: _.mean(times),
-			times: this.options.measure.saveTimes === true ? times : []
+			id: this.id,
+			name: this.name,
+			filename: this.filename,
+			stats: stats,
+			count: optimalCount,
+			times: samples,
+			options: this.options
 		};
 	}
 
-	private areResultsAcceptable(results: MeasurementResult = this.results) {
-		zak.debug("checking if measurement results are acceptable");
-		const acceptable = results.marginOfError <= (results.mean * 0.1) && isWithin(results.median, results.mean, 0.1);
-		if (!acceptable) {
-			zak.debug("measurement results not acceptable");
-		}
-		return acceptable;
+	public changeOptions(options: BenchmarkOptions) {
+		this.options = _.merge({}, this.options, options);
 	}
 
-	private isMaxTriesReached(currentTry: number) {
-		zak.debug("checking maxtries limit");
-		const reached = currentTry >= this.options.maxTries;
-		if (reached) {
-			zak.debug("max tries has been reached");
+	private cycle(minTime: number): number {
+		const doCycle = (count: number) => {
+			const time = this.execute(count);
+			const period = time / count;
+			const timeLeft = (minTime - time);
+			const nextCount = time <= 0 ? count * 100 : Math.floor(timeLeft / period);
+
+			if (time <= minTime) {
+				return { count: nextCount, finished: false };
+			} else {
+				return { count: count, finished: true };
+			}
+		};
+		let result = { count: 1, finished: false };
+		while ((result = doCycle(result.count)).finished === false) { }
+		return result.count;
+	}
+
+	private execute(count: number): number {
+		const fn = this.fn;
+		const start = Timer.getTime();
+		while (count--) {
+			fn();
 		}
-		return reached;
+		const end = Timer.getTime();
+
+		return end - start;
+	}
+
+	private getSamples(count: number): number[] {
+		const samples: number[] = [];
+		const maxTime = this.options.warmup.maxTime;
+		const maxSamples = this.options.warmup.maxSamples;
+		let cycles = this.options.warmup.minSamples;
+		while (cycles--) {
+			const time = this.execute(count);
+			samples.push(time);
+		}
+		while (_.sum(samples) < maxTime && samples.length <= maxSamples) {
+			const time = this.execute(count);
+			samples.push(time);
+		}
+
+		return samples;
 	}
 }
 
-/**
- * Gets the current time using process.hrtime
- * @returns A timestamp in nanoseconds
- */
-function getTime(): number {
-	const time = process.hrtime();
-	return time[0] * 1e9 + time[1];
-}
-
-export interface MeasurementResult {
-	marginOfError?: number;
-	min?: number;
-	max?: number;
-	median?: number;
-	standardError?: number;
-	mean?: number;
-	times?: number[];
+export interface BenchmarkResult {
+	id: string;
+	name: string;
+	filename: string;
+	stats: FullAnalysis;
+	times: number[];
+	count: number;
+	options: BenchmarkOptions;
 }

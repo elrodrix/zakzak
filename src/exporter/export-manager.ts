@@ -9,6 +9,7 @@ export class ExportManager {
 	}
 
 	public write(results: BenchmarkResult[]) {
+		console.log(results);
 		this.exporter.exportResults(results);
 	}
 	private exporter: Exporter;

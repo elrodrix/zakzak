@@ -64,8 +64,6 @@ export class StructureManager {
 		const filename = this.currentPath[0].name;
 		const benchmark = new Benchmark(id, name, fn, filename, _.merge({}, this.options, options));
 
-		// TODO: parent to child options passing
-
 		const parent = _.last(this.currentPath);
 		parent.addChild(benchmark);
 

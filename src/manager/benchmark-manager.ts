@@ -21,7 +21,9 @@ export class BenchmarkManager {
 		} else {
 			messages = await this.runSync();
 		}
-		messages.filter((m) => m.error !== null).forEach((m) => { throw m.error; });
+		messages.filter((m) => m.error != null).forEach((m) => {
+			throw m.error;
+		});
 		const results = messages.filter((m) => m.result !== null).map((m) => m.result);
 		return results;
 	}
@@ -47,6 +49,7 @@ export class BenchmarkManager {
 			const results: ExitMessage[] = [];
 			for (const p of processes) {
 				const msg = await p.run();
+				console.log(msg);
 				results.push(msg);
 			}
 			return results;

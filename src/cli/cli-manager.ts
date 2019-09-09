@@ -3,7 +3,7 @@ import chalk from "chalk";
 import commander from "commander";
 import path from "path";
 import fs from "fs";
-import { CLIOptions, OptionsWrapper } from "@zakzak/config/options";
+import { CLIOptions, OptionsWrapper, DefaultCLIOptions } from "@zakzak/config/options";
 
 export class CLIManager {
 
@@ -16,7 +16,8 @@ export class CLIManager {
 	public getConfigOptions(): OptionsWrapper {
 		if (!!commander.config) {
 			const cwd = process.cwd();
-			const configPath = path.posix.join(cwd, commander.config);
+			const c = commander.config;
+			const configPath = path.posix.join(cwd, c);
 			if (fs.existsSync(configPath)) {
 				const config: OptionsWrapper = JSON.parse(fs.readFileSync(configPath).toString());
 
@@ -34,8 +35,8 @@ export class CLIManager {
 		const cliOptions: CLIOptions = {
 			verbose: commander.verbose,
 			quiet: commander.quiet,
-			pattern: commander.pattern,
-			path: commander.path,
+			pattern: commander.pattern === DefaultCLIOptions.pattern ? undefined : commander.pattern,
+			path: commander.path === DefaultCLIOptions.path ? undefined : commander.path,
 			exporter: commander.exporter
 		};
 

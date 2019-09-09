@@ -21,8 +21,8 @@
     "cli": {
         "verbose": false,
         "quiet": false,
-        "pattern": "*.bench.js",
-		"path": "./",
-		"exporter": ""
+        "pattern": "seperation.benchmark.js",
+		"path": "/home/lukas/Workspaces/mocha-test/test/",
+		"exporter": "../mocha-test/custom-exporter.js"
     }
 }

@@ -31,4 +31,9 @@ const manager = new BenchmarkManager(structure.benchmarks, options.benchmarkMana
 const results = manager.run();
 
 const exporter = new ExportManager(options.cliOptions);
-(async () => { exporter.write(await results); })().catch((err) => console.error(err));
+results.catch((err) => {
+	console.log(err);
+});
+results.then((r) => {
+	exporter.write(r);
+});

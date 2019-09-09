@@ -6,8 +6,12 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "start": "npm run build && npm run start-with-native",
-    "start-with-native": "node --allow-natives-syntax dist/cli/cli.js",
-    "build": "tsc --project tsconfig.json && tscpaths -p tsconfig.json -s ./src -o ./dist && ./shebang.sh",
+    "start-with-native": "node --allow-natives-syntax dist/index.js",
+	"build": "npm run build-ts && npm run translate-paths && npm run prepend-shebang",
+	"build-debug": "npm run build-ts && npm run translate-paths",
+	"build-ts": "tsc --project tsconfig.json",
+	"translate-paths": "tscpaths -p tsconfig.json -s ./src -o ./dist",
+	"prepend-shebang": "./shebang.sh",
     "install-cli": "npm run build && npm install -g"
   },
   "bin": {

@@ -31,9 +31,6 @@ const manager = new BenchmarkManager(structure.benchmarks, options.benchmarkMana
 const results = manager.run();
 
 const exporter = new ExportManager(options.cliOptions);
-results.catch((err) => {
-	console.log(err);
-});
 results.then((r) => {
 	exporter.write(r);
 });

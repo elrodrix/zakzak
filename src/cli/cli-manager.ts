@@ -84,7 +84,7 @@ export class CLIManager {
 				benchmark: DefaultBenchmarkOptions,
 				manager: DefaultBenchmarkManagerOptions
 			};
-			const configString = JSON.stringify(configJson);
+			const configString = JSON.stringify(configJson, null, "\t");
 			fs.writeFileSync(path.posix.join(process.cwd(), DefaultBenchmarkManagerOptions.config), configString);
 			process.exit(0);
 		}

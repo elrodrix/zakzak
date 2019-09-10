@@ -26,8 +26,6 @@
     "@types/globby": "^9.1.0",
     "@types/lodash": "4.14.116",
     "@types/node": "^12.7.1",
-    "@types/shelljs": "^0.8.5",
-    "shelljs": "^0.8.3",
     "tscpaths": "0.0.9",
     "tslint": "^5.19.0",
     "typescript": "^3.5.3"

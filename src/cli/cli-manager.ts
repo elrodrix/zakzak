@@ -84,9 +84,10 @@ export class CLIManager {
 				benchmark: DefaultBenchmarkOptions,
 				manager: DefaultBenchmarkManagerOptions
 			};
+			const configFile = DefaultBenchmarkManagerOptions.config;
 			configJson.manager.config = undefined;
 			const configString = JSON.stringify(configJson, null, "\t");
-			fs.writeFileSync(path.posix.join(process.cwd(), DefaultBenchmarkManagerOptions.config), configString);
+			fs.writeFileSync(path.posix.join(process.cwd(), configFile), configString);
 			process.exit(0);
 		}
 	}

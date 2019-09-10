@@ -1,22 +1,27 @@
 import path from "path";
-import { CLIOptions } from "@zakzak/config/options";
+import fs from "fs";
+import { BenchmarkManagerOptions } from "@zakzak/config/options";
 import { Exporter, ConsoleExporter, JsonExporter, CsvExporter, XmlExporter } from "./exporter";
 import { BenchmarkResult } from "@zakzak/benchmark/benchmark";
 
 export class ExportManager {
-	constructor(private options: CLIOptions) {
-		this.exporter = this.getExporter();
+	constructor(private options: BenchmarkManagerOptions) {
+		this.exporters = this.getExporters();
 	}
 
 	public write(results: BenchmarkResult[]) {
-		this.exporter.exportResults(results);
+		this.exporters.forEach((e) => e.exportResults(results));
 	}
-	private exporter: Exporter;
+	private exporters: Exporter[];
 
-	private getExporter() {
+	private getExporters() {
+		return this.options.exporter.map((e) => this.getExporter(e));
+	}
+
+	private getExporter(exporterString: string) {
 		let exporter: Exporter;
-		if (this.options.exporter !== "" && this.options.exporter != null) {
-			switch (this.options.exporter) {
+		if (exporterString !== "" && this.options.exporter != null) {
+			switch (exporterString) {
 				case "console":
 					exporter = new ConsoleExporter();
 					break;
@@ -30,8 +35,10 @@ export class ExportManager {
 					exporter = new XmlExporter();
 					break;
 				default:
-					const filepath = path.resolve(path.posix.join(process.cwd(), this.options.exporter));
-					exporter = this.requireExporter(filepath);
+					const filepath = path.resolve(path.posix.join(process.cwd(), exporterString));
+					if (fs.existsSync(filepath)) {
+						exporter = this.requireExporter(filepath);
+					}
 					break;
 			}
 		}

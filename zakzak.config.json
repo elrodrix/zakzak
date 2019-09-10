@@ -1,28 +1,16 @@
 {
-    "benchmark": {
-        "warmup": {
-			"enable": true,
-			"minTime": 50000000,
-			"maxTime": 5000000000,
-            "allowJIT": true
-        },
-        "measure": {
-            "saveTimes": true
-        },
-        "overhead": {
-            "enable": true
-		},
-		"maxTries": 3
-    },
-    "manager": {
-        "runParallel": false,
-        "printTree": true
-    },
-    "cli": {
-        "verbose": false,
-        "quiet": false,
-        "pattern": "seperation.benchmark.js",
-		"path": "/home/lukas/Workspaces/mocha-test/test/",
-		"exporter": "console"
-    }
+	"benchmark": {
+		"minTime": 50000000,
+		"minSamples": 5,
+		"maxTime": 5000000000,
+		"maxSamples": 5000
+	},
+	"manager": {
+		"runParallel": false,
+		"pattern": "./*.benchmark.js",
+		"path": "./",
+		"exporter": [
+			"csv"
+		]
+	}
 }

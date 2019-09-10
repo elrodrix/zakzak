@@ -3,7 +3,9 @@ import chalk from "chalk";
 import commander from "commander";
 import path from "path";
 import fs from "fs";
-import { CLIOptions, OptionsWrapper, DefaultCLIOptions } from "@zakzak/config/options";
+import _ from "lodash";
+import { OptionsWrapper, BenchmarkManagerOptions } from "@zakzak/config/options";
+import { BenchmarkManager } from "@zakzak/manager/benchmark-manager";
 
 export class CLIManager {
 
@@ -13,28 +15,26 @@ export class CLIManager {
 		this.processArgs();
 	}
 
-	public getConfigOptions(): OptionsWrapper {
-		if (!!commander.config) {
-			const cwd = process.cwd();
-			const c = commander.config;
-			const configPath = path.posix.join(cwd, c);
-			if (fs.existsSync(configPath)) {
-				const config: OptionsWrapper = JSON.parse(fs.readFileSync(configPath).toString());
-				return config;
-			}
-		}
-		return { benchmark: {}, cli: {}, manager: {} };
-	}
-
-	public getParamOptions(): OptionsWrapper {
-		const cliOptions: CLIOptions = {
-			verbose: commander.verbose,
-			quiet: commander.quiet,
-			pattern: commander.pattern === DefaultCLIOptions.pattern ? undefined : commander.pattern,
-			path: commander.path === DefaultCLIOptions.path ? undefined : commander.path,
-			exporter: commander.exporter
+	public getOptions(): OptionsWrapper {
+		const paramOptions: BenchmarkManagerOptions = {
+			pattern: commander.pattern,
+			path: commander.path,
+			exporter: commander.exporter ? [commander.exporter] : [],
+			config: commander.config
 		};
-		return { benchmark: {}, cli: cliOptions, manager: {} };
+
+		if (this.configExists(paramOptions.config)) {
+			const config = this.readConfig(paramOptions.config);
+			_.mergeWith(config.manager, paramOptions, (target, source) => {
+				if (_.isArray(target)) {
+					return target.concat(source);
+				}
+			});
+
+			return config;
+		}
+
+		return { manager: paramOptions, benchmark: {} };
 	}
 
 	public printHeader() {
@@ -46,14 +46,23 @@ export class CLIManager {
 			));
 	}
 
+	private configExists(configString: string) {
+		const configPath = path.posix.join(process.cwd(), configString);
+		return fs.existsSync(configPath);
+	}
+
+	private readConfig(configString: string) {
+		const configPath = path.posix.join(process.cwd(), configString);
+		const config: OptionsWrapper = JSON.parse(fs.readFileSync(configPath).toString());
+		return config;
+	}
+
 	private setParams() {
 		commander.version("0.0.1", "-v, --version");
 		commander
 			.option("-p, --pattern <pattern>", "file pattern to match the benchmarking files")
 			.option("-P, --path <path>", "path to look for files")
-			.option("-V, --verbose", "enable verbose mode to output more information")
-			.option("-Q, --quiet", "enable quiet mode to completely disabled console output")
-			.option("-c, --config <path>", "path to config file")
+			.option("-c, --config <path>", "path to config file", "zakzak.config.json")
 			.option("-e --exporter <path>", "path to custom exporter");
 	}
 

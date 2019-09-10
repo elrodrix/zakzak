@@ -12,14 +12,12 @@ import { StructureManager } from "@zakzak/structure/structure-manager";
 import { ExportManager } from "@zakzak/exporter/export-manager";
 
 const cli = new CLIManager();
-const configOptions = cli.getConfigOptions();
-const paramOptions = cli.getParamOptions();
+const paramOptions = cli.getOptions();
 
 const options = new OptionsManager();
-options.change(configOptions);
 options.change(paramOptions);
 
-const pattern = path.posix.join(options.cliOptions.path, options.cliOptions.pattern);
+const pattern = path.posix.join(options.benchmarkManagerOptions.path, options.benchmarkManagerOptions.pattern);
 const files = globby.sync(pattern, { absolute: true });
 
 cli.printHeader();
@@ -30,7 +28,7 @@ structure.addFiles(files);
 const manager = new BenchmarkManager(structure.benchmarks, options.benchmarkManagerOptions);
 const results = manager.run();
 
-const exporter = new ExportManager(options.cliOptions);
+const exporter = new ExportManager(options.benchmarkManagerOptions);
 results.then((r) => {
 	exporter.write(r);
 });

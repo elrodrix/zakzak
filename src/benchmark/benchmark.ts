@@ -19,7 +19,7 @@ export class Benchmark {
 	public start(): BenchmarkResult {
 		const timerResolution = Timer.getResolution();
 		let minTime = Analytics.reduceUncertainty(timerResolution, 0.01);
-		minTime = Math.max(minTime, this.options.warmup.minTime);
+		minTime = Math.max(minTime, this.options.minTime);
 
 		const optimalCount = this.cycle(minTime);
 		const samples = this.getSamples(optimalCount).map((sample) => sample / optimalCount);
@@ -72,9 +72,9 @@ export class Benchmark {
 
 	private getSamples(count: number): number[] {
 		const samples: number[] = [];
-		const maxTime = this.options.warmup.maxTime;
-		const maxSamples = this.options.warmup.maxSamples;
-		let cycles = this.options.warmup.minSamples;
+		const maxTime = this.options.maxTime;
+		const maxSamples = this.options.maxSamples;
+		let cycles = this.options.minSamples;
 		while (cycles--) {
 			const time = this.execute(count);
 			samples.push(time);

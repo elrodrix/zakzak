@@ -4,7 +4,7 @@ import commander from "commander";
 import path from "path";
 import fs from "fs";
 import _ from "lodash";
-import { OptionsWrapper, BenchmarkManagerOptions } from "@zakzak/config/options";
+import { OptionsWrapper, BenchmarkManagerOptions, DefaultBenchmarkManagerOptions, DefaultBenchmarkOptions } from "@zakzak/config/options";
 import { BenchmarkManager } from "@zakzak/manager/benchmark-manager";
 
 export class CLIManager {
@@ -63,7 +63,8 @@ export class CLIManager {
 			.option("-p, --pattern <pattern>", "file pattern to match the benchmarking files")
 			.option("-P, --path <path>", "path to look for files")
 			.option("-c, --config <path>", "path to config file", "zakzak.config.json")
-			.option("-e --exporter <path>", "path to custom exporter");
+			.option("-e --exporter <path>", "path to custom exporter")
+			.option("--init", "copies a zakzak config to the current directory");
 	}
 
 	private setExample() {
@@ -78,5 +79,14 @@ export class CLIManager {
 
 	private processArgs() {
 		commander.parse(process.argv);
+		if (commander.init) {
+			const configJson: OptionsWrapper = {
+				benchmark: DefaultBenchmarkOptions,
+				manager: DefaultBenchmarkManagerOptions
+			};
+			const configString = JSON.stringify(configJson);
+			fs.writeFileSync(path.posix.join(process.cwd(), DefaultBenchmarkManagerOptions.config), configString);
+			process.exit(0);
+		}
 	}
 }

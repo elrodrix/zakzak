@@ -1,4 +1,7 @@
 # zakzak
+
+`zakzak` is a framework which aims to make microbenchmarking easier, especially with large projects.
+
 ## License
 
 Copyright 2019 Dynatrace LLC

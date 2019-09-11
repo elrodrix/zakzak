@@ -18,7 +18,7 @@
     "zakzak": "dist/index.js"
   },
   "author": "Lukas Kurz",
-  "license": "MIT",
+  "license": "Apache2",
   "devDependencies": {
     "@types/chalk": "^2.2.0",
     "@types/cli-table": "^0.3.0",

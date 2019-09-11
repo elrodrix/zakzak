@@ -21,9 +21,10 @@ export interface BenchmarkOptions {
 }
 export interface BenchmarkManagerOptions {
 	/**
-	 * If benchmarks should be run parallel or in series
+	 * Amount of benchmarks to run in parallel.
+	 * If the number is smaller than or equal to 1, they will be run in series
 	 */
-	runParallel?: boolean;
+	runParallel?: number;
 	/**
 	 * Glob pattern that matches the files containing the benchmarks
 	 */
@@ -56,7 +57,7 @@ export const DefaultBenchmarkOptions: BenchmarkOptions = {
 	maxSamples: 5000
 };
 export const DefaultBenchmarkManagerOptions: BenchmarkManagerOptions = {
-	runParallel: false,
+	runParallel: 1,
 	pattern: "./*.benchmark.js",
 	path: "./",
 	exporter: ["console"],

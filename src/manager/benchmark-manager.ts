@@ -1,4 +1,6 @@
-import { Benchmark, BenchmarkResult } from "@zakzak/benchmark/benchmark";
+import _ from "lodash";
+
+import { Benchmark } from "@zakzak/benchmark/benchmark";
 import { BenchmarkProcess } from "@zakzak/manager/benchmark-process";
 import { BenchmarkManagerOptions } from "@zakzak/config/options";
 import { ExitMessage } from "./child-process";
@@ -16,11 +18,7 @@ export class BenchmarkManager {
      */
 	public async run() {
 		let messages: ExitMessage[] = [];
-		if (this.options.runParallel === true) {
-			messages = await this.runParallel();
-		} else {
-			messages = await this.runSync();
-		}
+		messages = await this.runParallel();
 		messages.filter((m) => m.error != null).forEach((m) => {
 			throw m.error;
 		});
@@ -34,22 +32,14 @@ export class BenchmarkManager {
 
 	private runParallel() {
 		const processes = this.getProcesses();
-		const promises = processes.map((p) => p.run());
 
-		return Promise.all(promises);
-	}
-
-	/**
-	 * Runs the benchmarks in a synchronous fashion
-	 */
-	private runSync() {
-		const processes = this.getProcesses();
+		const groups = _.chunk(processes, Math.max(1, this.options.runParallel));
 
 		const benchmarkSequence = async () => {
 			const results: ExitMessage[] = [];
-			for (const p of processes) {
-				const msg = await p.run();
-				results.push(msg);
+			for (const g of groups) {
+				const msgs = await Promise.all(g.map((p) => p.run()));
+				results.push(...msgs);
 			}
 			return results;
 		};

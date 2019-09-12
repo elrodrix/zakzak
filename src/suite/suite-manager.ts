@@ -1,27 +1,27 @@
 import _ from "lodash";
-import { Structure } from "@zakzak/structure/structure";
+import { Suite } from "suite/suite";
 import { Benchmark } from "@zakzak/benchmark/benchmark";
 import { BenchmarkOptions, DefaultBenchmarkOptions } from "@zakzak/config/options";
 import "@globals";
 
 
-export class StructureManager {
+export class SuiteManager {
 	/**
 	 * List of all files found
 	 */
-	public files: Structure[] = [];
+	public files: Suite[] = [];
 	/**
 	 * List of all found and registered benchmarks
 	 */
 	public benchmarks: Benchmark[] = [];
 
 	/**
-	 * List of all found and registered structures
+	 * List of all found and registered suites
 	 */
-	public structures: Structure[] = [];
+	public suites: Suite[] = [];
 
 	constructor(private options: BenchmarkOptions) {
-		StructureManager.instance = this;
+		SuiteManager.instance = this;
 	}
 
 	/**
@@ -29,34 +29,38 @@ export class StructureManager {
 	 */
 	public static getInstance() {
 		if (this.instance == null) {
-			StructureManager.instance = new StructureManager(DefaultBenchmarkOptions);
+			SuiteManager.instance = new SuiteManager(DefaultBenchmarkOptions);
 		}
-		return StructureManager.instance;
+		return SuiteManager.instance;
 	}
 
 	/**
-	 * Add structure to list of found structures
-	 * @param structure found structure
+	 * Add suite to list of found suites
+	 * @param name Name of the suite
+	 * @param fn Callback function inside the suite
+	 * @param options Options that will be applied to all children
 	 */
-	public addStructure(name: string, fn: Function, options: BenchmarkOptions) {
+	public addSuite(name: string, fn: Function, options: BenchmarkOptions) {
 		const currentPath = this.currentPath.map((v) => v.name).concat(name);
 		const id = _.join(currentPath, ":");
 		const filename = this.currentPath[0].name;
-		const structure = new Structure(id, name, fn, filename, _.merge({}, this.options, options));
+		const suite = new Suite(id, name, fn, filename, _.merge({}, this.options, options));
 
 		const parent = _.last(this.currentPath);
-		parent.addChild(structure);
+		parent.addChild(suite);
 
-		this.currentPath.push(structure);
-		structure.callback();
+		this.currentPath.push(suite);
+		suite.callback();
 		this.currentPath.pop();
 
-		this.structures.push(structure);
+		this.suites.push(suite);
 	}
 
 	/**
 	 * Add benchmark to list of found benchmarks
-	 * @param benchmark found benchmark
+	 * @param name Name of the benchmark
+	 * @param fn Function that will be benchmarked
+	 * @param options Options for this benchmark
 	 */
 	public addBenchmark(name: string, fn: Function, options: BenchmarkOptions) {
 		const currentPath = this.currentPath.map((v) => v.name).concat(name);
@@ -72,11 +76,11 @@ export class StructureManager {
 
 	public addFiles(filenames: string[]) {
 		filenames.forEach((filename) => {
-			const structure = new Structure(filename, filename, () => { require(filename); }, filename);
-			this.currentPath = [structure];
-			structure.callback();
-			this.structures.push(structure);
-			this.files.push(structure);
+			const suite = new Suite(filename, filename, () => { require(filename); }, filename);
+			this.currentPath = [suite];
+			suite.callback();
+			this.suites.push(suite);
+			this.files.push(suite);
 		});
 	}
 
@@ -84,7 +88,7 @@ export class StructureManager {
 		return this.benchmarks.find((b) => b.id === id);
 	}
 
-	private static instance: StructureManager;
+	private static instance: SuiteManager;
 
-	private currentPath: Structure[] = [];
+	private currentPath: Suite[] = [];
 }

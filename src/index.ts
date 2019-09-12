@@ -8,7 +8,7 @@ import globby from "globby";
 import { BenchmarkManager } from "@zakzak/manager/benchmark-manager";
 import { CLIManager } from "@zakzak/cli/cli-manager";
 import { OptionsManager } from "@zakzak/config/options-manager";
-import { StructureManager } from "@zakzak/structure/structure-manager";
+import { SuiteManager } from "suite/suite-manager";
 import { ExportManager } from "@zakzak/exporter/export-manager";
 
 const cli = new CLIManager();
@@ -22,10 +22,10 @@ const files = globby.sync(pattern, { absolute: true });
 
 cli.printHeader();
 
-const structure = new StructureManager(options.benchmarkOptions);
-structure.addFiles(files);
+const suite = new SuiteManager(options.benchmarkOptions);
+suite.addFiles(files);
 
-const manager = new BenchmarkManager(structure.benchmarks, options.benchmarkManagerOptions);
+const manager = new BenchmarkManager(suite.benchmarks, options.benchmarkManagerOptions);
 const results = manager.run();
 
 const exporter = new ExportManager(options.benchmarkManagerOptions);

@@ -1,16 +1,16 @@
 import { BenchmarkOptions, DefaultBenchmarkOptions } from "./config/options";
-import { StructureManager } from "@zakzak/structure/structure-manager";
+import { SuiteManager } from "suite/suite-manager";
 
 export { };
 
 declare global {
 	/**
-	 * Used to define an enclosing structure inside a benchmark file. Multiple structures can be neighbours and/or nested
-	 * @param name Name of the structure
-	 * @param fn Structure or benchmark inside this structure
-	 * @param options Options that will be applied to all  benchmarks enclosed in this structure
+	 * Used to define an enclosing suite inside a benchmark file. Multiple suites can be neighbours and/or nested
+	 * @param name Name of the Suite
+	 * @param fn Suite or benchmark inside this suite
+	 * @param options Options that will be applied to all  benchmarks enclosed in this suite
 	 */
-	function structure(name: string, fn: Function, options?: BenchmarkOptions): void;
+	function suite(name: string, fn: Function, options?: BenchmarkOptions): void;
 
 	/**
 	 * Used to define an benchmark
@@ -23,11 +23,11 @@ declare global {
 
 // tslint:disable-next-line: variable-name
 const _global = global as any;
-_global.structure = (name: string, fn: Function, options: BenchmarkOptions = DefaultBenchmarkOptions) => {
-	const mng = StructureManager.getInstance();
-	mng.addStructure(name, fn, options);
+_global.suite = (name: string, fn: Function, options: BenchmarkOptions = DefaultBenchmarkOptions) => {
+	const mng = SuiteManager.getInstance();
+	mng.addSuite(name, fn, options);
 };
 _global.benchmark = (name: string, fn: Function, options: BenchmarkOptions = DefaultBenchmarkOptions) => {
-	const mng = StructureManager.getInstance();
+	const mng = SuiteManager.getInstance();
 	mng.addBenchmark(name, fn, options);
 };

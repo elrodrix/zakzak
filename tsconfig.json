@@ -19,8 +19,8 @@
 			"@zakzak/manager/*": [
 				"manager/*"
 			],
-			"@zakzak/structure/*": [
-				"structure/*"
+			"@zakzak/suite/*": [
+				"suite/*"
 			],
 			"@zakzak/exporter/*": [
 				"exporter/*"

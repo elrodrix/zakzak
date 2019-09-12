@@ -1,9 +1,9 @@
 import { Benchmark, BenchmarkResult } from "@zakzak/benchmark/benchmark";
 import { BenchmarkOptions, DefaultBenchmarkOptions } from "@zakzak/config/options";
-import { StructureManager } from "@zakzak/structure/structure-manager";
+import { SuiteManager } from "suite/suite-manager";
 
 export class ChildProcessHandler {
-	public manager: StructureManager;
+	public manager: SuiteManager;
 	public benchmark: Benchmark;
 	public result: BenchmarkResult;
 	public options: BenchmarkOptions;
@@ -19,7 +19,7 @@ export class ChildProcessHandler {
 
 	private onStart(message: StartMessage) {
 		this.options = message.options;
-		this.manager = new StructureManager(this.options);
+		this.manager = new SuiteManager(this.options);
 		this.manager.addFiles([message.filename]);
 		this.benchmark = this.manager.getBenchmark(message.benchmarkID);
 		if (this.benchmark == null) {

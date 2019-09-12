@@ -1,9 +1,19 @@
 import _ from "lodash";
-import { Suite } from "@zakzak/suite/suite";
-import { Benchmark } from "@zakzak/benchmark/benchmark";
-import { BenchmarkOptions, DefaultBenchmarkOptions } from "@zakzak/config/options";
-import "@globals";
 
+import { Suite } from "../suite";
+import { Benchmark } from "../benchmark";
+import { BenchmarkOptions, DefaultBenchmarkOptions } from "../config";
+
+// tslint:disable-next-line: variable-name
+const _global = global as any;
+_global.suite = (name: string, fn: Function, options: BenchmarkOptions = DefaultBenchmarkOptions) => {
+	const mng = SuiteManager.getInstance();
+	mng.addSuite(name, fn, options);
+};
+_global.benchmark = (name: string, fn: Function, options: BenchmarkOptions = DefaultBenchmarkOptions) => {
+	const mng = SuiteManager.getInstance();
+	mng.addBenchmark(name, fn, options);
+};
 
 export class SuiteManager {
 	/**

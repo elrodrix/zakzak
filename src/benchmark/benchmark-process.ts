@@ -1,6 +1,7 @@
 import ChildProcess from "child_process";
 import path from "path";
-import { BenchmarkOptions } from "@zakzak/config/options";
+
+import { BenchmarkOptions } from "../config";
 import { StartMessage, ExitMessage } from "./child-process";
 
 /**

@@ -1,6 +1,6 @@
-import { Benchmark, BenchmarkResult } from "@zakzak/benchmark/benchmark";
-import { BenchmarkOptions, DefaultBenchmarkOptions } from "@zakzak/config/options";
-import { SuiteManager } from "@zakzak/suite/suite-manager";
+import { Benchmark, BenchmarkResult } from "./benchmark";
+import { BenchmarkOptions, DefaultBenchmarkOptions } from "../config";
+import { SuiteManager } from "../suite";
 
 export class ChildProcessHandler {
 	public manager: SuiteManager;

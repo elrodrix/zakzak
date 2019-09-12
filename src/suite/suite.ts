@@ -1,6 +1,7 @@
 import _ from "lodash";
-import { Benchmark } from "@zakzak/benchmark/benchmark";
-import { BenchmarkOptions } from "@zakzak/config/options";
+
+import { Benchmark } from "../benchmark";
+import { BenchmarkOptions } from "../config";
 
 /**
  * Suite is used to literally suite benchmarking files.

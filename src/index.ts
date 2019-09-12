@@ -1,34 +1,27 @@
+import { BenchmarkOptions } from "./config";
 
-// shebang.js will insert a shebang somewhere above this comment
-// shebang hack: http://sambal.org/2014/02/passing-options-node-shebang-line/
-// shebang has to be inserted after transpilation, otherwise tsc will insert semicolons between ":" and //
-// which would make it no longer work
-import path from "path";
-import globby from "globby";
-import { BenchmarkManager } from "@zakzak/manager/benchmark-manager";
-import { CLIManager } from "@zakzak/cli/cli-manager";
-import { OptionsManager } from "@zakzak/config/options-manager";
-import { SuiteManager } from "@zakzak/suite/suite-manager";
-import { ExportManager } from "@zakzak/exporter/export-manager";
+declare global {
+	/**
+	 * Used to define an enclosing suite inside a benchmark file. Multiple suites can be neighbours and/or nested
+	 * @param name Name of the Suite
+	 * @param fn Suite or benchmark inside this suite
+	 * @param options Options that will be applied to all  benchmarks enclosed in this suite
+	 */
+	function suite(name: string, fn: Function, options?: BenchmarkOptions): void;
 
-const cli = new CLIManager();
-const paramOptions = cli.getOptions();
+	/**
+	 * Used to define an benchmark
+	 * @param name Name of the benchmark
+	 * @param fn Function that will be benchmarked
+	 * @param options Options that will be applied for this specific benchmark
+	 */
+	function benchmark(name: string, fn: Function, options?: BenchmarkOptions): void;
+}
 
-const options = new OptionsManager();
-options.change(paramOptions);
-
-const pattern = path.posix.join(options.benchmarkManagerOptions.path, options.benchmarkManagerOptions.pattern);
-const files = globby.sync(pattern, { absolute: true });
-
-cli.printHeader();
-
-const suite = new SuiteManager(options.benchmarkOptions);
-suite.addFiles(files);
-
-const manager = new BenchmarkManager(suite.benchmarks, options.benchmarkManagerOptions);
-const results = manager.run();
-
-const exporter = new ExportManager(options.benchmarkManagerOptions);
-results.then((r) => {
-	exporter.write(r);
-});
+export { TimeUnit } from "./time";
+export { SuiteManager, Suite } from "./suite";
+export { BenchmarkManager } from "./manager";
+export { ExportManager, Exporter, ConsoleExporter, JsonExporter, CsvExporter, XmlExporter } from "./exporter";
+export { OptionsManager, DefaultBenchmarkOptions, DefaultBenchmarkManagerOptions, OptionsWrapper, BenchmarkManagerOptions, BenchmarkOptions } from "./config";
+export { CLIManager } from "./cli";
+export { Analytics, ConfidenceLevel, FullAnalysis, BenchmarkProcess, Benchmark, BenchmarkResult, ChildProcessHandler, StartMessage, ExitMessage, Timer } from "./benchmark";

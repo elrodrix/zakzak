@@ -6,24 +6,23 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "start": "npm run build && npm run start-with-native",
-    "start-with-native": "node --allow-natives-syntax dist/index.js",
-    "build": "npm run build-ts && npm run translate-paths && npm run prepend-shebang",
-    "build-debug": "npm run build-ts && npm run translate-paths",
-    "build-ts": "tsc --project tsconfig.json",
-    "translate-paths": "tscpaths -p tsconfig.json -s ./src -o ./dist",
+    "start-with-native": "node --allow-natives-syntax dist/cli-script.js",
+    "build": "npm run compile && npm run prepend-shebang",
+    "compile": "tsc --project tsconfig.json",
     "prepend-shebang": "./shebang.sh",
     "install-cli": "npm run build && npm install -g"
   },
   "bin": {
-    "zakzak": "dist/index.js"
+    "zakzak": "dist/cli-script.js"
   },
   "author": "Lukas Kurz",
   "license": "Apache2",
+  "files": [
+	  "dist"
+	],
   "devDependencies": {
-    "@types/chalk": "^2.2.0",
     "@types/cli-table": "^0.3.0",
     "@types/figlet": "^1.2.0",
-    "@types/globby": "^9.1.0",
     "@types/lodash": "4.14.116",
     "@types/node": "^12.7.1",
     "tscpaths": "0.0.9",

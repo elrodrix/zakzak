@@ -1,9 +1,10 @@
 import fs from "fs";
 import Table from "cli-table";
 import { js2xml } from "xml-js";
-import { BenchmarkResult } from "@zakzak/benchmark/benchmark";
-import { TimeUnit } from "@timeunit";
 import { createObjectCsvWriter } from "csv-writer";
+
+import { BenchmarkResult } from "../benchmark";
+import { TimeUnit } from "../time";
 
 
 export abstract class Exporter {

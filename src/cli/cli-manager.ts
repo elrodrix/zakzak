@@ -4,8 +4,8 @@ import commander from "commander";
 import path from "path";
 import fs from "fs";
 import _ from "lodash";
-import { OptionsWrapper, BenchmarkManagerOptions, DefaultBenchmarkManagerOptions, DefaultBenchmarkOptions } from "@zakzak/config/options";
-import { BenchmarkManager } from "@zakzak/manager/benchmark-manager";
+
+import { OptionsWrapper, BenchmarkManagerOptions, DefaultBenchmarkManagerOptions, DefaultBenchmarkOptions } from "../config";
 
 export class CLIManager {
 

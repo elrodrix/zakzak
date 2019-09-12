@@ -1,9 +1,9 @@
 import _ from "lodash";
 
-import { Benchmark } from "@zakzak/benchmark/benchmark";
-import { BenchmarkProcess } from "@zakzak/manager/benchmark-process";
-import { BenchmarkManagerOptions } from "@zakzak/config/options";
-import { ExitMessage } from "./child-process";
+import { Benchmark } from "../benchmark";
+import { BenchmarkProcess } from "../benchmark";
+import { BenchmarkManagerOptions } from "../config";
+import { ExitMessage } from "../benchmark";
 
 
 /**

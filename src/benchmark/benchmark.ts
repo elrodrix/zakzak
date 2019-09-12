@@ -1,5 +1,6 @@
 import _ from "lodash";
-import { BenchmarkOptions } from "@zakzak/config/options";
+
+import { BenchmarkOptions } from "../config";
 import { Timer } from "./timer";
 import { Analytics, FullAnalysis } from "./analytics";
 

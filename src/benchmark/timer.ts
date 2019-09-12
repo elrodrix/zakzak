@@ -1,5 +1,6 @@
-import {TimeUnit} from "@timeunit";
 import _ from "lodash";
+
+import {TimeUnit} from "../time";
 
 export class Timer {
 	public static getTime(unit: TimeUnit = TimeUnit.Nanosecond) {

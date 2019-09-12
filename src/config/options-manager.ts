@@ -1,5 +1,6 @@
 import _ from "lodash";
-import { DefaultBenchmarkOptions, DefaultBenchmarkManagerOptions, OptionsWrapper } from "@zakzak/config/options";
+
+import { DefaultBenchmarkOptions, DefaultBenchmarkManagerOptions, OptionsWrapper } from "./options";
 
 export class OptionsManager {
 

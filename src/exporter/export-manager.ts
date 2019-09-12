@@ -1,8 +1,9 @@
 import path from "path";
 import fs from "fs";
-import { BenchmarkManagerOptions } from "@zakzak/config/options";
+
+import { BenchmarkManagerOptions } from "../config";
+import { BenchmarkResult } from "../benchmark";
 import { Exporter, ConsoleExporter, JsonExporter, CsvExporter, XmlExporter } from "./exporter";
-import { BenchmarkResult } from "@zakzak/benchmark/benchmark";
 
 export class ExportManager {
 	constructor(private options: BenchmarkManagerOptions) {

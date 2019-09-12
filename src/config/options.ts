@@ -1,4 +1,4 @@
-import { TimeUnit } from "@timeunit";
+import { TimeUnit } from "../time";
 
 export interface BenchmarkOptions {
 	/**

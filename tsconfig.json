@@ -15,35 +15,6 @@
 		"strictNullChecks": false,
 		"moduleResolution": "node",
 		"baseUrl": "src",
-		"paths": {
-			"@zakzak/manager/*": [
-				"manager/*"
-			],
-			"@zakzak/suite/*": [
-				"suite/*"
-			],
-			"@zakzak/exporter/*": [
-				"exporter/*"
-			],
-			"@zakzak/config/*": [
-				"config/*"
-			],
-			"@zakzak/cli/*": [
-				"cli/*"
-			],
-			"@zakzak/benchmark/*": [
-				"benchmark/*"
-			],
-			"@util": [
-				"util"
-			],
-			"@timeunit": [
-				"time"
-			],
-			"@globals": [
-				"globals"
-			]
-		},
 		"typeRoots": [
 			"node_modules/@types",
 			"types"

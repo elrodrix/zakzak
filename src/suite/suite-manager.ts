@@ -1,5 +1,5 @@
 import _ from "lodash";
-import { Suite } from "suite/suite";
+import { Suite } from "@zakzak/suite/suite";
 import { Benchmark } from "@zakzak/benchmark/benchmark";
 import { BenchmarkOptions, DefaultBenchmarkOptions } from "@zakzak/config/options";
 import "@globals";

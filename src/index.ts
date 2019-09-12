@@ -8,7 +8,7 @@ import globby from "globby";
 import { BenchmarkManager } from "@zakzak/manager/benchmark-manager";
 import { CLIManager } from "@zakzak/cli/cli-manager";
 import { OptionsManager } from "@zakzak/config/options-manager";
-import { SuiteManager } from "suite/suite-manager";
+import { SuiteManager } from "@zakzak/suite/suite-manager";
 import { ExportManager } from "@zakzak/exporter/export-manager";
 
 const cli = new CLIManager();

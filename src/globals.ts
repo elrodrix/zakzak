@@ -1,5 +1,5 @@
 import { BenchmarkOptions, DefaultBenchmarkOptions } from "./config/options";
-import { SuiteManager } from "suite/suite-manager";
+import { SuiteManager } from "@zakzak/suite/suite-manager";
 
 export { };
 

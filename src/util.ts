@@ -1,5 +1,3 @@
-import _ from "lodash";
-
 /**
  * Get Optimizations stats from the status provided by v8.
  * @param status The bitmap containing the status information

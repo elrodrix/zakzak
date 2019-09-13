@@ -3,6 +3,20 @@
 `zakzak` is a framework which aims to make microbenchmarking easier, especially with large projects.
 It delivers qualitative and consistent benchmarks and uses a unit test like structure for creating and defining benchmarks.
 
+<!-- toc -->
+
+- [Getting started](#getting-started)
+  * [Prerequisites](#prerequisites)
+  * [Installation](#installation)
+  * [Define benchmarks](#define-benchmarks)
+  * [Structure the benchmarks using suites](#structure-the-benchmarks-using-suites)
+  * [Configuration](#configuration)
+- [Contributing](#contributing)
+- [Acknowledgements](#acknowledgements)
+- [License](#license)
+
+<!-- tocstop -->
+
 ## Getting started
 
 ### Prerequisites

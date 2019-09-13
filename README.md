@@ -47,11 +47,11 @@ If you are using Typescript (which i highly encourage you to do), you can import
 
 I recommend putting these definitions in separate files, and to name those files with a specific pattern, so `zakzak` can find them using a `glob` pattern. The default filepattern `zakzak` looks for is `*.benchmark.js`, but you can provide a different pattern using CLI params or the config.
 
-While it is possible to define these benchmarks in your source code, I highly advise agains it. `zakzak` uses `require` to read all the files you point it to and thus executes them. Furthermore, `benchmark` and `suite` are globals that only exist inside zakzak and your code will throw errors if they are called outside of `zakzak`.
+While it is possible to define these benchmarks in your source code, I highly advise against it. `zakzak` uses `require` to read all the files you point it to and thus executes them. Furthermore, `benchmark` and `suite` are globals that only exist inside zakzak and your code will throw errors if they are called outside of `zakzak`.
 
 ### Structure the benchmarks using suites
 
-A suite is just a fancy way of grouping benchmarks or more suites together and applying options.
+A suite is just a fancy way of grouping benchmarks or suites together and applying options.
 
 ```ts
 suite("some-suite-name", ()=>{
@@ -167,6 +167,10 @@ And that's it. You are now ready to go and benchmark the heck out of your code.
 ## Contributing
 
 Read the rules, code of conduct and then just go ahead, fork the repo and create a pull request when you're done.
+
+## Acknowledgements
+
+While this work was done without directly copying anything from other projects, the core benchmark logic was inspired by the logic from benchmark.js by Mathias Bynens, who has developed a very reliable way of warming up the benchmarks.
 
 ## License
 

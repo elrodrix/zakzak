@@ -37,7 +37,9 @@ export class ConsoleAsyncExporter extends Exporter {
 		]);
 	}
 	public onHierarchy(root: Suite[]): void { }
-	public onFinished(): void { }
+	public onFinished(): void {
+		console.log();
+	}
 	private stream: { write: (msg: string[]) => void };
 
 	private nsToPrettyString(time: number) {

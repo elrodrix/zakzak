@@ -1,3 +1,3 @@
-import { ExportManager } from "./export-manager";
-import { Exporter, ConsoleExporter, JsonExporter, CsvExporter, XmlExporter } from "./exporter";
-export { ExportManager, Exporter, ConsoleExporter, JsonExporter, CsvExporter, XmlExporter };
+export { ExportManager } from "./export-manager";
+export { Exporter } from "./exporter";
+export { ConsoleExporter, JsonExporter, CsvExporter, XmlExporter, ConsoleAsyncExporter } from "./default";

@@ -24,13 +24,12 @@ const files = globby.sync(pattern, { absolute: true });
 
 cli.printHeader();
 
+const exporter = new ExportManager(options.benchmarkManagerOptions);
+
 const suite = new SuiteManager(options.benchmarkOptions);
 suite.addFiles(files);
 
-const manager = new BenchmarkManager(suite.benchmarks, options.benchmarkManagerOptions);
-const results = manager.run();
+exporter.exportHierarchy(suite.files);
 
-const exporter = new ExportManager(options.benchmarkManagerOptions);
-results.then((r) => {
-	exporter.write(r);
-});
+const manager = new BenchmarkManager(suite.benchmarks, options.benchmarkManagerOptions, exporter);
+const results = manager.run();

@@ -3,37 +3,54 @@ import fs from "fs";
 
 import { BenchmarkManagerOptions } from "../config";
 import { BenchmarkResult } from "../benchmark";
-import { Exporter, ConsoleExporter, JsonExporter, CsvExporter, XmlExporter } from "./exporter";
+import { ConsoleExporter, JsonExporter, CsvExporter, XmlExporter, ConsoleAsyncExporter } from "./default";
+import { Exporter, ExporterEvents } from "./exporter";
+import { EventEmitter } from "events";
+import { Suite } from "../suite";
 
 export class ExportManager {
 	constructor(private options: BenchmarkManagerOptions) {
+		this.em = new EventEmitter();
 		this.exporters = this.getExporters();
 	}
 
-	public write(results: BenchmarkResult[]) {
-		this.exporters.forEach((e) => e.exportResults(results));
+	public exportHierarchy(root: Suite[]) {
+		this.em.emit(ExporterEvents.Hierarchy, root);
 	}
+
+	public exportResult(result: BenchmarkResult) {
+		this.em.emit(ExporterEvents.Result, result);
+	}
+
+	public exportFinished(results: BenchmarkResult[]) {
+		this.em.emit(ExporterEvents.Finished, results);
+	}
+
 	private exporters: Exporter[];
+	private em: EventEmitter;
 
 	private getExporters() {
-		return this.options.exporter.map((e) => this.getExporter(e));
+		return this.options.exporter.map((e) => this.getExporter(e)).filter((e) => e != null);
 	}
 
 	private getExporter(exporterString: string) {
 		let exporter: Exporter;
-		if (exporterString !== "" && this.options.exporter != null) {
+		if (exporterString !== "") {
 			switch (exporterString) {
 				case "console":
-					exporter = new ConsoleExporter();
+					exporter = new ConsoleExporter(this.em);
+					break;
+				case "console-async":
+					exporter = new ConsoleAsyncExporter(this.em);
 					break;
 				case "json":
-					exporter = new JsonExporter();
+					exporter = new JsonExporter(this.em);
 					break;
 				case "csv":
-					exporter = new CsvExporter();
+					exporter = new CsvExporter(this.em);
 					break;
 				case "xml":
-					exporter = new XmlExporter();
+					exporter = new XmlExporter(this.em);
 					break;
 				default:
 					const filepath = path.resolve(path.posix.join(process.cwd(), exporterString));
@@ -44,17 +61,13 @@ export class ExportManager {
 			}
 		}
 
-		if (exporter == null) {
-			exporter = { exportResults: (foo: any) => { } };
-		}
-
 		return exporter;
 	}
 
 	private requireExporter(filepath: string): Exporter {
 		const exports = require(filepath);
-		const exported: FunctionConstructor = Object.keys(exports).map((v) => exports[v])[0];
-		const exporter = new (exported)() as unknown as Exporter;
+		const exported: new (em: EventEmitter) => Exporter = Object.keys(exports).map((v) => exports[v])[0];
+		const exporter = new (exported)(this.em);
 		return exporter;
 	}
 

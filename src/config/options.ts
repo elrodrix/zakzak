@@ -35,7 +35,7 @@ export interface BenchmarkManagerOptions {
 	path?: string;
 	/**
 	 * List of exporters that will output the benchmark data.
-	 * Default ones are `console`, `xml`, `json` and `csv`.
+	 * Default ones are `console`, `console-async`, `xml`, `json` and `csv`.
 	 * Otherwise a path to an exporter file.
 	 */
 	exporter?: string[];
@@ -61,6 +61,6 @@ export const DefaultBenchmarkManagerOptions: BenchmarkManagerOptions = {
 	pattern: "./*.benchmark.js",
 	path: "./",
 	exporter: ["console"],
-	config: "./zakzak.config.json"
+	config: "../zakzak-dynatrace/zakzak.config.json"
 };
 

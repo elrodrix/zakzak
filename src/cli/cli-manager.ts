@@ -19,9 +19,11 @@ export class CLIManager {
 		const paramOptions: BenchmarkManagerOptions = {
 			pattern: commander.pattern,
 			path: commander.path,
-			exporter: commander.exporter ? [commander.exporter] : [],
 			config: commander.config
 		};
+		if (commander.exporter) {
+			paramOptions.exporter = [commander.exporter];
+		}
 
 		if (this.configExists(paramOptions.config)) {
 			const config = this.readConfig(paramOptions.config);

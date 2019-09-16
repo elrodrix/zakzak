@@ -1,17 +1,32 @@
 import fs from "fs";
+import { Readable } from "stream";
 import Table from "cli-table";
 import { js2xml } from "xml-js";
 import { createObjectCsvWriter } from "csv-writer";
 
 import { BenchmarkResult } from "../benchmark";
 import { TimeUnit } from "../time";
+import { EventEmitter } from "events";
+import { Suite } from "../suite";
 
-
+export abstract class AsyncExporter {
+	constructor(private em: EventEmitter) {
+		em.on("hierarchy", this.onHierarchy);
+		em.on("result", this.onResult);
+		em.on("finished", this.onFinished);
+	}
+	public on(event: string | symbol, listener: (...args: any[]) => void) {
+		this.em.on(event, listener);
+	}
+	public abstract onHierarchy(root: Suite[]): void;
+	public abstract onResult(result: BenchmarkResult): void;
+	public abstract onFinished(): void;
+}
 export abstract class Exporter {
 	public abstract exportResults(results: BenchmarkResult[]): void;
 }
 
-export class ConsoleExporter implements Exporter {
+export class ConsoleExporter extends Exporter {
 	public exportResults(results: BenchmarkResult[]): void {
 		const table = new Table({
 			head: ["Name", "Measurements", "Cycles", "Mean", "Median", "Mode", "StdDev", "StdErr", "MoE", "Min", "Max"]

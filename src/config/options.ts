@@ -58,9 +58,9 @@ export const DefaultBenchmarkOptions: BenchmarkOptions = {
 };
 export const DefaultBenchmarkManagerOptions: BenchmarkManagerOptions = {
 	runParallel: 1,
-	pattern: "./*.benchmark.js",
+	pattern: "./**/*.benchmark.js",
 	path: "./",
 	exporter: ["console"],
-	config: "../zakzak-dynatrace/zakzak.config.json"
+	config: "./zakzak.config.json"
 };
 

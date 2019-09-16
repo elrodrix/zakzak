@@ -10,9 +10,9 @@ export enum ExporterEvents {
 
 export abstract class Exporter {
 	constructor(private em: EventEmitter) {
-		em.on(ExporterEvents.Hierarchy, this.onHierarchy);
-		em.on(ExporterEvents.Result, this.onResult);
-		em.on(ExporterEvents.Finished, this.onFinished);
+		em.on(ExporterEvents.Hierarchy, this.onHierarchy.bind(this));
+		em.on(ExporterEvents.Result, this.onResult.bind(this));
+		em.on(ExporterEvents.Finished, this.onFinished.bind(this));
 	}
 	public abstract onHierarchy(root: Suite[]): void;
 	public abstract onResult(result: BenchmarkResult): void;

@@ -1,24 +1,33 @@
 import { TimeUnit } from "../time";
 
+/**
+ * Options that can be applied to a benchmark.
+ * Can be applied to suites too, they will pass them down to a benchmark
+ */
 export interface BenchmarkOptions {
 	/**
-	 * The minimum time, that the warmup procedure has to be run.
+	 * The minimum time that the warmup procedure has to be run.
 	 * Also the minimum time for a single cycle.
 	 */
 	minTime?: number;
 	/**
-	 * The minimum amount of samples and therefore cycles the benchmark has to run
+	 * The minimum amount of samples that have to be collected
 	 */
 	minSamples?: number;
 	/**
-	 * The maximum time for taking samples and running cycles
+	 * The maximum time allowed for taking samples
 	 */
 	maxTime?: number;
 	/**
-	 * The maximum amount of samples the benchmark should take
+	 * The maximum amount of samples that should be collected
 	 */
 	maxSamples?: number;
 }
+
+/**
+ * Options for managing part of the benchmarking framework.
+ * Contains options for the Suite- and Benchmarkmanager
+ */
 export interface BenchmarkManagerOptions {
 	/**
 	 * Amount of benchmarks to run in parallel.
@@ -45,17 +54,27 @@ export interface BenchmarkManagerOptions {
 	config?: string;
 }
 
+/**
+ * Wrapper interface for the benchmark and manager options
+ */
 export interface OptionsWrapper {
 	benchmark: BenchmarkOptions;
 	manager: BenchmarkManagerOptions;
 }
 
+/**
+ * The default benchmark options
+ */
 export const DefaultBenchmarkOptions: BenchmarkOptions = {
 	minTime: 50 * TimeUnit.Millisecond,
 	minSamples: 5,
 	maxTime: 5 * TimeUnit.Second,
 	maxSamples: 5000
 };
+
+/**
+ * The default benchmarkmanager options
+ */
 export const DefaultBenchmarkManagerOptions: BenchmarkManagerOptions = {
 	runParallel: 1,
 	pattern: "./**/*.benchmark.js",

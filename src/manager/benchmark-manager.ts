@@ -1,11 +1,7 @@
 import _ from "lodash";
 
-import { Benchmark } from "../benchmark";
-import { BenchmarkProcess } from "../benchmark";
+import { Benchmark, BenchmarkProcess, ExitMessage } from "../benchmark";
 import { BenchmarkManagerOptions } from "../config";
-import { ExitMessage } from "../benchmark";
-import { EventEmitter } from "events";
-import { ExporterEvents } from "../exporter/exporter";
 import { ExportManager } from "../exporter";
 
 

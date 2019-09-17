@@ -7,14 +7,25 @@ import _ from "lodash";
 
 import { OptionsWrapper, BenchmarkManagerOptions, DefaultBenchmarkManagerOptions, DefaultBenchmarkOptions } from "../config";
 
+/**
+ * Manager for all cli related things
+ */
 export class CLIManager {
 
+	/**
+	 * Creates new cli manager.
+	 * Sets the possible params and messages shown when using `--help`.
+	 * Also parses the passed arguments
+	 */
 	constructor() {
 		this.setParams();
 		this.setExample();
 		this.processArgs();
 	}
 
+	/**
+	 * Get options by combining the params passed to the cli with a config, if one is found
+	 */
 	public getOptions(): OptionsWrapper {
 		const paramOptions: BenchmarkManagerOptions = {
 			pattern: commander.pattern,
@@ -39,6 +50,9 @@ export class CLIManager {
 		return { manager: paramOptions, benchmark: {} };
 	}
 
+	/**
+	 * Print the ASCII header
+	 */
 	public printHeader() {
 		console.log(
 			chalk.greenBright(
@@ -48,17 +62,28 @@ export class CLIManager {
 			));
 	}
 
+	/**
+	 * Check if a config file exist at the specified location
+	 * @param configString Name of the config file
+	 */
 	private configExists(configString: string) {
 		const configPath = path.posix.join(process.cwd(), configString);
 		return fs.existsSync(configPath);
 	}
 
+	/**
+	 * Read the config from the file
+	 * @param configString Name of the config file
+	 */
 	private readConfig(configString: string) {
 		const configPath = path.posix.join(process.cwd(), configString);
 		const config: OptionsWrapper = JSON.parse(fs.readFileSync(configPath).toString());
 		return config;
 	}
 
+	/**
+	 * Set the possible params for the cli
+	 */
 	private setParams() {
 		commander.version("0.0.1", "-v, --version");
 		commander
@@ -69,6 +94,9 @@ export class CLIManager {
 			.option("--init", "copies a zakzak config to the current directory");
 	}
 
+	/**
+	 * Set the examples that will be shown when `--help` is used
+	 */
 	private setExample() {
 		commander.on("--help", () => {
 			console.log("\nExamples:");
@@ -79,8 +107,13 @@ export class CLIManager {
 		});
 	}
 
+	/**
+	 * Process the args passed to the cli
+	 */
 	private processArgs() {
 		commander.parse(process.argv);
+
+		// If `--init` is passed, then create a config file at the current location
 		if (commander.init) {
 			const configJson: OptionsWrapper = {
 				benchmark: DefaultBenchmarkOptions,

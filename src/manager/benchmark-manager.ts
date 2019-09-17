@@ -31,7 +31,7 @@ export class BenchmarkManager {
 	}
 
 	private getProcesses(): BenchmarkProcess[] {
-		return this.benchmarks.map((b) => new BenchmarkProcess(b.id, b.filename, b.options));
+		return this.benchmarks.map((b) => new BenchmarkProcess(b.id, b.filepath, b.options));
 	}
 
 	private runParallel() {

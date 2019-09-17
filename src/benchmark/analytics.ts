@@ -1,11 +1,15 @@
 import _ from "lodash";
 
+/**
+ * Analytics contains the mathematical calculations to perform analysis on a batch of data
+ */
 export class Analytics {
 
 	/**
-	 * Calculates the minimum value a measurement has to have to 1
+	 * Calculates the minimum value a measurement has to have,
+	 * in order to reduce the uncertainty to a specified fraction of the measurement
 	 * @param smallestMeasure The smallest possible measure
-	 * @param fractionOfUncertainty The fraction of uncertainty that should be achieved
+	 * @param fractionOfUncertainty The fraction of uncertainty, which a measurement should have
 	 */
 	public static reduceUncertainty(smallestMeasure: number, fractionOfUncertainty: number) {
 		const uncertainty = smallestMeasure / 2;
@@ -13,8 +17,8 @@ export class Analytics {
 	}
 
 	/**
-	 * Calculates a list of metrics and statistical values fora list of samples
-	* @param samples The samples
+	 * Calculates a list of metrics and statistical values for a batch of samples
+	 * @param samples The samples
 	 */
 	public static getFullAnalysis(samples: number[]): FullAnalysis {
 		return {
@@ -47,9 +51,9 @@ export class Analytics {
 
 	/**
 	 * Calculates the [margin of error](https://www.statisticshowto.datasciencecentral.com/probability-and-statistics/hypothesis-testing/margin-of-error/)
-	 * from some samples using the [Sample Standard Error](https://www.radford.edu/~biol-web/stats/standarderrorcalc.pdf)
+	 * from a batch of samples using the [Sample Standard Error](https://www.radford.edu/~biol-web/stats/standarderrorcalc.pdf)
 	 * and the [T-Score](http://www.sjsu.edu/faculty/gerstman/StatPrimer/t-table.pdf) inferred from the confidence level
-	 * @param samples The samples
+	 * @param samples The batch of samples
 	 * @param confidence Level of confidence for the margin of error as percent from 0 to 99.9
 	 */
 	public static getMarginOfError(samples: number[], confidence: ConfidenceLevel = 99) {
@@ -61,18 +65,19 @@ export class Analytics {
 	}
 
 	/**
-	 * Calculates the [Standard Deviation](https://www.radford.edu/~biol-web/stats/standarderrorcalc.pdf) of a sample
-	 * @param samples The samples
+	 * Calculates the [Standard Deviation](https://www.radford.edu/~biol-web/stats/standarderrorcalc.pdf) for a batch of samples
+	 * @param samples The batch of samples
 	 */
 	public static getStandardDeviation(samples: number[]) {
 		const mean = Analytics.getMean(samples);
 		const squaredDeviations = _.sumBy(samples, (s) => (s - mean) ** 2);
 		const standardDeviation = Math.sqrt(squaredDeviations / (samples.length - 1));
+
 		return standardDeviation;
 	}
 
 	/**
-	 * Calculates the [Sample Standard Error](https://www.radford.edu/~biol-web/stats/standarderrorcalc.pdf) of a sample
+	 * Calculates the [Sample Standard Error](https://www.radford.edu/~biol-web/stats/standarderrorcalc.pdf) for a batch of samples
 	 * @param samples The samples
 	 */
 	public static getStandardError(samples: number[]) {
@@ -81,7 +86,7 @@ export class Analytics {
 	}
 
 	/**
-	 * Calculates the mean from a list of samples
+	 * Calculates the mean for a batch of samples
 	 * @param samples The samples
 	 */
 	public static getMean(samples: number[]) {
@@ -89,9 +94,10 @@ export class Analytics {
 	}
 
 	/**
-	 * Calculates the mode from a list of samples.
+	 * Calculates the [mode](https://en.wikipedia.org/wiki/Mode_(statistics)) for a batch of samples.
 	 * The mode is the most common value in a list of numbers.
-	 * Floating point values will be rounded, as the mode can only be calculated for integers
+	 * Floating point values will be rounded, as the mode can only be calculated for integers.
+	 * Especially useful with small measurements.
 	 * @param samples The samples
 	 */
 	public static getMode(samples: number[]) {
@@ -104,7 +110,7 @@ export class Analytics {
 	}
 
 	/**
-	 * Calculates the median from a list of samples
+	 * Calculates the median for a batch of samples
 	 * @param samples The samples
 	 */
 	public static getMedian(samples: number[]) {
@@ -117,8 +123,8 @@ export class Analytics {
 	}
 
 	/**
-	 * Returns the t-score for a given sample and confidence level, by using a table of t-scores
-	 * @param samples Sample for which the t-score should be gathered
+	 * Returns the t-score for a batch of samples and confidence level, by using a table of t-scores
+	 * @param samples Batch of samples for which the t-score is calculated
 	 * @param confidence The confidence level for the t-score
 	 */
 	private static getTScore(samples: number[], confidence: ConfidenceLevel) {
@@ -133,6 +139,9 @@ export class Analytics {
 		return 0;
 	}
 
+	/**
+	 * Table containing t-scores, ordered by degrees of freedom and then by confidence level
+	 */
 	private static tTable = [
 		{ df: 1, tValues: [0.000, 1.000, 1.376, 1.963, 3.078, 6.314, 12.71, 31.82, 63.66, 318.31, 636.62] },
 		{ df: 2, tValues: [0.000, 0.816, 1.061, 1.386, 1.886, 2.920, 4.303, 6.965, 9.925, 22.327, 31.599] },
@@ -173,8 +182,14 @@ export class Analytics {
 	];
 }
 
+/**
+ * Possible confidence levels
+ */
 export type ConfidenceLevel = 0 | 50 | 60 | 70 | 80 | 90 | 95 | 98 | 99 | 99.8 | 99.9;
 
+/**
+ * Result of a full analysis
+ */
 export interface FullAnalysis {
 	min: number;
 	max: number;

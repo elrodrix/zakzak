@@ -9,11 +9,10 @@ import { ExportManager } from "../exporter";
  * Manages multiple benchmarks, their configuration, runtime seperation and exporting
  */
 export class BenchmarkManager {
-	constructor(public benchmarks: Benchmark[], public options: BenchmarkManagerOptions, private exporter: ExportManager) {
-	}
+	constructor(public benchmarks: Benchmark[], public options: BenchmarkManagerOptions, private exporter: ExportManager) { }
 
 	/**
-     * Run all the benchmarks and print them out
+     * Run all the benchmarks and export them
      */
 	public async run() {
 		let messages: ExitMessage[] = [];
@@ -26,10 +25,19 @@ export class BenchmarkManager {
 		return results;
 	}
 
+	/**
+	 * Get Benchmarkprocesses for all the benchmarks
+	 */
 	private getProcesses(): BenchmarkProcess[] {
 		return this.benchmarks.map((b) => new BenchmarkProcess(b.id, b.filepath, b.options));
 	}
 
+	/**
+	 * Runs all the benchmarks.
+	 * Groups multiple benchmarks together, as specified in `options.runparallel`.
+	 * Runs all benchmarks in a group in parallel.
+	 * Runs the groups in series
+	 */
 	private runParallel() {
 		const processes = this.getProcesses();
 

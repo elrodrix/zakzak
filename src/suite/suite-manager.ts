@@ -15,6 +15,10 @@ _global.benchmark = (name: string, fn: Function, options: BenchmarkOptions = Def
 	mng.addBenchmark(name, fn, options);
 };
 
+/**
+ * Manages the finding of files, suites and benchmarks,
+ * aswell as keeping track of the structure and hierarchy.
+ */
 export class SuiteManager {
 	/**
 	 * List of all files found
@@ -24,12 +28,15 @@ export class SuiteManager {
 	 * List of all found and registered benchmarks
 	 */
 	public benchmarks: Benchmark[] = [];
-
 	/**
 	 * List of all found and registered suites
 	 */
 	public suites: Suite[] = [];
 
+	/**
+	 * Creates new suite manager and sets the singleton instance
+	 * @param options Options that will be applied to all the suites and benchmarks found
+	 */
 	constructor(private options: BenchmarkOptions) {
 		SuiteManager.instance = this;
 	}
@@ -84,6 +91,10 @@ export class SuiteManager {
 		this.benchmarks.push(benchmark);
 	}
 
+	/**
+	 * Process a list of files, by requiring them and storing found suites and benchmarks
+	 * @param filenames List of Filepaths
+	 */
 	public addFiles(filenames: string[]) {
 		filenames.forEach((filename) => {
 			const suite = new Suite(filename, filename, () => { require(filename); }, filename);
@@ -94,11 +105,23 @@ export class SuiteManager {
 		});
 	}
 
+	/**
+	 * Get a benchmark by it's id
+	 * @param id Id of the benchmark
+	 */
 	public getBenchmark(id: string) {
 		return this.benchmarks.find((b) => b.id === id);
 	}
 
+	/**
+	 * Singleton instance of the suitemanager.
+	 * Needed for the globals
+	 */
 	private static instance: SuiteManager;
 
+	/**
+	 * Current path that the suite manager is traversing.
+	 * Needed for creating the id of a suite or benchmark
+	 */
 	private currentPath: Suite[] = [];
 }

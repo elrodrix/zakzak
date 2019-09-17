@@ -77,9 +77,12 @@
 				"singleline": "never",
 				"multiline": "never"
 			}
-		]
+		],
+		"no-unused-variable": true,
+		"no-duplicate-imports": true
 	},
 	"jsRules": {
+		"ordered-imports": true,		
 		"indent": [
 			true,
 			"tabs"

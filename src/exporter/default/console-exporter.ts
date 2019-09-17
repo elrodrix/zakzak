@@ -4,6 +4,9 @@ import { BenchmarkResult } from "../../benchmark";
 import { TimeUnit } from "../../time";
 import { Suite } from "../../suite";
 
+/**
+ * Exports results to the console once all benchmarks are done
+ */
 export class ConsoleExporter extends Exporter {
 	public onHierarchy(root: Suite[]): void { }
 	public onResult(result: BenchmarkResult): void { }

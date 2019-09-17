@@ -1,11 +1,19 @@
 import { createStream } from "table";
+import { EventEmitter } from "events";
+
+import { BenchmarkResult } from "../../benchmark";
 import { Exporter } from "../exporter";
 import { Suite } from "../../suite";
-import { EventEmitter } from "events";
-import { BenchmarkResult } from "../../benchmark";
 import { TimeUnit } from "../../time";
 
+/**
+ * Exports live results to the console, showing a result as soon as a benchmark is done.
+ */
 export class ConsoleAsyncExporter extends Exporter {
+	/**
+	 * Creates new exporter, writes the header of the table
+	 * to the console and creates the stream writer that will update when new results come in
+	 */
 	constructor(em: EventEmitter) {
 		super(em);
 		const header = ["Name", "Measurements", "Cycles", "Mean", "Median", "Mode", "StdDev", "StdErr", "MoE", "Min", "Max"];
@@ -42,6 +50,10 @@ export class ConsoleAsyncExporter extends Exporter {
 	}
 	private stream: { write: (msg: string[]) => void };
 
+	/**
+	 * Converts nanosecond times to a more readable format.
+	 * Always 3 digit long, excluding the coma/dot.
+	 */
 	private nsToPrettyString(time: number) {
 		let unit = "ns";
 		let convertedTime = time;

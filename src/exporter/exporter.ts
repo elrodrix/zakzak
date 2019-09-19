@@ -29,15 +29,15 @@ export abstract class Exporter {
 	 * Returns the found structure
 	 * @param root The root suites of the hierarchy. Usually these suites are the files
 	 */
-	public abstract onHierarchy(root: Suite[]): void;
+	public onHierarchy(root: Suite[]): void { }
 	/**
 	 * Gets triggered when a single benchmark has finished and returned a result
 	 * @param result The result of the finished benchmark
 	 */
-	public abstract onResult(result: BenchmarkResult): void;
+	public onResult(result: BenchmarkResult): void { }
 	/**
 	 * Gets triggered when all of the benchmarks have finished and the benchmarkmanager is done.
 	 * @param results All the benchmark results
 	 */
-	public abstract onFinished(results: BenchmarkResult[]): void;
+	public onFinished(results: BenchmarkResult[]): void { }
 }

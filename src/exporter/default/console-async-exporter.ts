@@ -44,7 +44,6 @@ export class ConsoleAsyncExporter extends Exporter {
 			this.nsToPrettyString(result.stats.max)
 		]);
 	}
-	public onHierarchy(root: Suite[]): void { }
 	public onFinished(): void {
 		console.log();
 	}

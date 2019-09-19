@@ -19,7 +19,7 @@ export abstract class Exporter {
 	 * Instantiate a new Exporter
 	 * @param em EventEmitter that emits events from inside the benchmarking process
 	 */
-	constructor(private em: EventEmitter) {
+	constructor(em: EventEmitter) {
 		em.on(ExporterEvents.Hierarchy, this.onHierarchy.bind(this));
 		em.on(ExporterEvents.Result, this.onResult.bind(this));
 		em.on(ExporterEvents.Finished, this.onFinished.bind(this));

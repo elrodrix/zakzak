@@ -22,7 +22,7 @@ export class ExportManager {
 	constructor(private options: BenchmarkManagerOptions) {
 		// The event emitter that will passed to the exporters
 		this.em = new EventEmitter();
-		this.exporters = this.getExporters();
+		this.initExporters();
 	}
 
 	/**
@@ -45,14 +45,12 @@ export class ExportManager {
 	public exportFinished(results: BenchmarkResult[]) {
 		this.em.emit(ExporterEvents.Finished, results);
 	}
-
-	private exporters: Exporter[];
 	private em: EventEmitter;
 
 	/**
 	 * Get all the exporters from the exports field in the options
 	 */
-	private getExporters() {
+	private initExporters() {
 		return this.options.exporter.map((e) => this.getExporter(e)).filter((e) => e != null);
 	}
 

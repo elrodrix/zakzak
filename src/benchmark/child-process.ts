@@ -1,5 +1,5 @@
 import { Benchmark, BenchmarkResult } from "./benchmark";
-import { BenchmarkOptions, DefaultBenchmarkOptions } from "../config";
+import { BenchmarkOptions } from "../config";
 import { SuiteManager } from "../suite";
 
 /**

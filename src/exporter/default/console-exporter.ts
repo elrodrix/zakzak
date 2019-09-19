@@ -26,7 +26,7 @@ export class ConsoleExporter extends Exporter {
 			this.nsToPrettyString(r.stats.max)
 		]);
 
-		const output = table(data);
+		const output = table([header, ...data]);
 
 		console.log(output);
 	}

@@ -3,7 +3,6 @@ import { EventEmitter } from "events";
 
 import { BenchmarkResult } from "../../benchmark";
 import { Exporter } from "../exporter";
-import { Suite } from "../../suite";
 import { TimeUnit } from "../../time";
 
 /**

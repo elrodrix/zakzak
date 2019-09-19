@@ -78,7 +78,6 @@
 				"multiline": "never"
 			}
 		],
-		"no-unused-variable": true,
 		"no-duplicate-imports": true
 	},
 	"jsRules": {

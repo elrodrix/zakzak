@@ -12,6 +12,7 @@
 		"outDir": "./dist",
 		"strict": true,
 		"noImplicitAny": true,
+		"noUnusedLocals": true,
 		"strictNullChecks": false,
 		"moduleResolution": "node",
 		"typeRoots": [

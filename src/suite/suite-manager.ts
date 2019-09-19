@@ -90,7 +90,6 @@ export class SuiteManager {
 
 		this.benchmarks.push(benchmark);
 	}
-
 	/**
 	 * Process a list of files, by requiring them and storing found suites and benchmarks
 	 * @param filenames List of Filepaths

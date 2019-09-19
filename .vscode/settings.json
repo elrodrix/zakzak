@@ -4,5 +4,6 @@
 		"node_modules": true
 	},
 	"editor.detectIndentation": false,
-	"editor.insertSpaces": false
+	"editor.insertSpaces": false,
+	"tslint.configFile": "tslint.json"
 }

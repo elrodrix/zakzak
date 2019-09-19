@@ -5,12 +5,15 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "start": "npm run build && npm run start-with-native",
-    "start-with-native": "node --allow-natives-syntax dist/cli-script.js",
-    "build": "npm run compile && npm run prepend-shebang",
-    "compile": "tsc --project tsconfig.json",
-    "prepend-shebang": "./shebang.sh",
-    "install-cli": "npm run build && npm install -g"
+    "prepack": "npm run clean && npm run compile:src",	
+	"clean": "rimraf dist",
+	"compile": "npm run compile:src",
+    "compile:src": "tsc -p ./src",
+	"lint": "tslint --project test/tsconfig.json --format verbose",
+	"prepend-shebang": "./shebang.sh",
+	"build": "npm run clean && npm run compile && npm run lint && npm run prepend-shebang",
+	"install-cli": "npm run build && npm install -g",
+	"start": "node dist/cli-script.js"
   },
   "bin": {
     "zakzak": "dist/cli-script.js"
@@ -25,8 +28,9 @@
     "@types/lodash": "4.14.116",
     "@types/node": "^12.7.1",
     "@types/table": "^4.0.7",
+    "rimraf": "^3.0.0",
     "tscpaths": "0.0.9",
-    "tslint": "^5.19.0",
+    "tslint": "^5.20.0",
     "typescript": "^3.5.3"
   },
   "dependencies": {

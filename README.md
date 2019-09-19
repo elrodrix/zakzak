@@ -186,6 +186,12 @@ Read the rules, code of conduct and then just go ahead, fork the repo and create
 
 While this work was done without directly copying anything from other projects, the core benchmark logic was inspired by the logic from benchmark.js by Mathias Bynens, who has developed a very reliable way of warming up the benchmarks.
 
+## Disclaimer
+
+This plugin is community contributed and **not officially supported by Dynatrace**.
+In case of problems, feature requests, or questions [submit a ticket on GitHub](https://github.com/Dynatrace/zakzak/issues)
+
+
 ## License
 
 Copyright 2019 Dynatrace LLC

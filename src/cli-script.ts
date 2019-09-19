@@ -32,4 +32,4 @@ suite.addFiles(files);
 exporter.exportHierarchy(suite.files);
 
 const manager = new BenchmarkManager(suite.benchmarks, options.benchmarkManagerOptions, exporter);
-const results = manager.run();
+manager.run();

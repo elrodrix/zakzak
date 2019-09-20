@@ -88,7 +88,7 @@ export class Benchmark {
 		const timeLeft = (minTime - time); // Time left until minTime is reached
 
 		// Calculate nextCount based on how often period fits into timeLeft
-		const nextCount = time <= 0 ? count * 100 : Math.floor(timeLeft / period);
+		const nextCount = count + (time <= 0 ? count * 100 : Math.ceil(timeLeft / period));
 
 		if (time <= minTime) {
 			return { count: nextCount, finished: false };

@@ -13,6 +13,7 @@ It delivers qualitative and consistent benchmarks and uses a unit test like stru
   * [Configuration](#configuration)
 - [Contributing](#contributing)
 - [Acknowledgements](#acknowledgements)
+- [Disclaimer](#disclaimer)
 - [License](#license)
 
 <!-- tocstop -->

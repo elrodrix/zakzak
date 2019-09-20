@@ -10,8 +10,7 @@
     "compile": "npm run compile:src",
     "compile:src": "tsc -p .",
     "lint": "tslint --project ./tsconfig.json --format verbose",
-    "shebang": "./shebang.sh",
-    "build": "npm run clean && npm run compile && npm run lint && npm run shebang",
+    "build": "npm run clean && npm run compile && npm run lint",
     "install-cli": "npm run build && npm install -g",
     "start": "node dist/cli-script.js"
   },

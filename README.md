@@ -22,7 +22,7 @@ It delivers qualitative and consistent benchmarks and uses a unit test like stru
 
 ### Prerequisites
 
-Note: `zakzak` might work with earlier versions of node, but is not officially supported
+Note: `zakzak` might work with earlier versions of node, but is yet tested with those.
 
 - Node.js @8.x or higher
 - NPM @6.4.x or higher

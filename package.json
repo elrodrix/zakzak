@@ -1,25 +1,33 @@
 {
   "name": "zakzak",
-  "version": "1.0.0",
-  "description": "",
+  "version": "0.1.0",
+  "description": "Zakzak is a unit-test-like benchmarking framework for Node.js",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "prepack": "npm run clean && npm run compile:src",	
-	"clean": "rimraf dist",
-	"compile": "npm run compile:src",
+    "prepack": "npm run clean && npm run compile:src",
+    "clean": "rimraf dist",
+    "compile": "npm run compile:src",
     "compile:src": "tsc -p .",
-	"lint": "tslint --project ./tsconfig.json --format verbose",
-	"shebang": "./shebang.sh",
-	"build": "npm run clean && npm run compile && npm run lint && npm run shebang",
-	"install-cli": "npm run build && npm install -g",
-	"start": "node dist/cli-script.js"
+    "lint": "tslint --project ./tsconfig.json --format verbose",
+    "shebang": "./shebang.sh",
+    "build": "npm run clean && npm run compile && npm run lint && npm run shebang",
+    "install-cli": "npm run build && npm install -g",
+    "start": "node dist/cli-script.js"
   },
+  "repository": "Dynatrace/zakzak",
+  "keywords": [
+    "nodejs",
+    "benchmarking",
+    "microbenchmarking",
+    "unit-test",
+    "zakzak"
+  ],
   "bin": {
     "zakzak": "dist/cli-script.js"
   },
   "author": "Lukas Kurz",
-  "license": "Apache2",
+  "license": "Apache-2.0",
   "files": [
     "dist"
   ],
@@ -41,7 +49,6 @@
     "globby": "^10.0.1",
     "lodash": "^4.17.15",
     "table": "^5.4.6",
-    "v8-natives": "^1.1.0",
     "xml-js": "^1.6.11"
   }
 }

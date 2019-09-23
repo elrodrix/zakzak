@@ -1,3 +1,3 @@
-import { SuiteManager } from "./suite-manager";
-import { Suite } from "./suite";
-export { SuiteManager, Suite };
+export { SuiteManager, benchmark, suite } from "./suite-manager";
+export { Suite } from "./suite";
+

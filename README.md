@@ -181,24 +181,17 @@ And that's it. You are now ready to go and benchmark the heck out of your code.
 
 ## Contributing
 
-Read the rules, code of conduct and then just go ahead, fork the repo and create a pull request when you're done.
+Read the code of conduct and then just go ahead, fork the repo and create a pull request when you're done.
 
 ## Acknowledgements
 
-While this work was done without directly copying anything from other projects, the core benchmark logic was inspired by the logic from benchmark.js by Mathias Bynens, who has developed a very reliable way of warming up the benchmarks.
-
-## Disclaimer
-
-This plugin is community contributed and **not officially supported by Dynatrace**.
-In case of problems, feature requests, or questions [submit a ticket on GitHub](https://github.com/Dynatrace/zakzak/issues)
-
+While this work was done without directly copying anything from other projects, the core benchmark logic was inspired by the logic from benchmark.js by Mathias Bynens.
 
 ## License
 
 Copyright 2019 Dynatrace LLC
 
 Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
 	http://www.apache.org/licenses/LICENSE-2.0

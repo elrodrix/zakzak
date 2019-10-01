@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-import ChildProcess from "child_process";
+import { ChildProcess, fork } from "child_process";
 import path from "path";
-
 import { BenchmarkOptions } from "../config";
 import { StartMessage, ExitMessage } from "./child-process";
 
@@ -52,7 +51,7 @@ export class BenchmarkProcess {
 	/**
 	 * Reference of the child process
 	 */
-	private child: ChildProcess.ChildProcess;
+	private child: ChildProcess;
 
 	/**
 	 * Message that is received, when the child process exits
@@ -74,7 +73,7 @@ export class BenchmarkProcess {
 	private startProcess() {
 		// Path to child.ts
 		const childPath = path.posix.join(__dirname, "./child");
-		this.child = ChildProcess.fork(childPath, [], { execArgv: ["--allow-natives-syntax"] });
+		this.child = fork(childPath);
 
 		const promise = new Promise((res: (msg: ExitMessage) => void, err) => {
 			this.child.on("exit", (code) => {

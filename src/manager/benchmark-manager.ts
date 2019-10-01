@@ -45,7 +45,7 @@ export class BenchmarkManager {
 	 * Get Benchmarkprocesses for all the benchmarks
 	 */
 	private getProcesses(): BenchmarkProcess[] {
-		return this.benchmarks.map((b) => new BenchmarkProcess(b.id, b.filepath, b.options));
+		return this.benchmarks.map((b) => new BenchmarkProcess(b.id, b.filepath, b.getOptions()));
 	}
 
 	/**

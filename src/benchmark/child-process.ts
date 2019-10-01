@@ -70,7 +70,6 @@ export class ChildProcessHandler {
 			this.exit(1);
 			return;
 		}
-		this.benchmark.changeOptions(this.options); // Apply options from parent
 		this.runBenchmark();
 		this.sendResults();
 	}

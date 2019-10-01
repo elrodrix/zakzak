@@ -44,7 +44,7 @@ export function benchmark(name: string, fn: Function, options?: BenchmarkOptions
 
 /**
  * Manages the finding of files, suites and benchmarks,
- * aswell as keeping track of the structure and hierarchy.
+ * as well as keeping track of the structure and hierarchy.
  */
 export class SuiteManager {
 	/**
@@ -65,6 +65,7 @@ export class SuiteManager {
 	 * @param options Options that will be applied to all the suites and benchmarks found
 	 */
 	constructor(private options: BenchmarkOptions) {
+		this.options = _.merge({}, DefaultBenchmarkOptions, options);
 		SuiteManager.instance = this;
 	}
 
@@ -87,17 +88,24 @@ export class SuiteManager {
 	public addSuite(name: string, fn: Function, options: BenchmarkOptions) {
 		const currentPath = this.currentPath.map((v) => v.name).concat(name);
 		const id = _.join(currentPath, ":");
-		const filename = this.currentPath[0].name;
-		const suite = new Suite(id, name, fn, filename, _.merge({}, this.options, options));
+		let currentSuite: Suite;
+		if (this.currentPath.length !== 0) {
+			const filename = this.currentPath[0].name;
+			const parent = _.last(this.currentPath);
+			const mergedOptions = _.merge({}, parent.getOptions(), options);
+			currentSuite = new Suite(id, name, fn, filename, mergedOptions);
+			parent.addChild(currentSuite);
+		} else {
+			const filename = "name";
+			const mergedOptions = _.merge({}, DefaultBenchmarkOptions, options);
+			currentSuite = new Suite(id, name, fn, filename, mergedOptions);
+		}
 
-		const parent = _.last(this.currentPath);
-		parent.addChild(suite);
-
-		this.currentPath.push(suite);
-		suite.callback();
+		this.currentPath.push(currentSuite);
+		currentSuite.callback();
 		this.currentPath.pop();
 
-		this.suites.push(suite);
+		this.suites.push(currentSuite);
 	}
 
 	/**
@@ -109,25 +117,33 @@ export class SuiteManager {
 	public addBenchmark(name: string, fn: Function, options: BenchmarkOptions) {
 		const currentPath = this.currentPath.map((v) => v.name).concat(name);
 		const id = _.join(currentPath, ":");
-		const filename = this.currentPath[0].name;
-		const benchmark = new Benchmark(id, name, fn, filename, _.merge({}, this.options, options));
+		let currentBenchmark: Benchmark;
+		if (this.currentPath.length !== 0) {
+			const filename = this.currentPath[0].name;
+			const parent = _.last(this.currentPath);
+			const mergedOptions = _.merge({}, parent.getOptions(), options);
+			currentBenchmark = new Benchmark(id, name, fn, filename, mergedOptions);
+			parent.addChild(currentBenchmark);
+		} else {
+			const filename = "name";
+			const mergedOptions = _.merge({}, DefaultBenchmarkOptions, options);
+			currentBenchmark = new Benchmark(id, name, fn, filename, mergedOptions);
+		}
 
-		const parent = _.last(this.currentPath);
-		parent.addChild(benchmark);
-
-		this.benchmarks.push(benchmark);
+		this.benchmarks.push(currentBenchmark);
 	}
+
 	/**
 	 * Process a list of files, by requiring them and storing found suites and benchmarks
 	 * @param filenames List of Filepaths
 	 */
 	public addFiles(filenames: string[]) {
 		filenames.forEach((filename) => {
-			const suite = new Suite(filename, filename, () => { require(filename); }, filename);
-			this.currentPath = [suite];
-			suite.callback();
-			this.suites.push(suite);
-			this.files.push(suite);
+			const currentSuite = new Suite(filename, filename, () => { require(filename); }, filename, this.options);
+			this.currentPath = [currentSuite];
+			currentSuite.callback();
+			this.suites.push(currentSuite);
+			this.files.push(currentSuite);
 		});
 	}
 

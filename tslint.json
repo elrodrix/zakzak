@@ -57,17 +57,22 @@
 				]
 			}
 		],
-		"no-conditional-assignment":false,
+		"space-before-function-paren": false,
+		"no-conditional-assignment": false,
 		"no-empty": false,
 		"no-bitwise": false,
 		"no-consecutive-blank-lines": [
 			true,
 			5
 		],
+		"only-arrow-functions": false,
 		"no-console": false,
 		"no-namespace": false,
 		"no-unnecessary-type-assertion": true,
-		"no-unused-expression": [true, "allow-new"],
+		"no-unused-expression": [
+			true,
+			"allow-new"
+		],
 		"object-literal-shorthand": false,
 		"object-literal-sort-keys": false,
 		"ordered-imports": false,
@@ -81,7 +86,7 @@
 		"no-duplicate-imports": true
 	},
 	"jsRules": {
-		"ordered-imports": true,		
+		"ordered-imports": true,
 		"indent": [
 			true,
 			"tabs"

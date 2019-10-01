@@ -14,17 +14,21 @@
  * limitations under the License.
  */
 
-import _ from "lodash";
-
+import { mergeWith, sum } from "lodash";
 import { Timer } from "./timer";
 import { Analytics, FullAnalysis } from "./analytics";
-import { BenchmarkOptions } from "../config";
+import { BenchmarkOptions, DefaultBenchmarkOptions } from "../config";
 
 /**
  * Benchmark is responsible for the actual benchmarking.
  * It measures the times, warms the function up, saves and interpretes results
  */
 export class Benchmark {
+	/**
+	 * Options for the benchmark
+	 */
+	private options: BenchmarkOptions;
+
 	/**
 	 * Creates a new benchmark
 	 * @param id Uniquely identifiable id of the benchmark.
@@ -39,8 +43,23 @@ export class Benchmark {
 		public name: string,
 		public fn: Function,
 		public filepath: string,
-		public options: BenchmarkOptions
-	) { }
+		options: BenchmarkOptions
+	) {
+		this.options = DefaultBenchmarkOptions;
+		if (options == null) {
+			return;
+		}
+
+		if (options.minSamples != null) {
+			options.minSamples = options.minSamples >= 1 ? options.minSamples : DefaultBenchmarkOptions.minSamples;
+		}
+
+		this.options = mergeWith({}, this.options, options, (a, b) => b === null ? a : undefined);
+	}
+
+	public getOptions() {
+		return this.options;
+	}
 
 	/**
 	 * Start the benchmark
@@ -71,14 +90,6 @@ export class Benchmark {
 	}
 
 	/**
-	 * Apply options to existing options, overriding values that exist in old options
-	 * @param options The new options
-	 */
-	public changeOptions(options: BenchmarkOptions) {
-		this.options = _.merge({}, this.options, options);
-	}
-
-	/**
 	 * Estimates max amount of cycles that is possible before minTime is reached
 	 * @param minTime Minimum time that one complete sample can take
 	 */
@@ -93,7 +104,7 @@ export class Benchmark {
 
 	/**
 	 * Execute function for specified amount of times,
-	 * then estimate how many more times would be possible until minTime ist reached.
+	 * then estimate how many more times would be possible until minTime is reached.
 	 * Sets `finished=true` when minTime is reached.
 	 * @param count Amount of times the function should be repeated
 	 * @param minTime The minTime which should be reached
@@ -114,22 +125,6 @@ export class Benchmark {
 	}
 
 	/**
-	 * Execute function for specified amount of times
-	 * @param count Amount of times the function should be repeated
-	 */
-	private execute(count: number): number {
-		const fn = this.fn;
-		const start = Timer.getTime();
-		while (count--) {
-			fn();
-		}
-		const end = Timer.getTime();
-
-		return end - start;
-	}
-
-
-	/**
 	 * Executes function for specified amount of times, amounting to a single sample.
 	 * Repeats the process until maxTime or maxSamples is reached.
 	 * @param count Amount of times the function should be repeated
@@ -147,12 +142,27 @@ export class Benchmark {
 		}
 
 		// Collect more samples until maxTime or maxSamples is reached
-		while (_.sum(samples) < maxTime && samples.length <= maxSamples) {
+		while (sum(samples) < maxTime && samples.length <= maxSamples) {
 			const time = this.execute(count);
 			samples.push(time);
 		}
 
 		return samples;
+	}
+
+	/**
+	 * Execute function for specified amount of times
+	 * @param count Amount of times the function should be repeated
+	 */
+	private execute(count: number): number {
+		const fn = this.fn;
+		const start = Timer.getTime();
+		while (count--) {
+			fn();
+		}
+		const end = Timer.getTime();
+
+		return end - start;
 	}
 }
 

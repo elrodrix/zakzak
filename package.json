@@ -2,17 +2,19 @@
   "name": "zakzak",
   "version": "0.1.0",
   "description": "Zakzak is a unit-test-like benchmarking framework for Node.js",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "dist/src/index.js",
+  "types": "dist/src/index.d.ts",
   "scripts": {
     "prepack": "npm run clean && npm run compile:src",
     "clean": "rimraf dist",
-    "compile": "npm run compile:src",
-    "compile:src": "tsc -p .",
-    "lint": "tslint --project ./tsconfig.json --format verbose",
+    "compile": "npm run compile:src && npm run compile:test",
+    "compile:src": "tsc --project ./src/tsconfig.json",
+    "compile:test": "tsc --project ./test/tsconfig.json",
+    "lint": "",
+    "test": "mocha -r source-map-support/register ./dist/test/**/*.test.js",
     "build": "npm run clean && npm run compile && npm run lint",
     "install-cli": "npm run build && npm install -g",
-    "start": "node dist/cli-script.js"
+    "start": "node dist/src/cli-script.js"
   },
   "repository": "Dynatrace/zakzak",
   "keywords": [
@@ -23,19 +25,29 @@
     "zakzak"
   ],
   "bin": {
-    "zakzak": "dist/cli-script.js"
+    "zakzak": "dist/src/cli-script.js"
   },
   "author": "Lukas Kurz",
   "license": "Apache-2.0",
   "files": [
-    "dist"
+    "dist/src"
   ],
   "devDependencies": {
+    "@types/chai": "^4.2.3",
+    "@types/chai-as-promised": "^7.1.2",
     "@types/figlet": "^1.2.0",
     "@types/lodash": "4.14.116",
+    "@types/mocha": "^5.2.7",
     "@types/node": "^12.7.1",
+    "@types/sinon": "^7.0.13",
     "@types/table": "^4.0.7",
+    "chai": "^4.2.0",
+    "chai-as-promised": "^7.1.1",
+    "mocha": "^6.2.0",
+    "nyc": "^14.1.1",
     "rimraf": "^3.0.0",
+    "sinon": "^7.4.2",
+    "source-map-support": "^0.5.13",
     "tscpaths": "0.0.9",
     "tslint": "^5.20.0",
     "typescript": "^3.5.3"

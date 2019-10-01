@@ -96,6 +96,5 @@ export const DefaultBenchmarkManagerOptions: BenchmarkManagerOptions = {
 	pattern: "./**/*.benchmark.js",
 	path: "./",
 	exporter: ["console"],
-	config: "./zakzak.config.json"
+	config: "zakzak.config.json"
 };
-

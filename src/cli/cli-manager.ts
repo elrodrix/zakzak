@@ -43,18 +43,23 @@ export class CLIManager {
 	 * Get options by combining the params passed to the cli with a config, if one is found
 	 */
 	public getOptions(): OptionsWrapper {
-		const paramOptions: BenchmarkManagerOptions = {
-			pattern: commander.pattern,
-			path: commander.path,
-			config: commander.config
-		};
+		const paramOptions: BenchmarkManagerOptions = {};
+		if (commander.path) {
+			paramOptions.path = commander.path;
+		}
+		if (commander.pattern) {
+			paramOptions.pattern = commander.pattern;
+		}
+		if (commander.config) {
+			paramOptions.config = commander.config;
+		}
 		if (commander.exporter) {
 			paramOptions.exporter = [commander.exporter];
 		}
 
 		if (this.configExists(paramOptions.config)) {
-			const config = this.readConfig(paramOptions.config);
-			_.mergeWith(config.manager, paramOptions, (target, source) => {
+			let config = this.readConfig(paramOptions.config);
+			config.manager = _.mergeWith(config.manager, paramOptions, (target, source) => {
 				if (_.isArray(target)) {
 					return target.concat(source);
 				}
@@ -131,12 +136,12 @@ export class CLIManager {
 
 		// If `--init` is passed, then create a config file at the current location
 		if (commander.init) {
-			const configJson: OptionsWrapper = {
+			const configJson: OptionsWrapper = _.cloneDeep({ // Prevent changing defaults -> bad for tests
 				benchmark: DefaultBenchmarkOptions,
 				manager: DefaultBenchmarkManagerOptions
-			};
+			});
 			const configFile = DefaultBenchmarkManagerOptions.config;
-			configJson.manager.config = undefined;
+			delete configJson.manager.config;
 			const configString = JSON.stringify(configJson, null, "\t");
 			fs.writeFileSync(path.posix.join(process.cwd(), configFile), configString);
 			process.exit(0);

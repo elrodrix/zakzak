@@ -22,10 +22,13 @@ import _ from "lodash";
 export class Analytics {
 
 	/**
-	 * Calculates the minimum value a measurement has to have,
+	 * Calculates the minimum size a measurement has to have,
 	 * in order to reduce the uncertainty to a specified fraction of the measurement
 	 * @param smallestMeasure The smallest possible measure
 	 * @param fractionOfUncertainty The fraction of uncertainty, which a measurement should have
+	 * @example 
+	 * // 5% uncertainy with smallest measure 20 ns
+	 * let measure = reduceUncertainty(20, 0.05);
 	 */
 	public static reduceUncertainty(smallestMeasure: number, fractionOfUncertainty: number) {
 		const uncertainty = smallestMeasure / 2;
@@ -130,7 +133,7 @@ export class Analytics {
 	 * @param samples The samples
 	 */
 	public static getMedian(samples: number[]) {
-		const sorted = samples.sort();
+		const sorted = samples.sort((a, b) => a - b);
 		if (sorted.length % 2 === 0) { // array with even number elements
 			return (sorted[sorted.length / 2] + sorted[(sorted.length / 2) - 1]) / 2;
 		} else {

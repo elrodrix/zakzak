@@ -20,6 +20,7 @@ import commander from "commander";
 import path from "path";
 import fs from "fs";
 import _ from "lodash";
+import { version } from "../../package.json";
 
 import {
   OptionsWrapper,
@@ -111,7 +112,7 @@ export default class CLIManager {
    * Set the possible params for the cli
    */
   private static setParams() {
-    commander.version("0.0.1", "-v, --version");
+    commander.version(version, "-v, --version");
     commander
       .option("-p, --pattern <pattern>", "file pattern to match the benchmarking files")
       .option("-P, --path <path>", "path to look for files")

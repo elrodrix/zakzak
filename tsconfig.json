@@ -10,6 +10,7 @@
 		"noUnusedLocals": true,
 		"strictNullChecks": false,
 		"moduleResolution": "node",
-		"esModuleInterop": true
+		"esModuleInterop": true,
+		"resolveJsonModule": true
 	}
 }

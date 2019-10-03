@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import { ChildProcessHandler } from "./child-process";
+import { ChildProcessHandler } from "../process";
 
 // This file will be called by the childprocess.fork
 
-// Init the handler
-new ChildProcessHandler();
+const cp = new ChildProcessHandler();
+cp.registerEventHandlers();

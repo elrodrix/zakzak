@@ -16,158 +16,166 @@
 
 import { expect } from "chai";
 import { merge, last, includes, cloneDeep } from "lodash";
-import { SuiteManager, DefaultBenchmarkOptions, Suite, suite, benchmark } from "../../src";
 import * as sinon from "sinon";
+import { SuiteManager, DefaultBenchmarkOptions, Suite, suite, benchmark } from "../../src";
 
-describe("SuiteManager", function () {
-	afterEach(function () {
-		delete SuiteManager["instance"];
-	});
+describe("SuiteManager", () => {
+  afterEach(() => {
+    delete SuiteManager["instance"];
+  });
 
-	describe("#constructor()", function () {
-		it("should combine options with default options", function () {
-			const sm = new SuiteManager({ minTime: 3 });
-			const mergedOptions = merge({}, DefaultBenchmarkOptions, { minTime: 3 });
+  describe("#constructor()", () => {
+    it("should combine options with default options", () => {
+      const sm = new SuiteManager({ minTime: 3 });
+      const mergedOptions = merge({}, DefaultBenchmarkOptions, { minTime: 3 });
 
-			expect(sm["options"]).to.deep.equal(mergedOptions);
-		});
-		it("should set the instance field", function () {
-			const sm = new SuiteManager({});
+      expect(sm["options"]).to.deep.equal(mergedOptions);
+    });
+    it("should set the instance field", () => {
+      const sm = new SuiteManager({});
 
-			expect(SuiteManager["instance"]).to.equal(sm);
-		})
-	});
+      expect(SuiteManager["instance"]).to.equal(sm);
+    });
+  });
 
-	describe(".getInstance()", function () {
-		it("should set instance when none exists", function () {
-			expect(SuiteManager["instance"]).to.not.exist;
+  describe(".getInstance()", () => {
+    it("should set instance when none exists", () => {
+      expect(SuiteManager["instance"]).to.not.exist;
 
-			const instance = SuiteManager.getInstance();
-			expect(SuiteManager["instance"]).to.exist.and.to.equal(instance);
-		});
+      const instance = SuiteManager.getInstance();
+      expect(SuiteManager["instance"]).to.exist.and.to.equal(instance);
+    });
 
-		it("should not set instance if one already exists", function () {
-			const first = SuiteManager.getInstance();
-			expect(SuiteManager["instance"]).to.exist;
+    it("should not set instance if one already exists", () => {
+      const first = SuiteManager.getInstance();
+      expect(SuiteManager["instance"]).to.exist;
 
-			const second = SuiteManager.getInstance();
-			expect(second).to.equal(first);
-		});
-	});
+      const second = SuiteManager.getInstance();
+      expect(second).to.equal(first);
+    });
+  });
 
-	describe("#addBenchmark()", function () {
-		let sm: SuiteManager;
-		beforeEach(function () {
-			sm = new SuiteManager({});
-			sm["currentPath"].push(
-				new Suite("foobar.js", "foobar.js", () => { }, "foobar.js", {}),
-				new Suite("foobar.js:a", "a", () => { }, "foobar.js", {}),
-				new Suite("foobar.js:a:b", "b", () => { }, "foobar.js", {}),
-				new Suite("foobar.js:a:b:c", "c", () => { }, "foobar.js", {}),
-				new Suite("foobar.js:a:b:c:d", "d", () => { }, "foobar.js", {}),
-				new Suite("foobar.js:a:b:c:d:e", "e", () => { }, "foobar.js", { minSamples: 1, maxSamples: 10 })
-			);
-		});
+  describe("#addBenchmark()", () => {
+    let sm: SuiteManager;
+    beforeEach(() => {
+      sm = new SuiteManager({});
+      sm["currentPath"].push(
+        new Suite("foobar.js", "foobar.js", () => {}, "foobar.js", {}),
+        new Suite("foobar.js:a", "a", () => {}, "foobar.js", {}),
+        new Suite("foobar.js:a:b", "b", () => {}, "foobar.js", {}),
+        new Suite("foobar.js:a:b:c", "c", () => {}, "foobar.js", {}),
+        new Suite("foobar.js:a:b:c:d", "d", () => {}, "foobar.js", {}),
+        new Suite("foobar.js:a:b:c:d:e", "e", () => {}, "foobar.js", {
+          minSamples: 1,
+          maxSamples: 10,
+        }),
+      );
+    });
 
-		it("should construct the correct id", function () {
-			sm.addBenchmark("test", () => { }, {});
-			expect(sm.benchmarks[0].id).to.equal("foobar.js:a:b:c:d:e:test");
-		});
+    it("should construct the correct id", () => {
+      sm.addBenchmark("test", () => {}, {});
+      expect(sm.benchmarks[0].id).to.equal("foobar.js:a:b:c:d:e:test");
+    });
 
-		it("should pass options from parent to child", function () {
-			sm.addBenchmark("test", () => { }, { minTime: 20, minSamples: 2 });
-			const options = DefaultBenchmarkOptions;
-			options.minSamples = 2;
-			options.maxSamples = 10;
-			options.minTime = 20;
-			expect(sm.benchmarks[0].getOptions()).to.deep.equal(options);
-		});
+    it("should pass options from parent to child", () => {
+      sm.addBenchmark("test", () => {}, { minTime: 20, minSamples: 2 });
+      const options = DefaultBenchmarkOptions;
+      options.minSamples = 2;
+      options.maxSamples = 10;
+      options.minTime = 20;
+      expect(sm.benchmarks[0].getOptions()).to.deep.equal(options);
+    });
 
-		it("should add benchmark as child to parent suite", function () {
-			sm.addBenchmark("test", () => { }, {});
-			const parent = last(sm["currentPath"]);
-			expect(includes(parent.children, sm.benchmarks[0])).to.be.true;
-		});
-	});
+    it("should add benchmark as child to parent suite", () => {
+      sm.addBenchmark("test", () => {}, {});
+      const parent = last(sm["currentPath"]);
+      expect(includes(parent.children, sm.benchmarks[0])).to.be.true;
+    });
+  });
 
-	describe("#addSuite()", function () {
-		let sm: SuiteManager;
-		beforeEach(function () {
-			sm = new SuiteManager({});
-			sm["currentPath"].push(
-				new Suite("foobar.js", "foobar.js", () => { }, "foobar.js", {}),
-				new Suite("foobar.js:a", "a", () => { }, "foobar.js", {}),
-				new Suite("foobar.js:a:b", "b", () => { }, "foobar.js", {}),
-				new Suite("foobar.js:a:b:c", "c", () => { }, "foobar.js", {}),
-				new Suite("foobar.js:a:b:c:d", "d", () => { }, "foobar.js", {}),
-				new Suite("foobar.js:a:b:c:d:e", "e", () => { }, "foobar.js", { minSamples: 1, maxSamples: 10 })
-			);
-		});
+  describe("#addSuite()", () => {
+    let sm: SuiteManager;
+    beforeEach(() => {
+      sm = new SuiteManager({});
+      sm["currentPath"].push(
+        new Suite("foobar.js", "foobar.js", () => {}, "foobar.js", {}),
+        new Suite("foobar.js:a", "a", () => {}, "foobar.js", {}),
+        new Suite("foobar.js:a:b", "b", () => {}, "foobar.js", {}),
+        new Suite("foobar.js:a:b:c", "c", () => {}, "foobar.js", {}),
+        new Suite("foobar.js:a:b:c:d", "d", () => {}, "foobar.js", {}),
+        new Suite("foobar.js:a:b:c:d:e", "e", () => {}, "foobar.js", {
+          minSamples: 1,
+          maxSamples: 10,
+        }),
+      );
+    });
 
-		it("should construct the correct id", function () {
-			sm.addSuite("test", () => { }, {});
-			expect(last(sm.suites).id).to.equal("foobar.js:a:b:c:d:e:test");
-		});
+    it("should construct the correct id", () => {
+      sm.addSuite("test", () => {}, {});
+      expect(last(sm.suites).id).to.equal("foobar.js:a:b:c:d:e:test");
+    });
 
-		it("should pass options from parent to child", function () {
-			sm.addSuite("test", () => { }, { minTime: 20, minSamples: 2 });
-			const options = DefaultBenchmarkOptions;
-			options.minSamples = 2;
-			options.maxSamples = 10;
-			options.minTime = 20;
-			expect(last(sm.suites).getOptions()).to.deep.equal(options);
-		});
+    it("should pass options from parent to child", () => {
+      sm.addSuite("test", () => {}, { minTime: 20, minSamples: 2 });
+      const options = DefaultBenchmarkOptions;
+      options.minSamples = 2;
+      options.maxSamples = 10;
+      options.minTime = 20;
+      expect(last(sm.suites).getOptions()).to.deep.equal(options);
+    });
 
-		it("should add suite as child to parent suite", function () {
-			sm.addSuite("test", () => { }, {});
-			const parent = last(sm["currentPath"]);
-			expect(includes(parent.children, last(sm.suites))).to.be.true;
-		});
+    it("should add suite as child to parent suite", () => {
+      sm.addSuite("test", () => {}, {});
+      const parent = last(sm["currentPath"]);
+      expect(includes(parent.children, last(sm.suites))).to.be.true;
+    });
 
-		it("should execute the callback", function () {
-			const stub = sinon.stub();
-			sm.addSuite("test", stub, {});
+    it("should execute the callback", () => {
+      const stub = sinon.stub();
+      sm.addSuite("test", stub, {});
 
-			expect(stub.called).to.be.true;
-		});
+      expect(stub.called).to.be.true;
+    });
 
-		it("should push new suite to current path while executing callback", function () {
-			let pathCopy: Suite[];
-			const fake = sinon.fake(() => { pathCopy = cloneDeep(sm["currentPath"]); });
-			sm.addSuite("test", fake, {});
+    it("should push new suite to current path while executing callback", () => {
+      let pathCopy: Suite[];
+      const fake = sinon.fake(() => {
+        pathCopy = cloneDeep(sm["currentPath"]);
+      });
+      sm.addSuite("test", fake, {});
 
-			expect(last(pathCopy).name).to.equal("test");
-			expect(last(sm["currentPath"]).name).to.not.equal("test");
-		});
-	});
+      expect(last(pathCopy).name).to.equal("test");
+      expect(last(sm["currentPath"]).name).to.not.equal("test");
+    });
+  });
 });
-describe("suite()", function () {
-	afterEach(function () {
-		delete SuiteManager["instance"];
-	});
-	it("should create new suitemanager if none exists", function () {
-		expect(SuiteManager["instance"]).to.not.exist;
-		suite("test", () => { });
-		expect(SuiteManager["instance"]).to.exist;
-	});
-	it("should add new suite", function () {
-		suite("test123", () => { });
-		expect(SuiteManager["instance"].suites[0]).to.exist;
-		expect(SuiteManager["instance"].suites[0].name).to.equal("test123");
-	});
+describe("suite()", () => {
+  afterEach(() => {
+    delete SuiteManager["instance"];
+  });
+  it("should create new suitemanager if none exists", () => {
+    expect(SuiteManager["instance"]).to.not.exist;
+    suite("test", () => {});
+    expect(SuiteManager["instance"]).to.exist;
+  });
+  it("should add new suite", () => {
+    suite("test123", () => {});
+    expect(SuiteManager["instance"].suites[0]).to.exist;
+    expect(SuiteManager["instance"].suites[0].name).to.equal("test123");
+  });
 });
-describe("benchmark()", function () {
-	afterEach(function () {
-		delete SuiteManager["instance"];
-	});
-	it("should create new suitemanager if none exists", function () {
-		expect(SuiteManager["instance"]).to.not.exist;
-		benchmark("", () => { });
-		expect(SuiteManager["instance"]).to.exist;
-	});
-	it("should add new benchmark", function () {
-		benchmark("test123", () => { });
-		expect(SuiteManager["instance"].benchmarks[0]).to.exist;
-		expect(SuiteManager["instance"].benchmarks[0].name).to.equal("test123");
-	});
+describe("benchmark()", () => {
+  afterEach(() => {
+    delete SuiteManager["instance"];
+  });
+  it("should create new suitemanager if none exists", () => {
+    expect(SuiteManager["instance"]).to.not.exist;
+    benchmark("", () => {});
+    expect(SuiteManager["instance"]).to.exist;
+  });
+  it("should add new benchmark", () => {
+    benchmark("test123", () => {});
+    expect(SuiteManager["instance"].benchmarks[0]).to.exist;
+    expect(SuiteManager["instance"].benchmarks[0].name).to.equal("test123");
+  });
 });

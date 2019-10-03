@@ -14,5 +14,8 @@
  * limitations under the License.
  */
 
+import Suite from "./suite";
+
+export { Suite };
+
 export { SuiteManager, benchmark, suite } from "./suite-manager";
-export { Suite } from "./suite";

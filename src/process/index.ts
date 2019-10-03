@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
-import BenchmarkManager from "./benchmark-manager";
+import BenchmarkProcess from "./benchmark-process";
+import { ChildProcessHandler, ExitMessage, StartMessage } from "./child-process";
 
-export default BenchmarkManager;
+export { BenchmarkProcess, ChildProcessHandler, ExitMessage, StartMessage };

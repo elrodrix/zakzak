@@ -14,8 +14,10 @@
  * limitations under the License.
  */
 
-export { ConsoleExporter } from "./console-exporter";
-export { ConsoleAsyncExporter } from "./console-async-exporter";
-export { CsvExporter } from "./csv-exporter";
-export { JsonExporter } from "./json-exporter";
-export { XmlExporter } from "./xml-exporter";
+import ConsoleExporter from "./console-exporter";
+import ConsoleAsyncExporter from "./console-async-exporter";
+import CsvExporter from "./csv-exporter";
+import JsonExporter from "./json-exporter";
+import XmlExporter from "./xml-exporter";
+
+export { ConsoleExporter, ConsoleAsyncExporter, CsvExporter, JsonExporter, XmlExporter };

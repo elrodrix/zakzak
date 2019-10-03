@@ -14,6 +14,14 @@
  * limitations under the License.
  */
 
-export { ExportManager } from "./export-manager";
+import ExportManager from "./export-manager";
+
 export { Exporter } from "./exporter";
-export { ConsoleExporter, JsonExporter, CsvExporter, XmlExporter, ConsoleAsyncExporter } from "./default";
+export {
+  ConsoleExporter,
+  JsonExporter,
+  CsvExporter,
+  XmlExporter,
+  ConsoleAsyncExporter,
+} from "./default";
+export { ExportManager };

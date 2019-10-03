@@ -1,0 +1,53 @@
+{
+	"root": true,
+	"parser": "@typescript-eslint/parser",
+	"plugins": [
+		"@typescript-eslint"
+	],
+	"extends": [
+		"airbnb",
+		"plugin:@typescript-eslint/recommended",
+		"plugin:prettier/recommended"
+	],
+	"rules": {
+		"@typescript-eslint/explicit-function-return-type": 0,
+		"@typescript-eslint/no-explicit-any": 0,
+		"no-useless-constructor": "off",
+		"@typescript-eslint/no-useless-constructor": "error",
+		"quotes": [
+			"error",
+			"double"
+		],
+		"no-plusplus": "off",
+		"no-console": "off",
+		"class-methods-use-this": [
+			"error",
+			{
+				"exceptMethods": [
+					"onFinished",
+					"onResult",
+					"onHierarchy"
+				]
+			}
+		],
+		"no-undef":"off" // Typescript interface and type exports don't work otherwise
+	},
+	"settings": {
+		"import/extensions": [
+			".ts"
+		],
+		"import/parsers": {
+			"@typescript-eslint/parser": [
+				".ts"
+			]
+		},
+		"import/resolver": {
+			"node": {
+				"extensions": [
+					".js",
+					".ts"
+				]
+			}
+		}
+	}
+}

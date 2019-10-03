@@ -14,10 +14,39 @@
  * limitations under the License.
  */
 
-export { TimeUnit } from "./time";
+import BenchmarkManager from "./manager";
+import CLIManager from "./cli";
+import TimeUnit from "./time";
+
+export { BenchmarkManager, CLIManager, TimeUnit };
+
 export { SuiteManager, Suite, benchmark, suite } from "./suite";
-export { BenchmarkManager } from "./manager";
-export { ExportManager, ConsoleExporter, JsonExporter, CsvExporter, XmlExporter, ConsoleAsyncExporter, Exporter } from "./exporter";
-export { OptionsManager, DefaultBenchmarkOptions, DefaultBenchmarkManagerOptions, OptionsWrapper, BenchmarkManagerOptions, BenchmarkOptions } from "./config";
-export { CLIManager } from "./cli";
-export { Analytics, ConfidenceLevel, FullAnalysis, BenchmarkProcess, Benchmark, BenchmarkResult, ChildProcessHandler, StartMessage, ExitMessage, Timer } from "./benchmark";
+
+export {
+  ExportManager,
+  ConsoleExporter,
+  JsonExporter,
+  CsvExporter,
+  XmlExporter,
+  ConsoleAsyncExporter,
+  Exporter,
+} from "./exporter";
+export {
+  OptionsManager,
+  DefaultBenchmarkOptions,
+  DefaultBenchmarkManagerOptions,
+  OptionsWrapper,
+  BenchmarkManagerOptions,
+  BenchmarkOptions,
+} from "./config";
+
+export {
+  Analytics,
+  ConfidenceLevel,
+  FullAnalysis,
+  Benchmark,
+  BenchmarkResult,
+  Timer,
+} from "./benchmark";
+
+export { BenchmarkProcess, ChildProcessHandler, StartMessage, ExitMessage } from "./process";

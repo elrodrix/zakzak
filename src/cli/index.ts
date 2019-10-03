@@ -14,5 +14,6 @@
  * limitations under the License.
  */
 
-import { CLIManager } from "./cli-manager";
-export { CLIManager };
+import CLIManager from "./cli-manager";
+
+export default CLIManager;

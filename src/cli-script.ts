@@ -18,22 +18,25 @@
 
 import path from "path";
 import globby from "globby";
-import { BenchmarkManager } from "./manager";
-import { CLIManager } from "./cli";
+import BenchmarkManager from "./manager";
+import CLIManager from "./cli";
 import { OptionsManager } from "./config";
 import { SuiteManager } from "./suite";
 import { ExportManager } from "./exporter";
 
-const cli = new CLIManager();
-const paramOptions = cli.getOptions();
+CLIManager.init();
+const paramOptions = CLIManager.getOptions();
 
 const options = new OptionsManager();
 options.change(paramOptions);
 
-const pattern = path.posix.join(options.benchmarkManagerOptions.path, options.benchmarkManagerOptions.pattern);
+const pattern = path.posix.join(
+  options.benchmarkManagerOptions.path,
+  options.benchmarkManagerOptions.pattern,
+);
 const files = globby.sync(pattern, { absolute: true });
 
-cli.printHeader();
+CLIManager.printHeader();
 
 const exporter = new ExportManager(options.benchmarkManagerOptions);
 

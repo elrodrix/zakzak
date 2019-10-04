@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { ChildProcessHandler } from "../process";
+import { ChildProcessHandler } from ".";
 
 // This file will be called by the childprocess.fork
 

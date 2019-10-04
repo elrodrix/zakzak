@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import _ from "lodash";
+import PromisePool from "es6-promise-pool";
 
 import { Benchmark } from "../benchmark";
 import { BenchmarkManagerOptions } from "../config";
@@ -62,25 +62,26 @@ export default class BenchmarkManager {
    */
   private runParallel() {
     const processes = this.getProcesses();
+    const { exporter } = this;
+    const results: ExitMessage[] = [];
 
-    const groups = _.chunk(processes, Math.max(1, this.options.runParallel));
-
-    const benchmarkSequence = async () => {
-      const results: ExitMessage[] = [];
-      // eslint-disable-next-line no-restricted-syntax
-      for (const g of groups) {
-        // eslint-disable-next-line no-await-in-loop
-        const msgs = await Promise.all(g.map(p => p.run()));
-        msgs.forEach(msg => {
+    const producer = () => {
+      if (processes.length > 0) {
+        const p = processes.shift();
+        return p.run().then(msg => {
           if (msg.result) {
-            this.exporter.exportResult(msg.result);
+            exporter.exportResult(msg.result);
           }
+          results.push(msg);
         });
-        results.push(...msgs);
       }
-      return results;
+      return null;
     };
 
-    return benchmarkSequence();
+    const pool = new PromisePool(producer, this.options.runParallel);
+
+    return pool.start().then(() => {
+      return results;
+    });
   }
 }

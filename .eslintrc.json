@@ -33,6 +33,9 @@
 		"no-undef":"off" // Typescript interface and type exports don't work otherwise
 	},
 	"settings": {
+		"react": {
+			"version": "999.999.999" // Stops annoying warning in cli
+		},
 		"import/extensions": [
 			".ts"
 		],

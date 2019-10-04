@@ -9,20 +9,20 @@
 
 <!-- toc -->
 
-- [Usage](#usage)
-- [Documentation](#documentation)
-  _ [Define benchmarks](#define-benchmarks)
-  _ [Structure the benchmarks using suites](#structure-the-benchmarks-using-suites)
-  _ [Configuration](#configuration)
-  _ [CLI](#cli)
-  _ [Custom Exporter](#custom-exporter)
-  _ [Typescript support](#typescript-support)
-- [Installation](#installation)
-  _ [Prerequisites](#prerequisites)
-  _ [Using npm](#using-npm)
-- [Contributing](#contributing)
-- [Acknowledgements](#acknowledgements)
-- [License](#license)
+* [Usage](#usage)
+* [Documentation](#documentation)
+  * [Define benchmarks](#define-benchmarks)
+  * [Structure the benchmarks using suites](#structure-the-benchmarks-using-suites)
+  * [Configuration](#configuration)
+  * [CLI](#cli)
+  * [Custom Exporter](#custom-exporter)
+  * [Typescript support](#typescript-support)
+* [Installation](#installation)
+  * [Prerequisites](#prerequisites)
+  * [Using npm](#using-npm)
+* [Contributing](#contributing)
+* [Acknowledgements](#acknowledgements)
+* [License](#license)
 
 <!-- tocstop -->
 

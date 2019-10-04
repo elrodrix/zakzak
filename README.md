@@ -9,18 +9,20 @@
 
 <!-- toc -->
 
-* [Usage](#usage)
-* [Documentation](#documentation)
-  * [Define benchmarks](#define-benchmarks)
-  * [Structure the benchmarks using suites](#structure-the-benchmarks-using-suites)
-  * [Configuration](#configuration)
-  * [Typescript support](#typescript-support)
-* [Installation](#installation)
-  * [Prerequisites](#prerequisites)
-  * [Using npm](#using-npm)
-* [Contributing](#contributing)
-* [Acknowledgements](#acknowledgements)
-* [License](#license)
+- [Usage](#usage)
+- [Documentation](#documentation)
+  _ [Define benchmarks](#define-benchmarks)
+  _ [Structure the benchmarks using suites](#structure-the-benchmarks-using-suites)
+  _ [Configuration](#configuration)
+  _ [CLI](#cli)
+  _ [Custom Exporter](#custom-exporter)
+  _ [Typescript support](#typescript-support)
+- [Installation](#installation)
+  _ [Prerequisites](#prerequisites)
+  _ [Using npm](#using-npm)
+- [Contributing](#contributing)
+- [Acknowledgements](#acknowledgements)
+- [License](#license)
 
 <!-- tocstop -->
 
@@ -122,9 +124,12 @@ Default -> Config -> CLI Param -> Suite options -> Benchmark options
 In the benchmark files, you apply options like this.
 
 ```ts
-benchmark("snowflake-with-custom-needs", () => {
+benchmark(
+  "snowflake-with-custom-needs",
+  () => {
     fibonacci(5000);
-  }, { minSamples: 20, maxSamples: 50 } // options
+  },
+  { minSamples: 20, maxSamples: 50 }, // options
 );
 ```
 
@@ -132,21 +137,70 @@ You can also pass the options to a suite, which will then apply those to it's ch
 
 ```ts
 // has minSample: 10
-suite("momma-suite", () => {
-  // has minSamples: 10
+suite(
+  "momma-suite",
+  () => {
+    // has minSamples: 10
     benchmark("some-name", () => {
       fibonacci(5000);
     });
-  },{ minSamples: 10 }
+  },
+  { minSamples: 10 },
 );
 ```
 
 Defining options is optional, no matter what type of configuration is used.
 If none of the configuration types provides a value for an options field, then the default values of the framework will be used.
 
+### CLI
+
+The CLI tool is used to find, structure and run the benchmarks. Per default, it will look for a `zakzak.config.json` in the current working directory. If it doesn't find this config, it will use the default values of the framework. You can also override some of the settings using the CLI params.
+
+**`-v, --version`:** Output the version number of zakzak.
+**`-p, --pattern <pattern>`:** Glob pattern used to match the targeted files.
+**`-P, --path <path>`:** Relative or absolute path to folder which contains the files.
+**`-c, --config <path>`:** Relative or absolute path to the config. Default is `zakzak.config.json`.
+**`-e, --exporter <path-or-name>`:** Add an additional exporter. Can be one of the default exporters, i.e. `console`, `console-async`, `xml`, `json` and `csv` or a custom exporter. If it's a custom exporter then enter the path to the file containing it.
+**`--init`:** Initializes a project by creating a `zakzak.config.json` with the default values.
+**`-h, --help`:** Prints information on the cli and it's usage.
+
+### Custom Exporter
+
+If the default exporters can't do what you need, you can always write a custom exporter and pass it to zakzak.
+Just create a new `.js` file, where you define a new class that extends `Exporter`.
+
+**Note:** It's easier to explain this using Typescript code. Just leave the types if you're writing in javascript.
+
+```ts
+import { Exporter, Suite, BenchmarkResult } from "zakzak";
+
+export class AwsS3Exporter extends Exporter {
+  onHierarchy(root: Suite[]): void {
+    console.log(root);
+  }
+  onResult(result: BenchmarkResult): void {
+    console.log(result);
+  }
+  onFinished(results: BenchmarkResult[]): void {
+    console.log(results);
+  }
+}
+```
+
+The exporter gets its information using an `EventEmitter` that is passed to the constructor.
+The `onHierarchy`, `onResult`, `onFinished` are set in the base constructor and automatically handle their specific events.
+
+**`onHierarchy`** gets triggered once zakzak has found all benchmarks, suite and their hierarchy. You can traverse this tree-hierarchy by accessing the children of a suite and the children of those children, until there are no more children.
+
+**`onResult`** is triggered as soon as a benchmark finishes and outputs its results. This can be used to have a live preview of which benchmarks are still running and which are already finished.
+
+**`onFinished`** returns the results of all the benchmarks, once they are all finished.
+
+
 ### Typescript support
 
 `zakzak` is written in Typescript, so it comes with it's own set of type definitions.
+The CLI however, can only use `.js` files, so you have to point it to the compiled/transpiled `.js` files and not the `.ts` files.
 
 ## Installation
 

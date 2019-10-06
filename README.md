@@ -1,11 +1,20 @@
-# zakzak<!-- omit in toc -->
-
-<img src="zakzak.png" height="180px">
-
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-[![Typescript](https://badgen.net/badge/Built%20With/Typescript/blue)](https://www.typescriptlang.org/)
-
-`zakzak` makes microbenchmarking in node.js projects easier and automated, by using a "unit test"-like approach.
+<p align="center">
+  <img src="zakzak.png" height="180px"/>
+</p>
+<h1 align="center">Zakzak</h1><!-- omit in toc -->
+<h3 align="center">🏎️ 📄 ⏱️ </h3><!-- omit in toc -->
+<h3 align="center">When you need to make sure, your code is fast.</h3><!-- omit in toc -->
+<p align="center">
+  Zakzak makes microbenchmarking in node.js projects easier and automated, by using a "unit test"-like approach.
+</p>
+<p align="center">
+  <a href="https://opensource.org/licenses/Apache-2.0">
+    <img src="https://img.shields.io/badge/License-Apache%202.0-blue.svg" alt="Zakzak is release under the Apache 2.0 license." />
+  </a>
+  <a href="https://www.typescriptlang.org/">
+    <img src="https://badgen.net/badge/Built%20With/Typescript/blue" alt="Zakzak is built with and supports Typescript" />
+  </a>
+</p>
 
 ## Table of Contents<!-- omit in toc -->
 

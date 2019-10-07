@@ -1,5 +1,5 @@
 {
-  "name": "zakzak",
+  "name": "@dynatrace/zakzak",
   "version": "0.1.0",
   "description": "Zakzak is a unit-test-like benchmarking framework for Node.js",
   "main": "dist/src/index.js",

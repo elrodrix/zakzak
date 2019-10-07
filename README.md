@@ -43,7 +43,7 @@
 Similar to unit tests, you create `*.benchmark.js` files, in which you define your benchmarks. If you've worked with mocha.js before, you will find this approach familiar.
 
 ```ts
-import { suite, benchmark } from "zakzak";
+import { suite, benchmark } from "@dynatrace/zakzak";
 
 suite("crypto-functions", () => {
   benchmark("encryptMessage", () => {
@@ -220,7 +220,7 @@ Just create a new `.js` file, where you define a new class that extends `Exporte
 **Note:** It's easier to explain this using Typescript code. Just leave the types if you're writing in javascript.
 
 ```ts
-import { Exporter, Suite, BenchmarkResult } from "zakzak";
+import { Exporter, Suite, BenchmarkResult } from "@dynatrace/zakzak";
 
 export class AwsS3Exporter extends Exporter {
   onHierarchy(root: Suite[]): void {

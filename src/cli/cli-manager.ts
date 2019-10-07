@@ -20,7 +20,6 @@ import commander from "commander";
 import path from "path";
 import fs from "fs";
 import _ from "lodash";
-import { version } from "../../package.json";
 
 import {
   OptionsWrapper,
@@ -28,6 +27,9 @@ import {
   DefaultBenchmarkManagerOptions,
   DefaultBenchmarkOptions,
 } from "../config";
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires, import/no-unresolved
+const { version } = require("../../../package.json");
 
 /**
  * Manager for all cli related things

@@ -1,1 +1,14 @@
+.eslint*
+.prettierrc.json
+*.js.map
+*.tgz
+CONTRIBUTING.md
+tsconfig.json
+.github/
 src/
+test/
+.vscode/
+dist/test/
+
+
+

@@ -7,11 +7,11 @@
 			"dom"
 		],
 		"strict": true,
+		"declaration": true,
 		"noImplicitAny": true,
 		"noUnusedLocals": true,
 		"strictNullChecks": false,
-		"moduleResolution": "node",
 		"esModuleInterop": true,
-		"resolveJsonModule": true
+		"outDir": "./dist"
 	}
 }

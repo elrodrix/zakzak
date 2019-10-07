@@ -5,14 +5,14 @@
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
   "scripts": {
-    "prepack": "npm run clean && npm run compile:src",
+    "prepack": "npm run clean && npm run test && npm run lint",
     "clean": "rimraf dist",
     "compile": "npm run compile:src",
     "compile:src": "tsc --project ./src/tsconfig.json",
     "compile:test": "tsc --project ./test/tsconfig.json",
     "lint": "eslint . --ext .ts",
-		"build": "npm run clean && npm run compile && npm run lint",
-		"build:test": "npm run clean && npm run compile:test && npm run lint",
+    "build": "npm run clean && npm run compile && npm run lint",
+    "build:test": "npm run clean && npm run compile:test && npm run lint",
     "pretest": "npm run build:test",
     "test": "mocha -r source-map-support/register ./dist/test/**/*.test.js",
     "install-cli": "npm run build && npm install -g",
@@ -31,9 +31,6 @@
   },
   "author": "Lukas Kurz",
   "license": "Apache-2.0",
-  "files": [
-    "dist/src"
-  ],
   "devDependencies": {
     "@types/chai": "^4.2.3",
     "@types/chai-as-promised": "^7.1.2",

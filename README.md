@@ -3,7 +3,7 @@
 </p>
 <h1 align="center">Zakzak</h1><!-- omit in toc -->
 <h3 align="center">🏎️ 📄 ⏱️ </h3><!-- omit in toc -->
-<h3 align="center">When you need to make sure, your code is fast.</h3><!-- omit in toc -->
+<h3 align="center">When you need to make sure that your code is fast.</h3><!-- omit in toc -->
 <p align="center">
   Zakzak makes microbenchmarking in node.js projects easier and automated, by using a "unit test"-like approach.
 </p>
@@ -22,15 +22,15 @@
 
 * [Usage](#usage)
 * [Documentation](#documentation)
-  * [Define benchmarks](#define-benchmarks)
-  * [Structure the benchmarks using suites](#structure-the-benchmarks-using-suites)
-  * [Configuration](#configuration)
-  * [CLI](#cli)
-  * [Custom Exporter](#custom-exporter)
-  * [Typescript support](#typescript-support)
+	* [Define benchmarks](#define-benchmarks)
+	* [Structure the benchmarks using suites](#structure-the-benchmarks-using-suites)
+	* [Configuration](#configuration)
+	* [CLI](#cli)
+	* [Custom Exporter](#custom-exporter)
+	* [Typescript support](#typescript-support)
 * [Installation](#installation)
-  * [Prerequisites](#prerequisites)
-  * [Using npm](#using-npm)
+	* [Prerequisites](#prerequisites)
+	* [Using npm](#using-npm)
 * [Contributing](#contributing)
 * [Acknowledgements](#acknowledgements)
 * [License](#license)

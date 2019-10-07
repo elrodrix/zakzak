@@ -20,7 +20,7 @@ import TimeUnit from "./time";
 
 export { BenchmarkManager, CLIManager, TimeUnit };
 
-export { SuiteManager, Suite, benchmark, suite } from "./suite";
+export { SuiteManager, Suite, benchmark, suite, setup, teardown } from "./suite";
 
 export {
   ExportManager,

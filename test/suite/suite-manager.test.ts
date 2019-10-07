@@ -17,7 +17,15 @@
 import { expect } from "chai";
 import { merge, last, includes, cloneDeep } from "lodash";
 import * as sinon from "sinon";
-import { SuiteManager, DefaultBenchmarkOptions, Suite, suite, benchmark } from "../../src";
+import {
+  SuiteManager,
+  DefaultBenchmarkOptions,
+  Suite,
+  suite,
+  benchmark,
+  setup,
+  teardown,
+} from "../../src";
 
 describe("SuiteManager", () => {
   afterEach(() => {
@@ -177,5 +185,59 @@ describe("benchmark()", () => {
     benchmark("test123", () => {});
     expect(SuiteManager["instance"].benchmarks[0]).to.exist;
     expect(SuiteManager["instance"].benchmarks[0].name).to.equal("test123");
+  });
+});
+
+describe("setup()", () => {
+  afterEach(() => {
+    delete SuiteManager["instance"];
+  });
+  it("should create new suitemanager if none exists", () => {
+    expect(SuiteManager["instance"]).to.not.exist;
+    setup(() => {});
+    expect(SuiteManager["instance"]).to.exist;
+  });
+  it("should add a setup function", () => {
+    const sm = new SuiteManager(DefaultBenchmarkOptions);
+    sm.addSuite(
+      "test",
+      () => {
+        setup(function abc() {
+          Math.random();
+        });
+      },
+      {},
+    );
+
+    const td = SuiteManager["instance"].suites[0]["setups"][0];
+    expect(td).to.exist;
+    expect(td.name).to.equal("abc");
+  });
+});
+
+describe("teardown()", () => {
+  afterEach(() => {
+    delete SuiteManager["instance"];
+  });
+  it("should create new suitemanager if none exists", () => {
+    expect(SuiteManager["instance"]).to.not.exist;
+    teardown(() => {});
+    expect(SuiteManager["instance"]).to.exist;
+  });
+  it("should add a teardown function", () => {
+    const sm = new SuiteManager(DefaultBenchmarkOptions);
+    sm.addSuite(
+      "test",
+      () => {
+        teardown(function xyz() {
+          Math.random();
+        });
+      },
+      {},
+    );
+
+    const td = SuiteManager["instance"].suites[0]["teardowns"][0];
+    expect(td).to.exist;
+    expect(td.name).to.equal("xyz");
   });
 });

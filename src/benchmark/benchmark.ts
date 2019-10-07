@@ -69,6 +69,10 @@ export class Benchmark {
    * Start the benchmark
    */
   public start(): BenchmarkResult {
+    for (let i = 0, l = this.setups.length; i < l; i++) {
+      this.setups[i]();
+    }
+
     // Get tiniest possible measurement
     const timerResolution = Timer.getResolution();
 
@@ -82,6 +86,10 @@ export class Benchmark {
 
     const stats = Analytics.getFullAnalysis(samples);
 
+    for (let i = 0, l = this.teardowns.length; i < l; i++) {
+      this.teardowns[i]();
+    }
+
     return {
       id: this.id,
       name: this.name,
@@ -92,6 +100,39 @@ export class Benchmark {
       options: this.options,
     };
   }
+
+  public applySetupAndTeardown(setups: Function[] = [], teardowns: Function[] = []) {
+    this.prependSetup(...setups);
+    this.addTeardown(...teardowns);
+  }
+
+  /**
+   * Add setup functions
+   * @param fn Setup functions
+   */
+  public addSetup(...fn: Function[]) {
+    this.setups.push(...fn);
+  }
+
+  /**
+   * Add setup functions at the beginning
+   * @param fn Setup functions
+   */
+  public prependSetup(...fn: Function[]) {
+    this.setups.unshift(...fn);
+  }
+
+  /**
+   * Add teardown functions
+   * @param fn Teardown functions
+   */
+  public addTeardown(...fn: Function[]) {
+    this.teardowns.push(...fn);
+  }
+
+  private teardowns: Function[] = [];
+
+  private setups: Function[] = [];
 
   /**
    * Estimates max amount of cycles that is possible before minTime is reached

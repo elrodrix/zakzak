@@ -71,4 +71,38 @@ export default class Suite {
   public addChild(child: Benchmark | Suite) {
     this.children.push(child);
   }
+
+  public applySetupAndTeardown(setups = this.setups, teardowns = this.teardowns) {
+    this.children.forEach(c => {
+      c.applySetupAndTeardown(setups, teardowns);
+    });
+  }
+
+  /**
+   * Add setup functions
+   * @param fn Setup functions
+   */
+  public addSetup(...fn: Function[]) {
+    this.setups.push(...fn);
+  }
+
+  /**
+   * Add setup functions at the beginning
+   * @param fn Setup functions
+   */
+  public prependSetup(...fn: Function[]) {
+    this.setups.unshift(...fn);
+  }
+
+  /**
+   * Add teardown functions
+   * @param fn Teardown functions
+   */
+  public addTeardown(...fn: Function[]) {
+    this.teardowns.push(...fn);
+  }
+
+  private teardowns: Function[] = [];
+
+  private setups: Function[] = [];
 }

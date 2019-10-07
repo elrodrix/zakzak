@@ -24,6 +24,7 @@
 * [Documentation](#documentation)
 	* [Define benchmarks](#define-benchmarks)
 	* [Structure the benchmarks using suites](#structure-the-benchmarks-using-suites)
+	* [Setup and Teardown](#setup-and-teardown)
 	* [Configuration](#configuration)
 	* [CLI](#cli)
 	* [Custom Exporter](#custom-exporter)
@@ -115,6 +116,47 @@ suite("momma-suite", () => {
 There is no limit as to how many nested levels or children you can have.
 
 **Note**: Every file is per default a suite. So even if you don't define any suites, a benchmark will always be a child of a suite. This is done to keep track of the structure and location of benchmarks.
+
+### Setup and Teardown
+
+`setup()` and `teardown()` are two more functions, that can be utilized in the .benchmark.ts files. As their names suggest, they run setup and teardown code, before and after the benchmarking. Important to note is, that code is only run once before and/or after the benchmarking, and is not repeated everytime the benchmarking code runs.
+
+```ts
+suite("demo", ()=>{
+  setup(()=>{
+    dbconnection = connectToDb();
+  });
+  benchmark("some-db-stuff",()=>{
+    ...
+  });
+  teardown(()=>{
+    dbconnection.close();
+  });
+});
+```
+
+The hierarchy system using suites can be also be leveraged by lifetime functions, such as setup and teardown. Lifetime functions from a parent suite also apply to all child suites, however there is a order in which parent and child lifetime functions are executed.
+For setup functions it works like this.
+
+```ts
+suite("a", ()=>{
+  setup(()=>{});	// is executed first
+  suite("b", ()=>{
+    setup(()=>{});	// is executed second
+	});
+});
+```
+
+For teardown functions the order is reversed.
+
+```ts
+suite("a", ()=>{
+  teardown(()=>{});	// is executed second
+  suite("b", ()=>{
+    teardown(()=>{});	// is executed first
+	});
+});
+```
 
 ### Configuration
 

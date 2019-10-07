@@ -24,7 +24,7 @@ import { BenchmarkOptions, DefaultBenchmarkOptions } from "../config";
  * Manages the finding of files, suites and benchmarks,
  * as well as keeping track of the structure and hierarchy.
  */
-export class SuiteManager {
+export default class SuiteManager {
   /**
    * List of all files found
    */
@@ -59,6 +59,18 @@ export class SuiteManager {
     return SuiteManager.instance;
   }
 
+  public addSetup(fn: Function) {
+    if (this.currentPath.length > 0) {
+      _.last(this.currentPath).addSetup(fn);
+    }
+  }
+
+  public addTeardown(fn: Function) {
+    if (this.currentPath.length > 0) {
+      _.last(this.currentPath).addTeardown(fn);
+    }
+  }
+
   /**
    * Add suite to list of found suites
    * @param name Name of the suite
@@ -83,6 +95,7 @@ export class SuiteManager {
 
     this.currentPath.push(currentSuite);
     currentSuite.callback();
+    currentSuite.applySetupAndTeardown();
     this.currentPath.pop();
 
     this.suites.push(currentSuite);
@@ -131,6 +144,7 @@ export class SuiteManager {
       );
       this.currentPath = [currentSuite];
       currentSuite.callback();
+      currentSuite.applySetupAndTeardown();
       this.suites.push(currentSuite);
       this.files.push(currentSuite);
     });
@@ -155,26 +169,4 @@ export class SuiteManager {
    * Needed for creating the id of a suite or benchmark
    */
   private currentPath: Suite[] = [];
-}
-
-/**
- * Used to define an enclosing suite inside a benchmark file. Multiple suites can be neighbours and/or nested
- * @param name Name of the Suite
- * @param fn Suite or benchmark inside this suite
- * @param options Options that will be applied to all  benchmarks enclosed in this suite
- */
-export function suite(name: string, fn: Function, options?: BenchmarkOptions): void {
-  const mng = SuiteManager.getInstance();
-  mng.addSuite(name, fn, options);
-}
-
-/**
- * Used to define an benchmark
- * @param name Name of the benchmark
- * @param fn Function that will be benchmarked
- * @param options Options that will be applied for this specific benchmark
- */
-export function benchmark(name: string, fn: Function, options?: BenchmarkOptions): void {
-  const mng = SuiteManager.getInstance();
-  mng.addBenchmark(name, fn, options);
 }

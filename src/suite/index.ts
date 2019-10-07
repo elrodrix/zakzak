@@ -15,7 +15,8 @@
  */
 
 import Suite from "./suite";
+import SuiteManager from "./suite-manager";
 
-export { Suite };
+export { Suite, SuiteManager };
 
-export { SuiteManager, benchmark, suite } from "./suite-manager";
+export { benchmark, suite, setup, teardown } from "./functions";

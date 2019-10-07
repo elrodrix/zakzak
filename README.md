@@ -143,7 +143,7 @@ suite("a", ()=>{
   setup(()=>{});	// is executed first
   suite("b", ()=>{
     setup(()=>{});	// is executed second
-    });
+  });
 });
 ```
 
@@ -154,7 +154,7 @@ suite("a", ()=>{
   teardown(()=>{});	// is executed second
   suite("b", ()=>{
     teardown(()=>{});	// is executed first
-    });
+  });
 });
 ```
 

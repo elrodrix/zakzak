@@ -20,21 +20,21 @@
 
 <!-- toc -->
 
-* [Usage](#usage)
-* [Documentation](#documentation)
-	* [Define benchmarks](#define-benchmarks)
-	* [Structure the benchmarks using suites](#structure-the-benchmarks-using-suites)
-	* [Setup and Teardown](#setup-and-teardown)
-	* [Configuration](#configuration)
-	* [CLI](#cli)
-	* [Custom Exporter](#custom-exporter)
-	* [Typescript support](#typescript-support)
-* [Installation](#installation)
-	* [Prerequisites](#prerequisites)
-	* [Using npm](#using-npm)
-* [Contributing](#contributing)
-* [Acknowledgements](#acknowledgements)
-* [License](#license)
+- [Usage](#usage)
+- [Documentation](#documentation)
+  - [Define benchmarks](#define-benchmarks)
+  - [Structure the benchmarks using suites](#structure-the-benchmarks-using-suites)
+  - [Setup and Teardown](#setup-and-teardown)
+  - [Configuration](#configuration)
+  - [CLI](#cli)
+  - [Custom Exporter](#custom-exporter)
+  - [Typescript support](#typescript-support)
+- [Installation](#installation)
+  - [Prerequisites](#prerequisites)
+  - [Using npm](#using-npm)
+- [Contributing](#contributing)
+- [Acknowledgements](#acknowledgements)
+- [License](#license)
 
 <!-- tocstop -->
 
@@ -143,7 +143,7 @@ suite("a", ()=>{
   setup(()=>{});	// is executed first
   suite("b", ()=>{
     setup(()=>{});	// is executed second
-	});
+    });
 });
 ```
 
@@ -154,7 +154,7 @@ suite("a", ()=>{
   teardown(()=>{});	// is executed second
   suite("b", ()=>{
     teardown(()=>{});	// is executed first
-	});
+    });
 });
 ```
 
@@ -177,9 +177,7 @@ Default -> Config -> CLI Param -> Suite options -> Benchmark options
 In the benchmark files, you apply options like this.
 
 ```ts
-benchmark(
-  "snowflake-with-custom-needs",
-  () => {
+benchmark("snowflake-with-custom-needs",  () => {
     fibonacci(5000);
   },
   { minSamples: 20, maxSamples: 50 }, // options
@@ -189,10 +187,7 @@ benchmark(
 You can also pass the options to a suite, which will then apply those to it's children. However, if an enclosed suite or benchmark has it's own options, then those will be prioritized over the options of the parent suite.
 
 ```ts
-// has minSample: 10
-suite(
-  "momma-suite",
-  () => {
+suite("momma-suite",  () => {
     // has minSamples: 10
     benchmark("some-name", () => {
       fibonacci(5000);

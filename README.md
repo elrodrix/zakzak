@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="zakzak.png" height="180px"/>
+  <img src="https://user-images.githubusercontent.com/22956519/66310240-f96b9480-e90b-11e9-9add-4c8bc8ea8707.png" height="180px"/>
 </p>
 <h1 align="center">Zakzak</h1><!-- omit in toc -->
 <h3 align="center">🏎️ 📄 ⏱️ </h3><!-- omit in toc -->

@@ -22,16 +22,16 @@
 
 - [Usage](#usage)
 - [Documentation](#documentation)
-  - [Define benchmarks](#define-benchmarks)
-  - [Structure the benchmarks using suites](#structure-the-benchmarks-using-suites)
-  - [Setup and Teardown](#setup-and-teardown)
-  - [Configuration](#configuration)
-  - [CLI](#cli)
-  - [Custom Exporter](#custom-exporter)
-  - [Typescript support](#typescript-support)
+	- [Define benchmarks](#define-benchmarks)
+	- [Structure the benchmarks using suites](#structure-the-benchmarks-using-suites)
+	- [Setup and Teardown](#setup-and-teardown)
+	- [Configuration](#configuration)
+	- [CLI](#cli)
+	- [Custom Exporter](#custom-exporter)
+	- [Typescript support](#typescript-support)
 - [Installation](#installation)
-  - [Prerequisites](#prerequisites)
-  - [Using npm](#using-npm)
+	- [Prerequisites](#prerequisites)
+	- [Using npm](#using-npm)
 - [Contributing](#contributing)
 - [Acknowledgements](#acknowledgements)
 - [License](#license)
@@ -266,8 +266,8 @@ Install `zakzak` globally or locally in your project using `npm`.
 **NOTE:** Zakzak is not yet released on npm, since it's still under development. If you have downloaded or installed a package called zakzak, than it is not this project and most likely malicious.
 
 ```bash
-$ npm install -g zakzak # global
-$ npm install --save-dev zakzak # local
+$ npm install -g @dynatrace/zakzak # global
+$ npm install --save-dev @dynatrace/zakzak # local
 ```
 
 You can then initialize your project, which creates a `zakzak.config.json` in your directory.

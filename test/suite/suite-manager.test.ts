@@ -213,6 +213,33 @@ describe("setup()", () => {
     expect(td).to.exist;
     expect(td.name).to.equal("abc");
   });
+  it("should be called in the correct order", () => {
+    const sm = new SuiteManager(DefaultBenchmarkOptions);
+    sm.addSuite(
+      "test",
+      () => {
+        setup(function a() {
+          Math.random();
+        });
+        suite("test-child", () => {
+          setup(function b() {
+            Math.random();
+          });
+          setup(function b2() {
+            Math.random();
+          });
+          benchmark("xyz", () => {});
+        });
+        setup(function a2() {
+          Math.random();
+        });
+      },
+      {},
+    );
+
+    const names = sm.benchmarks[0]["setups"].map(f => f.name);
+    expect(names).to.deep.equal(["a", "a2", "b", "b2"]);
+  });
 });
 
 describe("teardown()", () => {
@@ -239,5 +266,32 @@ describe("teardown()", () => {
     const td = SuiteManager["instance"].suites[0]["teardowns"][0];
     expect(td).to.exist;
     expect(td.name).to.equal("xyz");
+  });
+  it("should be called in the correct order", () => {
+    const sm = new SuiteManager(DefaultBenchmarkOptions);
+    sm.addSuite(
+      "test",
+      () => {
+        teardown(function a() {
+          Math.random();
+        });
+        suite("test-child", () => {
+          teardown(function b() {
+            Math.random();
+          });
+          teardown(function b2() {
+            Math.random();
+          });
+          benchmark("xyz", () => {});
+        });
+        teardown(function a2() {
+          Math.random();
+        });
+      },
+      {},
+    );
+
+    const names = sm.benchmarks[0]["teardowns"].map(f => f.name);
+    expect(names).to.deep.equal(["b", "b2", "a", "a2"]);
   });
 });

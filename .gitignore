@@ -63,6 +63,9 @@ typings/
 # Output of 'npm pack'
 *.tgz
 
+# npm configuration (may hold tokens)
+.npmrc
+
 # Yarn Integrity file
 .yarn-integrity
 

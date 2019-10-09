@@ -22,16 +22,17 @@
 
 - [Usage](#usage)
 - [Documentation](#documentation)
-	- [Define benchmarks](#define-benchmarks)
-	- [Structure the benchmarks using suites](#structure-the-benchmarks-using-suites)
-	- [Setup and Teardown](#setup-and-teardown)
-	- [Configuration](#configuration)
-	- [CLI](#cli)
-	- [Custom Exporter](#custom-exporter)
-	- [Typescript support](#typescript-support)
+  - [Define benchmarks](#define-benchmarks)
+  - [Structure the benchmarks using suites](#structure-the-benchmarks-using-suites)
+  - [Setup and Teardown](#setup-and-teardown)
+  - [Async Benchmarks](#async-benchmarks)
+  - [Configuration](#configuration)
+  - [CLI](#cli)
+  - [Custom Exporter](#custom-exporter)
+  - [Typescript support](#typescript-support)
 - [Installation](#installation)
-	- [Prerequisites](#prerequisites)
-	- [Using npm](#using-npm)
+  - [Prerequisites](#prerequisites)
+  - [Using npm](#using-npm)
 - [Contributing](#contributing)
 - [Acknowledgements](#acknowledgements)
 - [License](#license)
@@ -139,10 +140,10 @@ The hierarchy system using suites can be also be leveraged by lifetime functions
 For setup functions it works like this.
 
 ```ts
-suite("a", ()=>{
-  setup(()=>{});	// is executed first
-  suite("b", ()=>{
-    setup(()=>{});	// is executed second
+suite("a", () => {
+  setup(() => {}); // is executed first
+  suite("b", () => {
+    setup(() => {}); // is executed second
   });
 });
 ```
@@ -150,11 +151,25 @@ suite("a", ()=>{
 For teardown functions the order is reversed.
 
 ```ts
-suite("a", ()=>{
-  teardown(()=>{});	// is executed second
-  suite("b", ()=>{
-    teardown(()=>{});	// is executed first
+suite("a", () => {
+  teardown(() => {}); // is executed second
+  suite("b", () => {
+    teardown(() => {}); // is executed first
   });
+});
+```
+
+### Async Benchmarks
+
+To Benchmark asynchronous stuff, either return a Promise that resolves, onces you're finished or mark you function as `async` (which makes it return a promise).
+
+```ts
+benchmark("promise", () => {
+  return willReturnAPromise();
+});
+
+benchmark("async-await", async () => {
+  doStuffThatsAsync();
 });
 ```
 
@@ -177,7 +192,9 @@ Default -> Config -> CLI Param -> Suite options -> Benchmark options
 In the benchmark files, you apply options like this.
 
 ```ts
-benchmark("snowflake-with-custom-needs",  () => {
+benchmark(
+  "snowflake-with-custom-needs",
+  () => {
     fibonacci(5000);
   },
   { minSamples: 20, maxSamples: 50 }, // options
@@ -187,7 +204,9 @@ benchmark("snowflake-with-custom-needs",  () => {
 You can also pass the options to a suite, which will then apply those to it's children. However, if an enclosed suite or benchmark has it's own options, then those will be prioritized over the options of the parent suite.
 
 ```ts
-suite("momma-suite",  () => {
+suite(
+  "momma-suite",
+  () => {
     // has minSamples: 10
     benchmark("some-name", () => {
       fibonacci(5000);
@@ -204,13 +223,13 @@ If none of the configuration types provides a value for an options field, then t
 
 The CLI tool is used to find, structure and run the benchmarks. Per default, it will look for a `zakzak.config.json` in the current working directory. If it doesn't find this config, it will use the default values of the framework. You can also override some of the settings using the CLI params.
 
-* **`-v, --version`:** Output the version number of zakzak.
-* **`-p, --pattern <pattern>`:** Glob pattern used to match the targeted files.
-* **`-P, --path <path>`:** Relative or absolute path to folder which contains the files.
-* **`-c, --config <path>`:** Relative or absolute path to the config. Default is `zakzak.config.json`.
-* **`-e, --exporter <path-or-name>`:** Add an additional exporter. Can be one of the default exporters, i.e. `console`, `console-async`, `xml`, `json` and `csv` or a custom exporter. If it's a custom exporter then enter the path to the file containing it.
-* **`--init`:** Initializes a project by creating a `zakzak.config.json` with the default values.
-* **`-h, --help`:** Prints information on the cli and it's usage.
+- **`-v, --version`:** Output the version number of zakzak.
+- **`-p, --pattern <pattern>`:** Glob pattern used to match the targeted files.
+- **`-P, --path <path>`:** Relative or absolute path to folder which contains the files.
+- **`-c, --config <path>`:** Relative or absolute path to the config. Default is `zakzak.config.json`.
+- **`-e, --exporter <path-or-name>`:** Add an additional exporter. Can be one of the default exporters, i.e. `console`, `console-async`, `xml`, `json` and `csv` or a custom exporter. If it's a custom exporter then enter the path to the file containing it.
+- **`--init`:** Initializes a project by creating a `zakzak.config.json` with the default values.
+- **`-h, --help`:** Prints information on the cli and it's usage.
 
 ### Custom Exporter
 
@@ -243,7 +262,6 @@ The `onHierarchy`, `onResult`, `onFinished` are set in the base constructor and 
 **`onResult`** is triggered as soon as a benchmark finishes and outputs its results. This can be used to have a live preview of which benchmarks are still running and which are already finished.
 
 **`onFinished`** returns the results of all the benchmarks, once they are all finished.
-
 
 ### Typescript support
 

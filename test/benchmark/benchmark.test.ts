@@ -49,8 +49,8 @@ describe("Benchmark", () => {
       benchmark = new Benchmark("foobar.js:foo:bar", "bar", a, "foobar.js", cloneDeep(options));
     });
 
-    it("should run the benchmark and return results", () => {
-      const result = benchmark.start();
+    it("should run the benchmark and return results", async () => {
+      const result = await benchmark.start();
       expect(result)
         .to.deep.include({
           id: "foobar.js:foo:bar",
@@ -69,8 +69,8 @@ describe("Benchmark", () => {
         });
     });
 
-    it("should not have more or less samples than specified in the options", () => {
-      const result = benchmark.start();
+    it("should not have more or less samples than specified in the options", async () => {
+      const result = await benchmark.start();
       expect(result.times.length).to.be.within(options.minSamples, options.maxSamples);
     });
   });

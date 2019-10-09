@@ -1,3 +1,4 @@
+/* eslint-disable no-await-in-loop */
 /*!
  * Copyright 2019, Dynatrace LLC
  *
@@ -28,6 +29,8 @@ export class Benchmark {
    * Options for the benchmark
    */
   private options: BenchmarkOptions;
+
+  private async = false;
 
   /**
    * Creates a new benchmark
@@ -65,32 +68,55 @@ export class Benchmark {
     return this.options;
   }
 
-  /**
-   * Start the benchmark
-   */
-  public start(): BenchmarkResult {
+  private async runSetups() {
     for (let i = 0, l = this.setups.length; i < l; i++) {
       this.setups[i]();
     }
+    return Promise.resolve();
+  }
 
+  private async runTeardowns() {
+    for (let i = 0, l = this.teardowns.length; i < l; i++) {
+      this.teardowns[i]();
+    }
+    return Promise.resolve();
+  }
+
+  private getMinTime() {
     // Get tiniest possible measurement
     const timerResolution = Timer.getResolution();
 
     // Calculate size of target measurement using the resolution
-    let minTime = Analytics.reduceUncertainty(timerResolution, 0.01);
-    minTime = Math.max(minTime, this.options.minTime); // take biggest minTime
+    const minTime = Analytics.reduceUncertainty(timerResolution, 0.01);
+    return Math.max(minTime, this.options.minTime); // take biggest minTime
+  }
 
-    // Get optimal cycle count possible in minTime and then collect samples
-    const optimalCount = this.getMaxCycles(minTime);
-    const samples = this.getSamples(optimalCount).map(sample => sample / optimalCount);
+  /**
+   * Start the benchmark
+   */
+  public async start() {
+    this.async = this.isAsync();
+    const minTime = this.getMinTime();
+
+    await this.runSetups();
+
+    let optimalCount: number;
+    let samples: number[];
+    console.log(this.async);
+    if (this.async) {
+      optimalCount = await this.getMaxCyclesAsync(minTime);
+      samples = (await this.getSamplesAsync(optimalCount)).map(sample => sample / optimalCount);
+    } else {
+      // Get optimal cycle count possible in minTime and then collect samples
+      optimalCount = this.getMaxCycles(minTime);
+      samples = this.getSamples(optimalCount).map(sample => sample / optimalCount);
+    }
+
+    await this.runTeardowns();
 
     const stats = Analytics.getFullAnalysis(samples);
 
-    for (let i = 0, l = this.teardowns.length; i < l; i++) {
-      this.teardowns[i]();
-    }
-
-    return {
+    return Promise.resolve({
       id: this.id,
       name: this.name,
       filename: this.filepath,
@@ -98,7 +124,13 @@ export class Benchmark {
       count: optimalCount,
       times: samples,
       options: this.options,
-    };
+    });
+  }
+
+  private isAsync() {
+    const x = this.fn();
+    // eslint-disable-next-line dot-notation
+    return x !== undefined && x["then"] !== undefined;
   }
 
   public applySetupAndTeardown(setups: Function[] = [], teardowns: Function[] = []) {
@@ -150,6 +182,21 @@ export class Benchmark {
   }
 
   /**
+   * Estimates max amount of cycles that is possible before minTime is reached
+   * @param minTime Minimum time that one complete sample can take
+   */
+  private async getMaxCyclesAsync(minTime: number) {
+    let result = { count: 1, finished: false }; // Start values
+
+    // Save result and repeat until finished == true
+    while (result.finished === false) {
+      result = await this.cycleAsync(result.count, minTime);
+    }
+
+    return result.count;
+  }
+
+  /**
    * Execute function for specified amount of times,
    * then estimate how many more times would be possible until minTime is reached.
    * Sets `finished=true` when minTime is reached.
@@ -158,6 +205,27 @@ export class Benchmark {
    */
   private cycle(count: number, minTime: number) {
     const time = this.execute(count); // Time spent executing the function for count times
+    const period = time / count; // Average time for a single execution
+    const timeLeft = minTime - time; // Time left until minTime is reached
+
+    // Calculate nextCount based on how often period fits into timeLeft
+    const nextCount = count + (time <= 0 ? count * 100 : Math.ceil(timeLeft / period));
+
+    if (time <= minTime) {
+      return { count: nextCount, finished: false };
+    } // If minTime is reached
+    return { count, finished: true };
+  }
+
+  /**
+   * Execute function for specified amount of times,
+   * then estimate how many more times would be possible until minTime is reached.
+   * Sets `finished=true` when minTime is reached.
+   * @param count Amount of times the function should be repeated
+   * @param minTime The minTime which should be reached
+   */
+  private async cycleAsync(count: number, minTime: number) {
+    const time = await this.executeAsync(count); // Time spent executing the function for count times
     const period = time / count; // Average time for a single execution
     const timeLeft = minTime - time; // Time left until minTime is reached
 
@@ -197,14 +265,55 @@ export class Benchmark {
   }
 
   /**
+   * Executes function for specified amount of times, amounting to a single sample.
+   * Repeats the process until maxTime or maxSamples is reached.
+   * @param count Amount of times the function should be repeated
+   */
+  private async getSamplesAsync(count: number) {
+    const samples: number[] = [];
+    const { maxTime } = this.options;
+    const { maxSamples } = this.options;
+    let cycles = this.options.minSamples;
+
+    // Collect the minimum amount of samples
+    while (cycles--) {
+      const time = await this.executeAsync(count);
+      samples.push(time);
+    }
+
+    // Collect more samples until maxTime or maxSamples is reached
+    while (sum(samples) < maxTime && samples.length < maxSamples) {
+      const time = await this.executeAsync(count);
+      samples.push(time);
+    }
+
+    return samples;
+  }
+
+  /**
    * Execute function for specified amount of times
    * @param count Amount of times the function should be repeated
    */
-  private execute(count: number): number {
+  private execute(count: number) {
     const { fn } = this;
     const start = Timer.getTime();
     for (let l = count, i = 0; i < l; i++) {
       fn();
+    }
+    const end = Timer.getTime();
+
+    return end - start;
+  }
+
+  /**
+   * Execute function for specified amount of times
+   * @param count Amount of times the function should be repeated
+   */
+  private async executeAsync(count: number) {
+    const { fn } = this;
+    const start = Timer.getTime();
+    for (let l = count, i = 0; i < l; i++) {
+      await fn();
     }
     const end = Timer.getTime();
 

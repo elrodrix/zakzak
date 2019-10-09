@@ -54,7 +54,7 @@ export class ChildProcessHandler {
    * Starts the logic of the child process
    * @param message Message that was received from parent
    */
-  private onStart(message: StartMessage) {
+  private async onStart(message: StartMessage) {
     this.options = message.options;
     this.manager = new SuiteManager(this.options);
     this.manager.addFiles([message.filename]); // Find benchmark
@@ -63,7 +63,7 @@ export class ChildProcessHandler {
       this.exit(1);
       return;
     }
-    this.runBenchmark();
+    await this.runBenchmark();
     this.sendResults();
   }
 
@@ -93,8 +93,8 @@ export class ChildProcessHandler {
   /**
    * Run the benchmark
    */
-  private runBenchmark() {
-    this.result = this.benchmark.start();
+  private async runBenchmark() {
+    this.result = await this.benchmark.start();
   }
 
   /**

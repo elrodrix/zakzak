@@ -102,7 +102,6 @@ export class Benchmark {
 
     let optimalCount: number;
     let samples: number[];
-    console.log(this.async);
     if (this.async) {
       optimalCount = await this.getMaxCyclesAsync(minTime);
       samples = (await this.getSamplesAsync(optimalCount)).map(sample => sample / optimalCount);

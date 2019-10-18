@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
+import { last } from "lodash";
 import { table } from "table";
+import chalk from "chalk";
 import { Exporter } from "../exporter";
 import { BenchmarkResult } from "../../benchmark";
 import TimeUnit from "../../time";
@@ -51,10 +53,42 @@ export default class ConsoleExporter extends Exporter {
       ConsoleExporter.nsToPrettyString(r.stats.max),
     ]);
 
+    data.push(
+      ...this.errors.map(e => [
+        chalk.red(last(e.id.split(":"))),
+        "-",
+        "-",
+        "-",
+        "-",
+        "-",
+        "-",
+        "-",
+        "-",
+        "-",
+        "-",
+      ]),
+    );
+
     const output = table([header, ...data]);
 
     console.log(output);
+
+    console.log(chalk.red(`\n${this.errors.length} benchmarks failed.\n`));
+    console.log(
+      chalk.red(
+        this.errors
+          .map(v => `* ${v.id} failed with:\n\t${v.error.message.replace("\n", "\n\t")}`)
+          .join("\n"),
+      ),
+    );
+    console.log();
   }
+
+  public onError(error: Error, benchmarkId: string) {
+    this.errors.push({ id: benchmarkId, error });
+  }
+
+  private errors: { error: Error; id: string }[] = [];
 
   private static nsToPrettyString(time: number) {
     let unit = "ns";

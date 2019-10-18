@@ -47,7 +47,6 @@ export class ChildProcessHandler {
    */
   public registerEventHandlers() {
     process.on("message", this.onStart.bind(this)); // Once a message is received, then benchmark can start
-    process.on("uncaughtException", this.onError.bind(this));
   }
 
   /**
@@ -55,14 +54,14 @@ export class ChildProcessHandler {
    * @param message Message that was received from parent
    */
   private async onStart(message: StartMessage) {
-    this.options = message.options;
-    this.manager = new SuiteManager(this.options);
+    this.manager = new SuiteManager(message.options);
     this.manager.addFiles([message.filename]); // Find benchmark
     this.benchmark = this.manager.getBenchmark(message.benchmarkID);
     if (this.benchmark == null) {
       this.exit(1);
       return;
     }
+
     await this.runBenchmark();
     this.sendResults();
   }
@@ -84,7 +83,7 @@ export class ChildProcessHandler {
    */
   private onError(error: Error) {
     const message: ExitMessage = {
-      error,
+      error: JSON.parse(JSON.stringify(error, Object.getOwnPropertyNames(error))),
     };
     process.send(message);
     this.exit(1);
@@ -94,7 +93,13 @@ export class ChildProcessHandler {
    * Run the benchmark
    */
   private async runBenchmark() {
-    this.result = await this.benchmark.start();
+    try {
+      this.result = await this.benchmark.start();
+    } catch (error) {
+      if (error instanceof Error) {
+        this.onError(error);
+      }
+    }
   }
 
   /**

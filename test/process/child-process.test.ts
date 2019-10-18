@@ -20,13 +20,6 @@ describe("ChildProcessHandler", () => {
         const x = onStub.calledWith("message");
         expect(x).to.be.true;
       });
-
-      it("should register on uncaughtException", () => {
-        const cp = new ChildProcessHandler();
-        cp.registerEventHandlers();
-        const x = onStub.calledWith("uncaughtException");
-        expect(x).to.be.true;
-      });
     });
   });
 });

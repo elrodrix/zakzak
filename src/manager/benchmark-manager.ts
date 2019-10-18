@@ -37,11 +37,6 @@ export default class BenchmarkManager {
   public async run() {
     let messages: ExitMessage[] = [];
     messages = await this.runParallel();
-    messages
-      .filter(m => m.error != null)
-      .forEach(m => {
-        throw m.error;
-      });
     const results = messages.filter(m => m.result !== null).map(m => m.result);
     this.exporter.exportFinished(results);
     return results;
@@ -68,12 +63,19 @@ export default class BenchmarkManager {
     const producer = () => {
       if (processes.length > 0) {
         const p = processes.shift();
-        return p.run().then(msg => {
-          if (msg.result) {
-            exporter.exportResult(msg.result);
-          }
-          results.push(msg);
-        });
+        return p
+          .run()
+          .then(msg => {
+            if (msg.result) {
+              exporter.exportResult(msg.result);
+              results.push(msg);
+            } else if (msg.error) {
+              exporter.exportError(msg.error, p.benchmarkId);
+            }
+          })
+          .catch((error: Error) => {
+            exporter.exportError(error, p.benchmarkId);
+          });
       }
       return null;
     };

@@ -68,18 +68,28 @@ export class Benchmark {
     return this.options;
   }
 
-  private async runSetups() {
-    for (let i = 0, l = this.setups.length; i < l; i++) {
-      this.setups[i]();
+  private runSetups() {
+    try {
+      for (let i = 0, l = this.setups.length; i < l; i++) {
+        this.setups[i]();
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error(`Error during setup phase:\n${error.message}`);
+      }
     }
-    return Promise.resolve();
   }
 
-  private async runTeardowns() {
-    for (let i = 0, l = this.teardowns.length; i < l; i++) {
-      this.teardowns[i]();
+  private runTeardowns() {
+    try {
+      for (let i = 0, l = this.teardowns.length; i < l; i++) {
+        this.teardowns[i]();
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error(`Èrror during teardown phase:\n${error.message}`);
+      }
     }
-    return Promise.resolve();
   }
 
   private getMinTime() {
@@ -95,10 +105,9 @@ export class Benchmark {
    * Start the benchmark
    */
   public async start() {
-    this.async = this.isAsync();
     const minTime = this.getMinTime();
-
-    await this.runSetups();
+    this.runSetups();
+    this.async = this.isAsync();
 
     let optimalCount: number;
     let samples: number[];
@@ -111,7 +120,7 @@ export class Benchmark {
       samples = this.getSamples(optimalCount).map(sample => sample / optimalCount);
     }
 
-    await this.runTeardowns();
+    this.runTeardowns();
 
     const stats = Analytics.getFullAnalysis(samples);
 
@@ -127,9 +136,16 @@ export class Benchmark {
   }
 
   private isAsync() {
-    const x = this.fn();
-    // eslint-disable-next-line dot-notation
-    return x !== undefined && x["then"] !== undefined;
+    let x;
+    try {
+      x = this.fn();
+    } catch (error) {
+      if (error instanceof Error) {
+        error.message = `Error during async check:\n${error.message}`;
+        throw error;
+      }
+    }
+    return x !== undefined && x.then !== undefined;
   }
 
   public applySetupAndTeardown(setups: Function[] = [], teardowns: Function[] = []) {

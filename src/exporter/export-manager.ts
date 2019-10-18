@@ -67,6 +67,13 @@ export default class ExportManager {
     this.em.emit(ExporterEvents.Finished, results);
   }
 
+  /**
+   * Trigger the error event
+   */
+  public exportError(error: Error, benchmarkId: string) {
+    this.em.emit(ExporterEvents.Error, error, benchmarkId);
+  }
+
   private em: EventEmitter;
 
   /**

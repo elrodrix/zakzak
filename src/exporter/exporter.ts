@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+/* eslint-disable class-methods-use-this */
 /* eslint @typescript-eslint/no-unused-vars: 0 */
 /* eslint @typescript-eslint/no-empty-function: 0 */
 import { EventEmitter } from "events";
@@ -27,6 +28,7 @@ export enum ExporterEvents {
   Hierarchy = "hierarchy",
   Result = "result",
   Finished = "finished",
+  Error = "error",
 }
 
 /**
@@ -41,6 +43,7 @@ export abstract class Exporter {
     em.on(ExporterEvents.Hierarchy, this.onHierarchy.bind(this));
     em.on(ExporterEvents.Result, this.onResult.bind(this));
     em.on(ExporterEvents.Finished, this.onFinished.bind(this));
+    em.on(ExporterEvents.Error, this.onError.bind(this));
   }
 
   /**
@@ -61,4 +64,10 @@ export abstract class Exporter {
    * @param results All the benchmark results
    */
   public onFinished(results: BenchmarkResult[]): void {}
+
+  /**
+   * Gets triggered an error is thrown in the benchmarking process
+   * @param error The error object that got thrown
+   */
+  public onError(error: Error, benchmarkId: string): void {}
 }

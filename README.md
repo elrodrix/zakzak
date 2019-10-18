@@ -251,6 +251,9 @@ export class AwsS3Exporter extends Exporter {
   onFinished(results: BenchmarkResult[]): void {
     console.log(results);
   }
+  onError(error: Error, id: string): void {
+    console.log(id + " " + error.message);
+  }
 }
 ```
 
@@ -262,6 +265,8 @@ The `onHierarchy`, `onResult`, `onFinished` are set in the base constructor and 
 **`onResult`** is triggered as soon as a benchmark finishes and outputs its results. This can be used to have a live preview of which benchmarks are still running and which are already finished.
 
 **`onFinished`** returns the results of all the benchmarks, once they are all finished.
+
+**`onError`** returns an error that has been thrown during a benchmark and the id of the benchmark.
 
 ### Typescript support
 

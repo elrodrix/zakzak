@@ -30,7 +30,7 @@ export default class BenchmarkProcess {
    * @param options Options for the Benchmark
    */
   constructor(
-    private benchmarkId: string,
+    public benchmarkId: string,
     private filepath: string,
     private options: BenchmarkOptions,
   ) {}

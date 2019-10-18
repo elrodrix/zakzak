@@ -16,6 +16,8 @@
 
 import { createStream } from "table";
 import { EventEmitter } from "events";
+import { last } from "lodash";
+import chalk from "chalk";
 
 import { BenchmarkResult } from "../../benchmark";
 import { Exporter } from "../exporter";
@@ -74,8 +76,35 @@ export default class ConsoleAsyncExporter extends Exporter {
   }
 
   public onFinished(): void {
+    console.log(chalk.red(`\n${this.errors.length} benchmarks failed.\n`));
+    console.log(
+      chalk.red(
+        this.errors
+          .map(v => `* ${v.id} failed with:\n\t${v.error.message.replace("\n", "\n\t")}`)
+          .join("\n"),
+      ),
+    );
     console.log();
   }
+
+  public onError(error: Error, benchmarkId: string) {
+    this.errors.push({ id: benchmarkId, error });
+    this.stream.write([
+      chalk.red(last(benchmarkId.split(":"))),
+      "-",
+      "-",
+      "-",
+      "-",
+      "-",
+      "-",
+      "-",
+      "-",
+      "-",
+      "-",
+    ]);
+  }
+
+  private errors: { error: Error; id: string }[] = [];
 
   private stream: { write: (msg: string[]) => void };
 

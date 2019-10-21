@@ -27,9 +27,19 @@ import {
   teardown,
 } from "../../src";
 
+function getSMfromGlobal() {
+  const globalRef = global as any;
+  return globalRef.suiteManager;
+}
+
+function deleteSM() {
+  const globalRef = global as any;
+  delete globalRef.suiteManager;
+}
+
 describe("SuiteManager", () => {
   afterEach(() => {
-    delete SuiteManager["instance"];
+    deleteSM();
   });
 
   describe("#constructor()", () => {
@@ -42,24 +52,16 @@ describe("SuiteManager", () => {
     it("should set the instance field", () => {
       const sm = new SuiteManager({});
 
-      expect(SuiteManager["instance"]).to.equal(sm);
+      expect(getSMfromGlobal()).to.equal(sm);
     });
   });
 
   describe(".getInstance()", () => {
-    it("should set instance when none exists", () => {
-      expect(SuiteManager["instance"]).to.not.exist;
+    it("should return instance from global", () => {
+      const globalRef = global as any;
+      globalRef.suiteManager = { test: 123 };
 
-      const instance = SuiteManager.getInstance();
-      expect(SuiteManager["instance"]).to.exist.and.to.equal(instance);
-    });
-
-    it("should not set instance if one already exists", () => {
-      const first = SuiteManager.getInstance();
-      expect(SuiteManager["instance"]).to.exist;
-
-      const second = SuiteManager.getInstance();
-      expect(second).to.equal(first);
+      expect(SuiteManager.getInstance()).to.deep.equal({ test: 123 });
     });
   });
 
@@ -158,44 +160,37 @@ describe("SuiteManager", () => {
   });
 });
 describe("suite()", () => {
-  afterEach(() => {
-    delete SuiteManager["instance"];
+  beforeEach(() => {
+    // eslint-disable-next-line no-new
+    new SuiteManager({});
   });
-  it("should create new suitemanager if none exists", () => {
-    expect(SuiteManager["instance"]).to.not.exist;
-    suite("test", () => {});
-    expect(SuiteManager["instance"]).to.exist;
+  afterEach(() => {
+    deleteSM();
   });
   it("should add new suite", () => {
     suite("test123", () => {});
-    expect(SuiteManager["instance"].suites[0]).to.exist;
-    expect(SuiteManager["instance"].suites[0].name).to.equal("test123");
+    expect(getSMfromGlobal().suites[0]).to.exist;
+    expect(getSMfromGlobal().suites[0].name).to.equal("test123");
   });
 });
 describe("benchmark()", () => {
-  afterEach(() => {
-    delete SuiteManager["instance"];
+  beforeEach(() => {
+    // eslint-disable-next-line no-new
+    new SuiteManager({});
   });
-  it("should create new suitemanager if none exists", () => {
-    expect(SuiteManager["instance"]).to.not.exist;
-    benchmark("", () => {});
-    expect(SuiteManager["instance"]).to.exist;
+  afterEach(() => {
+    deleteSM();
   });
   it("should add new benchmark", () => {
     benchmark("test123", () => {});
-    expect(SuiteManager["instance"].benchmarks[0]).to.exist;
-    expect(SuiteManager["instance"].benchmarks[0].name).to.equal("test123");
+    expect(getSMfromGlobal().benchmarks[0]).to.exist;
+    expect(getSMfromGlobal().benchmarks[0].name).to.equal("test123");
   });
 });
 
 describe("setup()", () => {
   afterEach(() => {
-    delete SuiteManager["instance"];
-  });
-  it("should create new suitemanager if none exists", () => {
-    expect(SuiteManager["instance"]).to.not.exist;
-    setup(() => {});
-    expect(SuiteManager["instance"]).to.exist;
+    deleteSM();
   });
   it("should add a setup function", () => {
     const sm = new SuiteManager(DefaultBenchmarkOptions);
@@ -209,7 +204,7 @@ describe("setup()", () => {
       {},
     );
 
-    const td = SuiteManager["instance"].suites[0]["setups"][0];
+    const td = getSMfromGlobal().suites[0]["setups"][0];
     expect(td).to.exist;
     expect(td.name).to.equal("abc");
   });
@@ -244,12 +239,7 @@ describe("setup()", () => {
 
 describe("teardown()", () => {
   afterEach(() => {
-    delete SuiteManager["instance"];
-  });
-  it("should create new suitemanager if none exists", () => {
-    expect(SuiteManager["instance"]).to.not.exist;
-    teardown(() => {});
-    expect(SuiteManager["instance"]).to.exist;
+    deleteSM();
   });
   it("should add a teardown function", () => {
     const sm = new SuiteManager(DefaultBenchmarkOptions);
@@ -263,7 +253,7 @@ describe("teardown()", () => {
       {},
     );
 
-    const td = SuiteManager["instance"].suites[0]["teardowns"][0];
+    const td = getSMfromGlobal().suites[0]["teardowns"][0];
     expect(td).to.exist;
     expect(td.name).to.equal("xyz");
   });

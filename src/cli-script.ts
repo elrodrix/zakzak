@@ -30,5 +30,9 @@ try {
   // eslint-disable-next-line import/no-dynamic-require, global-require
   require(entrypoint);
 } catch (error) {
-  console.error(`No zakzak installation found under ${entrypoint}`);
+  if (error instanceof Error && error.message.indexOf("Cannot find module") !== -1) {
+    console.error(`No zakzak installation found under ${entrypoint}`);
+  } else {
+    console.error(error);
+  }
 }

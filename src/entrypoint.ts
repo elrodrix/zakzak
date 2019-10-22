@@ -22,6 +22,7 @@ import { OptionsManager } from "./config";
 import { SuiteManager } from "./suite";
 import { ExportManager } from "./exporter";
 
+CLIManager.init();
 const paramOptions = CLIManager.getOptions();
 
 const options = new OptionsManager();

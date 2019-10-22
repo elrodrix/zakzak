@@ -46,19 +46,17 @@ export default class SuiteManager {
    */
   constructor(private options: BenchmarkOptions) {
     this.options = _.merge({}, DefaultBenchmarkOptions, options);
-    this.setGlobalReference();
+    SuiteManager.instance = this;
   }
 
+  /**
+   * Get the singleton instance of the benchmark manager
+   */
   public static getInstance() {
-    // This reference prevents typescript from throwing errors during building
-    const globalRef = (global as any) as GlobalWithSuiteManager;
-    return globalRef.suiteManager;
-  }
-
-  public setGlobalReference() {
-    // This reference prevents typescript from throwing errors during building
-    const globalRef = (global as any) as GlobalWithSuiteManager;
-    globalRef.suiteManager = this;
+    if (this.instance == null) {
+      SuiteManager.instance = new SuiteManager(DefaultBenchmarkOptions);
+    }
+    return SuiteManager.instance;
   }
 
   public addSetup(fn: Function) {
@@ -161,12 +159,14 @@ export default class SuiteManager {
   }
 
   /**
+   * Singleton instance of the suitemanager.
+   * Needed for the globals
+   */
+  private static instance: SuiteManager;
+
+  /**
    * Current path that the suite manager is traversing.
    * Needed for creating the id of a suite or benchmark
    */
   private currentPath: Suite[] = [];
-}
-
-interface GlobalWithSuiteManager {
-  suiteManager: SuiteManager;
 }

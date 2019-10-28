@@ -9,6 +9,8 @@ src/
 test/
 .vscode/
 dist/test/
-
-
-
+.nyc_output/
+coverage/
+azure-pipelines.yml
+test-results.xml
+.nyc

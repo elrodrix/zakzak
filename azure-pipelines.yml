@@ -80,7 +80,7 @@ steps:
           [ "$1" = "`echo -e "$1\n$2" | sort -V | head -n1`" ]
       }
       
-      LATEST_VERSION=$(npm show @awesome-shorty/why-shorty-is-awesome version)
+      LATEST_VERSION=$(npm show @dynatrace/zakzak version)
       PACKAGE_VERSION=$(node -p -e "require('./package.json').version")
       
       echo "Latest version is $LATEST_VERSION"

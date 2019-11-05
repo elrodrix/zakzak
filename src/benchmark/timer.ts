@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import _ from "lodash";
+import { mean } from "lodash";
 
 import TimeUnit from "../time";
 
@@ -50,6 +50,6 @@ export default class Timer {
 
       times.push(now - begin);
     }
-    return _.mean(times);
+    return mean(times);
   }
 }

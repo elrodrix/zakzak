@@ -59,6 +59,10 @@ export default class ConsoleAsyncExporter extends Exporter {
     this.stream.write(header);
   }
 
+  /**
+   * Add a new
+   * @param result
+   */
   public onResult(result: BenchmarkResult): void {
     this.stream.write([
       result.name,

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import _ from "lodash";
+import { merge } from "lodash";
 
 import { DefaultBenchmarkOptions, DefaultBenchmarkManagerOptions, OptionsWrapper } from "./options";
 
@@ -39,8 +39,8 @@ export default class OptionsManager {
    * @param options New options that will override current option values
    */
   public change(options: OptionsWrapper) {
-    this.benchmarkOptions = _.merge({}, this.benchmarkOptions, options.benchmark);
-    this.benchmarkManagerOptions = _.merge({}, this.benchmarkManagerOptions, options.manager);
+    this.benchmarkOptions = merge({}, this.benchmarkOptions, options.benchmark);
+    this.benchmarkManagerOptions = merge({}, this.benchmarkManagerOptions, options.manager);
   }
 
   /**

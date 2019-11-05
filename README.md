@@ -14,6 +14,7 @@
   <a href="https://www.typescriptlang.org/">
     <img src="https://badgen.net/badge/Built%20With/Typescript/blue" alt="Zakzak is built with and supports Typescript" />
   </a>
+  <img src="https://dev.azure.com/dynatrace-opensource/zakzak/_apis/build/status/Dynatrace.zakzak?branchName=master" />
 </p>
 
 ## Table of Contents<!-- omit in toc -->

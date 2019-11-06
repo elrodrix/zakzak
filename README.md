@@ -16,6 +16,7 @@
   </a>
   <img src="https://dev.azure.com/dynatrace-opensource/zakzak/_apis/build/status/Dynatrace.zakzak?branchName=master" />
   <img src="https://img.shields.io/azure-devops/coverage/dynatrace-opensource/zakzak/1?style=flat" />
+  <img src="https://img.shields.io/npm/v/@dynatrace/zakzak" />
 </p>
 
 ## Table of Contents<!-- omit in toc -->

@@ -287,9 +287,7 @@ Note: `zakzak` might work with earlier versions of node, but is yet to be tested
 
 ### Using npm
 
-Install `zakzak` globally or locally in your project using `npm`.
-
-**NOTE:** Zakzak is not yet released on npm, since it's still under development. If you have downloaded or installed a package called zakzak, than it is not this project and most likely malicious.
+Install `@dynatrace/zakzak` globally or locally in your project using `npm`.
 
 ```bash
 $ npm install -g @dynatrace/zakzak # global

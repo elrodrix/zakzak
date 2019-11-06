@@ -15,6 +15,7 @@
     <img src="https://badgen.net/badge/Built%20With/Typescript/blue" alt="Zakzak is built with and supports Typescript" />
   </a>
   <img src="https://dev.azure.com/dynatrace-opensource/zakzak/_apis/build/status/Dynatrace.zakzak?branchName=master" />
+  <img src="https://img.shields.io/azure-devops/coverage/dynatrace-opensource/zakzak/1?style=flat" />
 </p>
 
 ## Table of Contents<!-- omit in toc -->

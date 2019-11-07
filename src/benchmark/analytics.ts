@@ -131,7 +131,7 @@ export class Analytics {
    * @param samples The samples
    */
   public static getMedian(samples: number[]) {
-    const sorted = samples.sort((a, b) => a - b);
+    const sorted = _.orderBy(samples);
     if (sorted.length % 2 === 0) {
       // array with even number elements
       return (sorted[sorted.length / 2] + sorted[sorted.length / 2 - 1]) / 2;

@@ -1,0 +1,21 @@
+{
+  "name": "zakzak-dynatrace",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "scripts": {
+    "start": "npm run build && node dist/index.js",
+    "build": "tsc",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "generate": "json2ts -i schema.json -o schema.d.ts"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "lodash": "^4.17.15",
+    "@dynatrace/zakzak": "^0.3.4"
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.14.138"
+  }
+}

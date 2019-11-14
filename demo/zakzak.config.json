@@ -1,0 +1,16 @@
+{
+	"benchmark": {
+		"minTime": 500000,
+		"minSamples": 5,
+		"maxTime": 50000000,
+		"maxSamples": 5000
+	},
+	"manager": {
+		"runParallel": 1,
+		"pattern": "./**/*.benchmark.js",
+		"path": "./",
+		"exporter": [
+			"./dist/custom-exporter.js"
+		]
+	}
+}

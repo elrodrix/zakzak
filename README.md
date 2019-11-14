@@ -67,6 +67,8 @@ Then you run the benchmarks, using the cli.
 $ zakzak --path ./src/benchmarks --exporter json
 ```
 
+You can also take a look at the demo project, to see how zakzak is used.
+
 ## Documentation
 
 ### Define benchmarks

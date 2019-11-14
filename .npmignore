@@ -14,3 +14,4 @@ coverage/
 azure-pipelines.yml
 test-results.xml
 .nyc
+demo/

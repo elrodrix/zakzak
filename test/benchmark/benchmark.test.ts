@@ -46,6 +46,8 @@ describe("Benchmark", () => {
       options = cloneDeep(DefaultBenchmarkOptions);
       options.maxSamples = 50;
       options.maxTime = 500 * TimeUnit.Millisecond;
+      options.minIterations = 10;
+      options.maxIterations = 100;
       benchmark = new Benchmark("foobar.js:foo:bar", "bar", a, "foobar.js", cloneDeep(options));
     });
 
@@ -72,6 +74,11 @@ describe("Benchmark", () => {
     it("should not have more or less samples than specified in the options", async () => {
       const result = await benchmark.start();
       expect(result.times.length).to.be.within(options.minSamples, options.maxSamples);
+    });
+
+    it("should not have more or less iterations than specified in the options", async () => {
+      const result = await benchmark.start();
+      expect(result.count).to.be.within(options.minIterations, options.maxIterations);
     });
   });
 });

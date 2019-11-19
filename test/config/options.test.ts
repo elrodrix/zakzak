@@ -14,6 +14,8 @@ describe("Options", () => {
         maxTime: 0,
         minSamples: 0,
         minTime: 0,
+        maxIterations: 0,
+        minIterations: 0,
       };
 
       expect(DefaultBenchmarkOptions).to.have.all.keys(options);

@@ -86,11 +86,13 @@ describe("SuiteManager", () => {
     });
 
     it("should pass options from parent to child", () => {
-      sm.addBenchmark("test", () => {}, { minTime: 20, minSamples: 2 });
+      sm.addBenchmark("test", () => {}, { minTime: 20, minSamples: 2, minIterations: 12 });
       const options = DefaultBenchmarkOptions;
       options.minSamples = 2;
       options.maxSamples = 10;
       options.minTime = 20;
+      options.maxIterations = 0;
+      options.minIterations = 12;
       expect(sm.benchmarks[0].getOptions()).to.deep.equal(options);
     });
 

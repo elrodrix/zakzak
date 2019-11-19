@@ -38,6 +38,16 @@ export interface BenchmarkOptions {
    * The maximum amount of samples that should be collected
    */
   maxSamples?: number;
+  /**
+   * The minimum amount of iterations that the code should run in a single benchmark.
+   * Ignored if value is equal to, or below zero.
+   */
+  minIterations?: number;
+  /**
+   * The maximum amount of iterations that the code should run in a single benchmark.
+   * Ignored if value is equal to, or below zero.
+   */
+  maxIterations?: number;
 }
 
 /**
@@ -86,6 +96,8 @@ export const DefaultBenchmarkOptions: BenchmarkOptions = {
   minSamples: 5,
   maxTime: 5 * TimeUnit.Second,
   maxSamples: 5000,
+  minIterations: 0,
+  maxIterations: 0,
 };
 
 /**

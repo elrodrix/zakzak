@@ -186,14 +186,23 @@ export class Benchmark {
    * @param minTime Minimum time that one complete sample can take
    */
   private getMaxCycles(minTime: number): number {
-    let result = { count: 1, finished: false }; // Start values
+    let { maxIterations } = this.options;
+    if (maxIterations <= 0) {
+      maxIterations = Infinity;
+    }
+    let { minIterations } = this.options;
+    if (minIterations <= 0) {
+      minIterations = 1;
+    }
+
+    let result = { count: minIterations, finished: false }; // Start values
 
     // Save result and repeat until finished == true
-    while (result.finished === false) {
+    while (result.finished === false && result.count <= maxIterations) {
       result = this.cycle(result.count, minTime);
     }
 
-    return result.count;
+    return Math.min(maxIterations, result.count);
   }
 
   /**
@@ -201,14 +210,23 @@ export class Benchmark {
    * @param minTime Minimum time that one complete sample can take
    */
   private async getMaxCyclesAsync(minTime: number) {
-    let result = { count: 1, finished: false }; // Start values
+    let { maxIterations } = this.options;
+    if (maxIterations <= 0) {
+      maxIterations = Infinity;
+    }
+    let { minIterations } = this.options;
+    if (minIterations <= 0) {
+      minIterations = 1;
+    }
+
+    let result = { count: minIterations, finished: false }; // Start values
 
     // Save result and repeat until finished == true
-    while (result.finished === false) {
+    while (result.finished === false && result.count <= maxIterations) {
       result = await this.cycleAsync(result.count, minTime);
     }
 
-    return result.count;
+    return Math.min(maxIterations, result.count);
   }
 
   /**

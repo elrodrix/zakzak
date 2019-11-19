@@ -232,7 +232,7 @@ The CLI tool is used to find, structure and run the benchmarks. Per default, it 
 - **`-p, --pattern <pattern>`:** Glob pattern used to match the targeted files.
 - **`-P, --path <path>`:** Relative or absolute path to folder which contains the files.
 - **`-c, --config <path>`:** Relative or absolute path to the config. Default is `zakzak.config.json`.
-- **`-e, --exporter <path-or-name>`:** Add an additional exporter. Can be one of the default exporters, i.e. `console`, `console-async`, `xml`, `json` and `csv` or a custom exporter. If it's a custom exporter then enter the path to the file containing it.
+- **`-e, --exporter <path-or-name>`:** Add an additional exporter. Can be one of the default exporters, i.e. `console`, `console-async`, `xml`, `json`, `hierarchy` and `csv` or a custom exporter. If it's a custom exporter then enter the path to the file containing it.
 - **`--init`:** Initializes a project by creating a `zakzak.config.json` with the default values.
 - **`-h, --help`:** Prints information on the cli and it's usage.
 

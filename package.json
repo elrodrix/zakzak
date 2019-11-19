@@ -8,6 +8,7 @@
     "clean": "rimraf dist",
     "compile": "tsc --project ./tsconfig.json",
     "build": "npm run clean && npm run compile && npm run lint",
+    "watch": "npm run clean && tsc --project ./tsconfig.json --watch",
     "lint": "eslint . --ext .ts",
     "test": "mocha --require source-map-support/register ./dist/test/**/*.test.js",
     "test-ci": "mocha --require source-map-support/register --reporter mocha-junit-reporter --reporter-options mochaFile=./.nyc/mocha-report.xml ./dist/test/**/*.test.js",
@@ -60,6 +61,7 @@
     "typescript": "^3.6.4"
   },
   "dependencies": {
+    "@types/terminal-kit": "^1.28.0",
     "chalk": "^2.4.2",
     "commander": "^3.0.0",
     "csv-writer": "^1.5.0",
@@ -68,6 +70,7 @@
     "globby": "^10.0.1",
     "lodash": "^4.17.15",
     "table": "^5.4.6",
+    "terminal-kit": "^1.31.7",
     "xml-js": "^1.6.11"
   }
 }

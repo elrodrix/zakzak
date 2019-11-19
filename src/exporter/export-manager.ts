@@ -29,6 +29,7 @@ import {
 } from "./default";
 import { Exporter, ExporterEvents } from "./exporter";
 import { Suite } from "../suite";
+import HierarchyExporter from "./default/hierarchy-exporter";
 
 /**
  * Manages the default and custom exporters.
@@ -107,6 +108,9 @@ export default class ExportManager {
           break;
         case "xml":
           exporter = new XmlExporter(this.em);
+          break;
+        case "hierarchy":
+          exporter = new HierarchyExporter(this.em);
           break;
         default: {
           const filepath = path.resolve(path.posix.join(process.cwd(), exporterString));

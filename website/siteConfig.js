@@ -23,8 +23,8 @@
 const siteConfig = {
   title: 'Zakzak', // Title for your website.
   tagline: 'When you need to make sure that your code is fast',
-  url: 'https://zakzak.github.com', // Your website URL
-  baseUrl: '/', // Base URL for your project */
+  url: 'https://dynatrace.github.com', // Your website URL
+  baseUrl: '/zakzak/', // Base URL for your project */
   // For github.io type URLs, you would set the url and baseUrl like:
   //   url: 'https://facebook.github.io',
   //   baseUrl: '/test-site/',

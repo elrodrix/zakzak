@@ -3,10 +3,6 @@ id: analytics
 title: Analytics
 ---
 
-## Public
-
-### Analytics
-
 ```ts
 export class Analytics {
   ...
@@ -15,6 +11,8 @@ export class Analytics {
 
 The `Analytics` class is a wrapper for a couple of mathematical and statistical calculations.
 It's purpose is to evaluate a set of samples and return some meaningful numbers.
+
+## Public
 
 ### reduceUncertainty
 
@@ -120,6 +118,29 @@ public static getMedian(samples: number[]): number
 
 Calculates the median of a set of samples
 
+## Private
+
+### getTScore
+
+```ts
+private static getTScore(samples: number[], confidence: ConfidenceLevel)
+```
+
+Returns the t-score for a batch of samples and confidence level, by using a table of t-scores.
+
+### tTable
+
+```ts
+private static tTable: {
+    df: number;
+    tValues: number[];
+}[]
+```
+
+Table containing t-scores, ordered by degrees of freedom and then by confidence level.
+
+## Other exports
+
 ### ConfidenceLevel
 
 ```ts
@@ -142,24 +163,3 @@ export interface FullAnalysis {
   median: number;
 }
 ```
-
-## Private
-
-### getTScore
-
-```ts
-private static getTScore(samples: number[], confidence: ConfidenceLevel)
-```
-
-Returns the t-score for a batch of samples and confidence level, by using a table of t-scores.
-
-### tTable
-
-```ts
-private static tTable: {
-    df: number;
-    tValues: number[];
-}[]
-```
-
-Table containing t-scores, ordered by degrees of freedom and then by confidence level.

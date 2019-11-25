@@ -1,0 +1,12 @@
+{
+  "docs": {
+    "Get Started": [
+      "get-started/setup",
+      "get-started/structuring",
+      "get-started/configuring",
+      "get-started/exporting"
+    ],
+    "Documentation": ["documentation"],
+    "Contributing": ["contributing"]
+  }
+}

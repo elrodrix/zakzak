@@ -42,6 +42,7 @@
     "@typescript-eslint/parser": "^2.5.0",
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
+    "docusaurus": "^1.14.1",
     "eslint": "^6.5.1",
     "eslint-config-airbnb": "^18.0.1",
     "eslint-config-prettier": "^6.3.0",

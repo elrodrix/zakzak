@@ -15,3 +15,7 @@ azure-pipelines.yml
 test-results.xml
 .nyc
 demo/
+docs/
+website/
+docker-compose.yml
+Dockerfile

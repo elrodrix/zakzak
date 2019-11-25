@@ -39,7 +39,7 @@ const siteConfig = {
   // For no header links in the top nav bar -> headerLinks: [],
   headerLinks: [
     { doc: 'get-started/setup', label: 'Get Started' },
-    { doc: 'documentation', label: 'Documentation' },
+    { doc: 'documentation/benchmark/analytics', label: 'Documentation' },
     { doc: 'contributing', label: 'Contributing' },
     { href: "https://github.com/dynatrace/zakzak", label: "GitHub" },
     { search: true }

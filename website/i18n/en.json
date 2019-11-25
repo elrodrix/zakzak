@@ -11,8 +11,11 @@
       "documentation": {
         "title": "Documentation"
       },
-      "documentation/analytics": {
+      "documentation/benchmark/analytics": {
         "title": "Analytics"
+      },
+      "documentation/benchmark/benchmark": {
+        "title": "Benchmark"
       },
       "get-started/configuring": {
         "title": "Configuring"

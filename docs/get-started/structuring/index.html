@@ -1,0 +1,79 @@
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>Structuring the benchmarks · Zakzak</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta name="description" content="If you have more benchmarks it can get messy fast, especially in big projects."/><meta name="docsearch:language" content="en"/><meta property="og:title" content="Structuring the benchmarks · Zakzak"/><meta property="og:type" content="website"/><meta property="og:url" content="https://zakzak.github.com/"/><meta property="og:description" content="If you have more benchmarks it can get messy fast, especially in big projects."/><meta property="og:image" content="https://zakzak.github.com/img/favicon.svg"/><meta name="twitter:card" content="summary"/><link rel="shortcut icon" href="/img/favicon.png"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css"/><script type="text/javascript" src="https://buttons.github.io/buttons.js"></script><script src="/js/scrollSpy.js"></script><link rel="stylesheet" href="/css/main.css"/><script src="/js/codetabs.js"></script></head><body class="sideNavVisible separateOnPageNav"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/"><img class="logo" src="/img/favicon.png" alt="Zakzak"/><h2 class="headerTitleWithLogo">Zakzak</h2></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class="siteNavGroupActive"><a href="/docs/get-started/setup" target="_self">Get Started</a></li><li class="siteNavGroupActive"><a href="/docs/documentation" target="_self">Documentation</a></li><li class="siteNavGroupActive"><a href="/docs/contributing" target="_self">Contributing</a></li><li class=""><a href="https://github.com/dynatrace/zakzak" target="_self">GitHub</a></li><li class=""><a target="_self"></a></li></ul></nav></div></header></div></div><div class="navPusher"><div class="docMainWrapper wrapper"><div class="docsNavContainer" id="docsNav"><nav class="toc"><div class="toggleNav"><section class="navWrapper wrapper"><div class="navBreadcrumb wrapper"><div class="navToggle" id="navToggler"><div class="hamburger-menu"><div class="line1"></div><div class="line2"></div><div class="line3"></div></div></div><h2><i>›</i><span>Get Started</span></h2><div class="tocToggler" id="tocToggler"><i class="icon-toc"></i></div></div><div class="navGroups"><div class="navGroup"><h3 class="navGroupCategoryTitle">Get Started</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/get-started/setup">Setup</a></li><li class="navListItem navListItemActive"><a class="navItem" href="/docs/get-started/structuring">Structuring the benchmarks</a></li><li class="navListItem"><a class="navItem" href="/docs/get-started/configuring">Configuring</a></li><li class="navListItem"><a class="navItem" href="/docs/get-started/exporting">Exporting</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Documentation</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/documentation">Documentation</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Contributing</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/contributing">Contributing</a></li></ul></div></div></section></div><script>
+            var coll = document.getElementsByClassName('collapsible');
+            var checkActiveCategory = true;
+            for (var i = 0; i < coll.length; i++) {
+              var links = coll[i].nextElementSibling.getElementsByTagName('*');
+              if (checkActiveCategory){
+                for (var j = 0; j < links.length; j++) {
+                  if (links[j].classList.contains('navListItemActive')){
+                    coll[i].nextElementSibling.classList.toggle('hide');
+                    coll[i].childNodes[1].classList.toggle('rotate');
+                    checkActiveCategory = false;
+                    break;
+                  }
+                }
+              }
+
+              coll[i].addEventListener('click', function() {
+                var arrow = this.childNodes[1];
+                arrow.classList.toggle('rotate');
+                var content = this.nextElementSibling;
+                content.classList.toggle('hide');
+              });
+            }
+
+            document.addEventListener('DOMContentLoaded', function() {
+              createToggler('#navToggler', '#docsNav', 'docsSliderActive');
+              createToggler('#tocToggler', 'body', 'tocActive');
+
+              var headings = document.querySelector('.toc-headings');
+              headings && headings.addEventListener('click', function(event) {
+                var el = event.target;
+                while(el !== headings){
+                  if (el.tagName === 'A') {
+                    document.body.classList.remove('tocActive');
+                    break;
+                  } else{
+                    el = el.parentNode;
+                  }
+                }
+              }, false);
+
+              function createToggler(togglerSelector, targetSelector, className) {
+                var toggler = document.querySelector(togglerSelector);
+                var target = document.querySelector(targetSelector);
+
+                if (!toggler) {
+                  return;
+                }
+
+                toggler.onclick = function(event) {
+                  event.preventDefault();
+
+                  target.classList.toggle(className);
+                };
+              }
+            });
+        </script></nav></div><div class="container mainContainer"><div class="wrapper"><div class="post"><header class="postHeader"><h1 id="__docusaurus" class="postHeaderTitle">Structuring the benchmarks</h1></header><article><div><span><p>If you have more benchmarks it can get messy fast, especially in big projects.
+One way to help structure the benchmarks, is by splitting them up into multiple files and place them in separate folders.
+You can also structure benchmarks inside a single file using Suites and the <code>suite()</code> statement.</p>
+<pre><code class="hljs css language-ts"><span class="hljs-keyword">import</span> { benchmark, suite } <span class="hljs-keyword">from</span> <span class="hljs-string">"@dynatrace/zakzak"</span>;
+
+<span class="hljs-keyword">const</span> obj = { a: <span class="hljs-number">28</span>, b: <span class="hljs-number">82</span>, c: <span class="hljs-string">"hello"</span>, d: <span class="hljs-number">983</span>, e: <span class="hljs-string">"foo"</span>, o: <span class="hljs-string">"key"</span>, f: <span class="hljs-string">"bar"</span>, g: <span class="hljs-number">8</span> };
+<span class="hljs-keyword">const</span> key = <span class="hljs-string">"key"</span>;
+
+suite(<span class="hljs-string">"check-object-key"</span>, <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+  benchmark(<span class="hljs-string">"inIterator"</span>, <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+    <span class="hljs-keyword">return</span> key <span class="hljs-keyword">in</span> obj;
+  });
+  benchmark(<span class="hljs-string">"tripleEqualUndefined"</span>, <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+    <span class="hljs-keyword">return</span> obj[key] !== <span class="hljs-literal">undefined</span>;
+  });
+  benchmark(<span class="hljs-string">"useHasOwnProperty"</span>, <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+    <span class="hljs-keyword">return</span> obj.hasOwnProperty(key);
+  });
+});
+</code></pre>
+<p>Suites logically group benchmarks together, this way you can structure them better in a hierarchic matter.
+Furthermore, you can use suites to apply options to a group of benchmarks, instead of configuring each of them.</p>
+</span></div></article></div><div class="docs-prevnext"><a class="docs-prev button" href="/docs/get-started/setup"><span class="arrow-prev">← </span><span>Setup</span></a><a class="docs-next button" href="/docs/get-started/configuring"><span>Configuring</span><span class="arrow-next"> →</span></a></div></div></div><nav class="onPageNav"></nav></div><footer class="nav-footer" id="footer"><section class="sitemap"><a href="/" class="nav-home"><img src="/img/favicon.png" alt="Zakzak" width="66" height="58"/></a><div><h5>Docs</h5><a href="/docs/en/get-started.html">Get started</a><a href="/docs/en/documentation.html">Documentation</a><a href="/docs/en/contributing.html">Contributing</a></div><div><h5>Community</h5><a href="https://stackoverflow.com/questions/tagged/zakzak" target="_blank" rel="noreferrer noopener">Stack Overflow</a></div><div><h5>More</h5><a href="/blog">Blog</a><a href="https://github.com/dynatrace/zakzak">GitHub</a><a class="github-button" href="https://github.com/dynatrace/zakzak" data-icon="octicon-star" data-count-href="/dynatrace/zakzak/stargazers" data-show-count="true" data-count-aria-label="# stargazers on GitHub" aria-label="Star this project on GitHub">Star</a></div></section><a href="https://www.dynatrace.com/" target="_blank" rel="noreferrer noopener" class="fbOpenSource"><img src="/img/oss_logo.png" alt="Facebook Open Source" width="170" height="170"/></a><section class="copyright">Copyright © 2019 Dynatrace LLC</section></footer></div></body></html>

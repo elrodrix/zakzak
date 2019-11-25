@@ -11,6 +11,9 @@
       "documentation": {
         "title": "Documentation"
       },
+      "documentation/analytics": {
+        "title": "Analytics"
+      },
       "get-started/configuring": {
         "title": "Configuring"
       },

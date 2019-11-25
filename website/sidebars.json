@@ -6,7 +6,13 @@
       "get-started/configuring",
       "get-started/exporting"
     ],
-    "Documentation": ["documentation"],
+    "Documentation": [
+      {
+        "type": "subcategory",
+        "label": "Benchmark",
+        "ids": ["documentation/analytics"]
+      }
+    ],
     "Contributing": ["contributing"]
   }
 }

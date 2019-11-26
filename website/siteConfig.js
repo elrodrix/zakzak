@@ -40,7 +40,6 @@ const siteConfig = {
   headerLinks: [
     { doc: 'get-started/setup', label: 'Get Started' },
     { doc: 'documentation/benchmark/analytics', label: 'Documentation' },
-    { doc: 'contributing', label: 'Contributing' },
     { href: "https://github.com/dynatrace/zakzak", label: "GitHub" },
     { search: true }
   ],

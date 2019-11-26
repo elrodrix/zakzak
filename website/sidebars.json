@@ -10,9 +10,46 @@
       {
         "type": "subcategory",
         "label": "Benchmark",
-        "ids": ["documentation/benchmark/analytics", "documentation/benchmark/benchmark"]
+        "ids": [
+          "documentation/benchmark/analytics",
+          "documentation/benchmark/benchmark",
+          "documentation/benchmark/timer"
+        ]
+      },
+      {
+        "type": "subcategory",
+        "label": "CLI",
+        "ids": ["documentation/cli/cli-manager"]
+      },
+      {
+        "type": "subcategory",
+        "label": "Config",
+        "ids": ["documentation/config/options"]
+      },
+      {
+        "type": "subcategory",
+        "label": "Exporter",
+        "ids": [
+          "documentation/exporter/exporter",
+          "documentation/exporter/export-manager",
+          "documentation/exporter/default-exporters"
+        ]
+      },
+      {
+        "type": "subcategory",
+        "label": "Manager",
+        "ids": ["documentation/manager/benchmark-manager"]
+      },
+      {
+        "type": "subcategory",
+        "label": "Process",
+        "ids": ["documentation/process/benchmark-process"]
+      },
+      {
+        "type": "subcategory",
+        "label": "Suite",
+        "ids": ["documentation/suite/functions", "documentation/suite/suite-manager"]
       }
-    ],
-    "Contributing": ["contributing"]
+    ]
   }
 }

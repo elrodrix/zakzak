@@ -12,13 +12,14 @@ export class Analytics {
 The `Analytics` class is a wrapper for a couple of mathematical and statistical calculations.
 It's purpose is to evaluate a set of samples and return some meaningful numbers.
 
-## Public
-
-### reduceUncertainty
+## reduceUncertainty
 
 ```ts
 public static reduceUncertainty(smallestMeasure: number, fractionOfUncertainty: number): number
 ```
+
+`smallestMeasure` is the smallest possible measure that a timer can make.
+`fractionOfUncertainty` is the fraction of the measurement that should be uncertain. From 0.0 to 1.0
 
 This method calculates the time needed to decrease the uncertainty of a measurement to certain fraction and returns it.
 The smallest measurement is the resolution of your timer in `ns` and the fraction is a number from 0.0 - 1.0.
@@ -40,95 +41,75 @@ So we have to measure something that takes long enough for the uncertainty to be
 
 Now we know that whatever we measure, if we want max 1% uncertainty, it has to repeat itself often enough to take longer than 250ns.
 
-### getFullAnalysis
+## getFullAnalysis
 
 ```ts
 public static getFullAnalysis(samples: number[]): FullAnalysis
 ```
 
+`samples` is a set of sample measurements in ns.
+
 Runs all the analytic calculations on a set of samples and returns them.
 Samples are measurements taken in `ns`.
 
-### getMin
-
-```ts
-public static getMin(samples: number[]): number
-```
-
-Returns the smallest measurement in a set of samples.
-
-### getMax
-
-```ts
-public static getMax(samples: number[]): number
-```
-
-Returns the biggest measurement in a set of samples.
-
-### getMarginOfError
+## getMarginOfError
 
 ```ts
 public static getMarginOfError(samples: number[], confidence: ConfidenceLevel = 99): number
 ```
 
+`samples` is a set of sample measurements in ns.
+`confidence` is the confidence level for the MoE. Is an enum since it uses a table for calculating the t-score.
+
 Calculates the [margin of error](https://www.statisticshowto.datasciencecentral.com/probability-and-statistics/hypothesis-testing/margin-of-error/)
 from a set of samples using the [sample standard error](https://www.radford.edu/~biol-web/stats/standarderrorcalc.pdf)
 and the [T-score](http://www.sjsu.edu/faculty/gerstman/StatPrimer/t-table.pdf) inferred from the confidence level.
 
-### getStandardDeviation
+## getStandardDeviation
 
 ```ts
 public static getStandardDeviation(samples: number[]): number
 ```
 
+`samples` is a set of sample measurements in ns.
+
 Calculates the [standard deviation](https://www.radford.edu/~biol-web/stats/standarderrorcalc.pdf) of a set of samples.
 
-### getStandardError
+## getStandardError
 
 ```ts
 public static getStandardError(samples: number[]): number
 ```
 
+`samples` is a set of sample measurements in ns.
+
 Calculates the [sample standard error](https://www.radford.edu/~biol-web/stats/standarderrorcalc.pdf) of a set of samples.
 
-### getMean
-
-```ts
-public static getMean(samples: number[]): number
-```
-
-Calculates the mean of a set of samples.
-
-### getMode
+## getMode
 
 ```ts
 public static getMode(samples: number[]): number
 ```
+
+`samples` is a set of sample measurements in ns.
 
 Calculates the [mode](<https://en.wikipedia.org/wiki/Mode_(statistics)>) for a batch of samples.
 The mode is the most common value in a list of numbers.
 Floating point values will be rounded, as the mode can only be calculated for integers.
 Especially useful with small measurements.
 
-### getMedian
-
-```ts
-public static getMedian(samples: number[]): number
-```
-
-Calculates the median of a set of samples
-
-## Private
-
-### getTScore
+## getTScore
 
 ```ts
 private static getTScore(samples: number[], confidence: ConfidenceLevel)
 ```
 
+`samples` is a set of sample measurements in ns.
+`confidence` is the confidence level for the MoE. Is an enum since it uses a table for calculating the t-score.
+
 Returns the t-score for a batch of samples and confidence level, by using a table of t-scores.
 
-### tTable
+## tTable
 
 ```ts
 private static tTable: {
@@ -139,17 +120,15 @@ private static tTable: {
 
 Table containing t-scores, ordered by degrees of freedom and then by confidence level.
 
-## Other exports
-
-### ConfidenceLevel
+## ConfidenceLevel
 
 ```ts
 export type ConfidenceLevel = 0 | 50 | 60 | 70 | 80 | 90 | 95 | 98 | 99 | 99.8 | 99.9;
 ```
 
-Possible confidence levels for the t-scores
+Possible confidence levels for the t-scores.
 
-### FullAnalysis
+## FullAnalysis
 
 ```ts
 export interface FullAnalysis {

@@ -132,7 +132,7 @@ export class Benchmark {
       count: optimalCount,
       times: samples,
       options: this.options,
-    });
+    } as BenchmarkResult);
   }
 
   private isAsync() {

@@ -49,7 +49,7 @@ export abstract class Exporter {
   /**
    * Gets triggered when the suite manager has finished looking for benchmarks.
    * Returns the found structure
-   * @param root The root suites of the hierarchy. Usually these suites are the files
+   * @param root The root suites of the hierarchy. Usually these suites are the files themself
    */
   public onHierarchy(root: Suite[]): void {}
 

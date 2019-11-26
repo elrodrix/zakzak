@@ -5,17 +5,41 @@
     "previous": "Previous",
     "tagline": "When you need to make sure that your code is fast",
     "docs": {
-      "contributing": {
-        "title": "Contributing"
-      },
-      "documentation": {
-        "title": "Documentation"
-      },
       "documentation/benchmark/analytics": {
         "title": "Analytics"
       },
       "documentation/benchmark/benchmark": {
         "title": "Benchmark"
+      },
+      "documentation/benchmark/timer": {
+        "title": "Timer"
+      },
+      "documentation/cli/cli-manager": {
+        "title": "CLI Manager"
+      },
+      "documentation/config/options": {
+        "title": "Options"
+      },
+      "documentation/exporter/default-exporters": {
+        "title": "Default Exporters"
+      },
+      "documentation/exporter/export-manager": {
+        "title": "ExportManager"
+      },
+      "documentation/exporter/exporter": {
+        "title": "Exporter"
+      },
+      "documentation/manager/benchmark-manager": {
+        "title": "BenchmarkManager"
+      },
+      "documentation/process/benchmark-process": {
+        "title": "BenchmarkProcess"
+      },
+      "documentation/suite/functions": {
+        "title": "Functions"
+      },
+      "documentation/suite/suite-manager": {
+        "title": "SuiteManager"
       },
       "get-started/configuring": {
         "title": "Configuring"
@@ -33,13 +57,11 @@
     "links": {
       "Get Started": "Get Started",
       "Documentation": "Documentation",
-      "Contributing": "Contributing",
       "GitHub": "GitHub"
     },
     "categories": {
       "Get Started": "Get Started",
-      "Documentation": "Documentation",
-      "Contributing": "Contributing"
+      "Documentation": "Documentation"
     }
   },
   "pages-strings": {

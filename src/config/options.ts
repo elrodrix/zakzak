@@ -70,7 +70,7 @@ export interface BenchmarkManagerOptions {
   path?: string;
   /**
    * List of exporters that will output the benchmark data.
-   * Default ones are `console`, `console-async`, `xml`, `json` and `csv`.
+   * Default ones are `console`, `console-async`, `xml`, `json`, `csv` and `hierarchy`.
    * Otherwise a path to an exporter file.
    */
   exporter?: string[];

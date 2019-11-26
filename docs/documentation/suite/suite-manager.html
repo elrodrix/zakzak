@@ -1,0 +1,88 @@
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>SuiteManager · Zakzak</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta name="description" content="The `SuiteManager` is responsible for interpreting and parsing benchmark files."/><meta name="docsearch:language" content="en"/><meta property="og:title" content="SuiteManager · Zakzak"/><meta property="og:type" content="website"/><meta property="og:url" content="https://dynatrace.github.io/zakzak/"/><meta property="og:description" content="The `SuiteManager` is responsible for interpreting and parsing benchmark files."/><meta property="og:image" content="https://dynatrace.github.io/zakzak/img/favicon.svg"/><meta name="twitter:card" content="summary"/><link rel="shortcut icon" href="/zakzak/img/favicon.png"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css"/><script type="text/javascript" src="https://buttons.github.io/buttons.js"></script><script src="/zakzak/js/scrollSpy.js"></script><link rel="stylesheet" href="/zakzak/css/main.css"/><script src="/zakzak/js/codetabs.js"></script></head><body class="sideNavVisible separateOnPageNav"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/zakzak/"><img class="logo" src="/zakzak/img/favicon.png" alt="Zakzak"/><h2 class="headerTitleWithLogo">Zakzak</h2></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class="siteNavGroupActive"><a href="/zakzak/docs/get-started/setup" target="_self">Get Started</a></li><li class="siteNavGroupActive"><a href="/zakzak/docs/documentation/benchmark/analytics" target="_self">Documentation</a></li><li class=""><a href="https://github.com/dynatrace/zakzak" target="_self">GitHub</a></li><li class=""><a target="_self"></a></li></ul></nav></div></header></div></div><div class="navPusher"><div class="docMainWrapper wrapper"><div class="docsNavContainer" id="docsNav"><nav class="toc"><div class="toggleNav"><section class="navWrapper wrapper"><div class="navBreadcrumb wrapper"><div class="navToggle" id="navToggler"><div class="hamburger-menu"><div class="line1"></div><div class="line2"></div><div class="line3"></div></div></div><h2><i>›</i><span>Suite</span></h2><div class="tocToggler" id="tocToggler"><i class="icon-toc"></i></div></div><div class="navGroups"><div class="navGroup"><h3 class="navGroupCategoryTitle">Get Started</h3><ul class=""><li class="navListItem"><a class="navItem" href="/zakzak/docs/get-started/setup">Setup</a></li><li class="navListItem"><a class="navItem" href="/zakzak/docs/get-started/structuring">Structuring the benchmarks</a></li><li class="navListItem"><a class="navItem" href="/zakzak/docs/get-started/configuring">Configuring</a></li><li class="navListItem"><a class="navItem" href="/zakzak/docs/get-started/exporting">Exporting</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Documentation</h3><ul class=""><div class="navGroup subNavGroup"><h4 class="navGroupSubcategoryTitle">Benchmark</h4><ul><li class="navListItem"><a class="navItem" href="/zakzak/docs/documentation/benchmark/analytics">Analytics</a></li><li class="navListItem"><a class="navItem" href="/zakzak/docs/documentation/benchmark/benchmark">Benchmark</a></li><li class="navListItem"><a class="navItem" href="/zakzak/docs/documentation/benchmark/timer">Timer</a></li></ul></div><div class="navGroup subNavGroup"><h4 class="navGroupSubcategoryTitle">CLI</h4><ul><li class="navListItem"><a class="navItem" href="/zakzak/docs/documentation/cli/cli-manager">CLI Manager</a></li></ul></div><div class="navGroup subNavGroup"><h4 class="navGroupSubcategoryTitle">Config</h4><ul><li class="navListItem"><a class="navItem" href="/zakzak/docs/documentation/config/options">Options</a></li></ul></div><div class="navGroup subNavGroup"><h4 class="navGroupSubcategoryTitle">Exporter</h4><ul><li class="navListItem"><a class="navItem" href="/zakzak/docs/documentation/exporter/exporter">Exporter</a></li><li class="navListItem"><a class="navItem" href="/zakzak/docs/documentation/exporter/export-manager">ExportManager</a></li><li class="navListItem"><a class="navItem" href="/zakzak/docs/documentation/exporter/default-exporters">Default Exporters</a></li></ul></div><div class="navGroup subNavGroup"><h4 class="navGroupSubcategoryTitle">Manager</h4><ul><li class="navListItem"><a class="navItem" href="/zakzak/docs/documentation/manager/benchmark-manager">BenchmarkManager</a></li></ul></div><div class="navGroup subNavGroup"><h4 class="navGroupSubcategoryTitle">Process</h4><ul><li class="navListItem"><a class="navItem" href="/zakzak/docs/documentation/process/benchmark-process">BenchmarkProcess</a></li></ul></div><div class="navGroup subNavGroup"><h4 class="navGroupSubcategoryTitle">Suite</h4><ul><li class="navListItem"><a class="navItem" href="/zakzak/docs/documentation/suite/functions">Functions</a></li><li class="navListItem navListItemActive"><a class="navItem" href="/zakzak/docs/documentation/suite/suite-manager">SuiteManager</a></li></ul></div></ul></div></div></section></div><script>
+            var coll = document.getElementsByClassName('collapsible');
+            var checkActiveCategory = true;
+            for (var i = 0; i < coll.length; i++) {
+              var links = coll[i].nextElementSibling.getElementsByTagName('*');
+              if (checkActiveCategory){
+                for (var j = 0; j < links.length; j++) {
+                  if (links[j].classList.contains('navListItemActive')){
+                    coll[i].nextElementSibling.classList.toggle('hide');
+                    coll[i].childNodes[1].classList.toggle('rotate');
+                    checkActiveCategory = false;
+                    break;
+                  }
+                }
+              }
+
+              coll[i].addEventListener('click', function() {
+                var arrow = this.childNodes[1];
+                arrow.classList.toggle('rotate');
+                var content = this.nextElementSibling;
+                content.classList.toggle('hide');
+              });
+            }
+
+            document.addEventListener('DOMContentLoaded', function() {
+              createToggler('#navToggler', '#docsNav', 'docsSliderActive');
+              createToggler('#tocToggler', 'body', 'tocActive');
+
+              var headings = document.querySelector('.toc-headings');
+              headings && headings.addEventListener('click', function(event) {
+                var el = event.target;
+                while(el !== headings){
+                  if (el.tagName === 'A') {
+                    document.body.classList.remove('tocActive');
+                    break;
+                  } else{
+                    el = el.parentNode;
+                  }
+                }
+              }, false);
+
+              function createToggler(togglerSelector, targetSelector, className) {
+                var toggler = document.querySelector(togglerSelector);
+                var target = document.querySelector(targetSelector);
+
+                if (!toggler) {
+                  return;
+                }
+
+                toggler.onclick = function(event) {
+                  event.preventDefault();
+
+                  target.classList.toggle(className);
+                };
+              }
+            });
+        </script></nav></div><div class="container mainContainer"><div class="wrapper"><div class="post"><header class="postHeader"><h1 id="__docusaurus" class="postHeaderTitle">SuiteManager</h1></header><article><div><span><p>The <code>SuiteManager</code> is responsible for interpreting and parsing benchmark files.</p>
+<p>First it uses <code>require</code> to read the benchmark files, thereby automatically executing the functions in the file.
+Each function then adds the code it contains to an internal list in the manager.
+The manager then recursively repeats this procedure, calling those newly registered functions and interpreting the functions they add.</p>
+<p><em>Example</em></p>
+<pre><code class="hljs css language-ts">suite(<span class="hljs-string">"a"</span>, <span class="hljs-function"><span class="hljs-params">()</span>=&gt;</span>{
+  suite(<span class="hljs-string">"b"</span>,<span class="hljs-function"><span class="hljs-params">()</span>=&gt;</span>{
+    benchmark(<span class="hljs-string">"c"</span>()=&gt;{
+      something();
+    })
+  })
+  benchmark(<span class="hljs-string">"d"</span>, <span class="hljs-function"><span class="hljs-params">()</span>=&gt;</span>{
+    somethingElse();
+  })
+});
+</code></pre>
+<ol>
+<li>The file is required and the <code>suite(&quot;a&quot;,...)</code> is executed
+<ol>
+<li>The <code>suite</code> statement registers a new suite named &quot;a&quot; at the manager.</li>
+</ol></li>
+<li>There are no other functions at this level so the manager goes one level deeper in the recursion</li>
+<li><code>suite(&quot;b&quot;,...)</code> is executed and registered at the manager</li>
+<li><code>benchmark(&quot;d&quot;)</code> is executed and registered
+<ol>
+<li>A benchmark is the end of the recursion, as the code inside will only be executed once the benchmarking has begun</li>
+</ol></li>
+<li>There are no other functions at this level so the manager goes one level deeper in the recursion
+...
+This continues until all functions have been executed and all benchmarks, suites and co. have been registered.</li>
+</ol>
+</span></div></article></div><div class="docs-prevnext"><a class="docs-prev button" href="/zakzak/docs/documentation/suite/functions"><span class="arrow-prev">← </span><span>Functions</span></a></div></div></div><nav class="onPageNav"></nav></div><footer class="nav-footer" id="footer"><section class="sitemap"><a href="/zakzak/" class="nav-home"><img src="/zakzak/img/favicon.png" alt="Zakzak" width="66" height="58"/></a><div><h5>Docs</h5><a href="/zakzak/docs/en/get-started.html">Get started</a><a href="/zakzak/docs/en/documentation.html">Documentation</a><a href="/zakzak/docs/en/contributing.html">Contributing</a></div><div><h5>Community</h5><a href="https://stackoverflow.com/questions/tagged/zakzak" target="_blank" rel="noreferrer noopener">Stack Overflow</a></div><div><h5>More</h5><a href="/zakzak/blog">Blog</a><a href="https://github.com/dynatrace/zakzak">GitHub</a><a class="github-button" href="https://github.com/dynatrace/zakzak" data-icon="octicon-star" data-count-href="/dynatrace/zakzak/stargazers" data-show-count="true" data-count-aria-label="# stargazers on GitHub" aria-label="Star this project on GitHub">Star</a></div></section><a href="https://www.dynatrace.com/" target="_blank" rel="noreferrer noopener" class="fbOpenSource"><img src="/zakzak/img/oss_logo.png" alt="Facebook Open Source" width="170" height="170"/></a><section class="copyright">Copyright © 2019 Dynatrace LLC</section></footer></div></body></html>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0">
+    <channel>
+        <title>Zakzak Blog</title>
+        <link>https://dynatrace.github.io/zakzak/blog</link>
+        <description>The best place to stay up-to-date with the latest Zakzak news and events.</description>
+        <lastBuildDate>Wed, 27 Nov 2019 06:00:00 GMT</lastBuildDate>
+        <docs>http://blogs.law.harvard.edu/tech/rss</docs>
+        <generator>Feed for Node.js</generator>
+        <image>
+            <title>Zakzak Blog</title>
+            <url>https://dynatrace.github.io/zakzak/img/favicon.png</url>
+            <link>https://dynatrace.github.io/zakzak/blog</link>
+        </image>
+        <copyright>Copyright © 2019 Dynatrace LLC</copyright>
+        <item>
+            <title><![CDATA[How it works]]></title>
+            <link>https://dynatrace.github.io/zakzak/blog/2019/11/27/how-it-works.html</link>
+            <guid>https://dynatrace.github.io/zakzak/blog/2019/11/27/how-it-works.html</guid>
+            <pubDate>Wed, 27 Nov 2019 06:00:00 GMT</pubDate>
+            <description><![CDATA[<p>Benchmarking can be as easy as calling <code>new Date()</code> twice, but an easy solution is not always the best solution.
+Zakzak employs a rather complicated procedure for benchmarking, which is also the reason why it is so accurate and consistent.</p>
+<p>In this blog post I will discuss how zakzak works internally.</p>
+]]></description>
+        </item>
+    </channel>
+</rss>

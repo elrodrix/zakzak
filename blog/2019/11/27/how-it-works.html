@@ -1,0 +1,147 @@
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>How it works · Zakzak</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta name="description" content="Benchmarking can be as easy as calling `new Date()` twice, but an easy solution is not always the best solution."/><meta name="docsearch:language" content="en"/><meta property="og:title" content="How it works · Zakzak"/><meta property="og:type" content="website"/><meta property="og:url" content="https://dynatrace.github.io/zakzak/blog/2019/11/27/how-it-works"/><meta property="og:description" content="Benchmarking can be as easy as calling `new Date()` twice, but an easy solution is not always the best solution."/><meta property="og:image" content="https://dynatrace.github.io/zakzak/img/favicon.svg"/><meta name="twitter:card" content="summary"/><link rel="shortcut icon" href="/zakzak/img/favicon.png"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css"/><link rel="alternate" type="application/atom+xml" href="https://dynatrace.github.io/zakzak/blog/atom.xml" title="Zakzak Blog ATOM Feed"/><link rel="alternate" type="application/rss+xml" href="https://dynatrace.github.io/zakzak/blog/feed.xml" title="Zakzak Blog RSS Feed"/><script type="text/javascript" src="https://buttons.github.io/buttons.js"></script><script src="/zakzak/js/scrollSpy.js"></script><link rel="stylesheet" href="/zakzak/css/main.css"/><script src="/zakzak/js/codetabs.js"></script></head><body class="sideNavVisible separateOnPageNav"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/zakzak/"><img class="logo" src="/zakzak/img/favicon.png" alt="Zakzak"/><h2 class="headerTitleWithLogo">Zakzak</h2></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class=""><a href="/zakzak/docs/get-started/setup" target="_self">Get Started</a></li><li class=""><a href="/zakzak/docs/documentation/benchmark/analytics" target="_self">Documentation</a></li><li class="siteNavGroupActive"><a href="/zakzak/blog/" target="_self">Blog</a></li><li class=""><a href="https://github.com/dynatrace/zakzak" target="_self">GitHub</a></li><li class=""><a target="_self"></a></li></ul></nav></div></header></div></div><div class="navPusher"><div class="docMainWrapper wrapper"><div class="docsNavContainer" id="docsNav"><nav class="toc"><div class="toggleNav"><section class="navWrapper wrapper"><div class="navBreadcrumb wrapper"><div class="navToggle" id="navToggler"><div class="hamburger-menu"><div class="line1"></div><div class="line2"></div><div class="line3"></div></div></div><h2><i>›</i><span>Recent Posts</span></h2><div class="tocToggler" id="tocToggler"><i class="icon-toc"></i></div></div><div class="navGroups"><div class="navGroup"><h3 class="navGroupCategoryTitle">Recent Posts</h3><ul class=""><li class="navListItem navListItemActive"><a class="navItem" href="/zakzak/blog/2019/11/27/how-it-works">How it works</a></li></ul></div></div></section></div><script>
+            var coll = document.getElementsByClassName('collapsible');
+            var checkActiveCategory = true;
+            for (var i = 0; i < coll.length; i++) {
+              var links = coll[i].nextElementSibling.getElementsByTagName('*');
+              if (checkActiveCategory){
+                for (var j = 0; j < links.length; j++) {
+                  if (links[j].classList.contains('navListItemActive')){
+                    coll[i].nextElementSibling.classList.toggle('hide');
+                    coll[i].childNodes[1].classList.toggle('rotate');
+                    checkActiveCategory = false;
+                    break;
+                  }
+                }
+              }
+
+              coll[i].addEventListener('click', function() {
+                var arrow = this.childNodes[1];
+                arrow.classList.toggle('rotate');
+                var content = this.nextElementSibling;
+                content.classList.toggle('hide');
+              });
+            }
+
+            document.addEventListener('DOMContentLoaded', function() {
+              createToggler('#navToggler', '#docsNav', 'docsSliderActive');
+              createToggler('#tocToggler', 'body', 'tocActive');
+
+              var headings = document.querySelector('.toc-headings');
+              headings && headings.addEventListener('click', function(event) {
+                var el = event.target;
+                while(el !== headings){
+                  if (el.tagName === 'A') {
+                    document.body.classList.remove('tocActive');
+                    break;
+                  } else{
+                    el = el.parentNode;
+                  }
+                }
+              }, false);
+
+              function createToggler(togglerSelector, targetSelector, className) {
+                var toggler = document.querySelector(togglerSelector);
+                var target = document.querySelector(targetSelector);
+
+                if (!toggler) {
+                  return;
+                }
+
+                toggler.onclick = function(event) {
+                  event.preventDefault();
+
+                  target.classList.toggle(className);
+                };
+              }
+            });
+        </script></nav></div><div class="container mainContainer postContainer blogContainer"><div class="wrapper"><div class="lonePost"><div class="post"><header class="postHeader"><h1 class="postHeaderTitle"><a href="/zakzak/blog/2019/11/27/how-it-works">How it works</a></h1><p class="post-meta">November 27, 2019</p><div class="authorBlock"><p class="post-authorName"><a href="http://github.com/lukaskurz" target="_blank" rel="noreferrer noopener">Lukas Kurz</a></p><div class="authorPhoto"><a href="http://github.com/lukaskurz" target="_blank" rel="noreferrer noopener"><img src="https://avatars1.githubusercontent.com/u/22956519?s=460&amp;v=4" alt="Lukas Kurz"/></a></div></div></header><div><span><p>Benchmarking can be as easy as calling <code>new Date()</code> twice, but an easy solution is not always the best solution.
+Zakzak employs a rather complicated procedure for benchmarking, which is also the reason why it is so accurate and consistent.</p>
+<p>In this blog post I will discuss how zakzak works internally.</p>
+<!--truncate-->
+<h2><a class="anchor" aria-hidden="true" id="from-the-start"></a><a href="#from-the-start" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>From the start</h2>
+<p>The first thing zakzak does, is reading the benchmark files. Using <a href="https://github.com/sindresorhus/globby">globby</a>, which in turn uses <a href="https://github.com/isaacs/minimatch">minimatch</a>, it matches the target files. Then, using <code>require</code>, it executes those benchmark files.</p>
+<p><em>Normally <code>require</code> is used to import things exported in other files, but it can also be used to execute code in another js file</em></p>
+<h2><a class="anchor" aria-hidden="true" id="file-parsing"></a><a href="#file-parsing" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>File parsing</h2>
+<p>All that the <code>benchmark</code>, <code>suite</code>, <code>setup</code> and <code>teardown</code> statements do, is access a singleton object called the <code>SuiteManager</code> and register themselves with it. When a statement registers itself with this <code>SuiteManager</code>, the manager creates an object for it, containing name, file and, most importantly, the function that was passed as a param to the statement.</p>
+<p>Now the <code>SuiteManager</code> starts building a tree like structure to represent the hierarchy of the statements in the file. At the topmost level, the root of the tree, is a <code>Suite</code> (the object representing a <code>suite</code> statement), that was automatically created to represent the file itself. Beneath that root, there is the next level, containg all the registrations from the previous step.</p>
+<p>To further &quot;discover&quot; the file, the manager now calls the functions inside the afforementioned registrations. These, in turn, contain more statements, which will again, register themselves with the manager. You can see where this is going. This process is continued until there are no more registrations when calling the functions, at which point the file is considered done and the next file is processed.</p>
+<h2><a class="anchor" aria-hidden="true" id="many-childprocesses"></a><a href="#many-childprocesses" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Many childprocesses</h2>
+<p>Once all the benchmarks are discovered, a different manager, called the <code>BenchmarkManager</code>, now creates little wrapper objects for the benchmarks. Those wrappers' purpose is to start a child process for the benchmark they are containing and interchanging information between child and parent process.</p>
+<p>The reason why the benchmarks are executed in child process, instead of the parent process is to isolate their environment. During development, I noticed, that if I were to executed multiple benchmarks, the v8 and certain functions would already be warmed up and optimized from the previous benchmark, which affected the results and behaviour.</p>
+<h2><a class="anchor" aria-hidden="true" id="isolation"></a><a href="#isolation" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Isolation</h2>
+<p>Normally a function gets called often enough for it to be warmed up and to be optimized by the v8. Zakzak dynamically evaluates how often it has to execute a function until it is at peak performance, ready to be benchmarked. Now that is, where the problem arises. For example, a function <code>foobar()</code> takes 100k executions until it is ready. If however a benchmark was running before, and maybe that benchmark is similar to <code>foobar</code>, then the v8 would already be warmed up and some of the functions could still be optimized. <code>foobar</code> now only needs 30k executions to be ready, since most of the stuff is already optimized. Zakzak now thinks that it only needs 30k executions, and if, for some reason, the v8 starts deoptimizing stuff because there is a lot of stuff happening between the actual benchmark and the warmup evaluation, it is no longer able to fully warm up <code>foobar</code>, thus resulting in less accurate or even wrong results.</p>
+<p>Child processes have separate v8 instances and thus dont share the optimized functions. This way, every benchmark has the same environment and the results are more consistent over multiple benchmark runs.</p>
+<h2><a class="anchor" aria-hidden="true" id="warmup"></a><a href="#warmup" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Warmup</h2>
+<h3><a class="anchor" aria-hidden="true" id="dynamic"></a><a href="#dynamic" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Dynamic</h3>
+<p>While other benchmarking frameworks have a more manual approach to benchmarking, this seemed impractical to me.
+You would have to specify the warmup count for each benchmark. Furthermore, if due too version change or other factors, the speed of some benchmark changes significantly, you would have to change the warmup count again. Worst case, you might not even notice, you'd just notice that the benchmark results got worse, which is due to being poorly warmed up.</p>
+<h3><a class="anchor" aria-hidden="true" id="timer-resolution--uncertainty"></a><a href="#timer-resolution--uncertainty" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Timer resolution &amp; Uncertainty</h3>
+<p>To understand the evaluation process, you first have to understand what a timer resolution is and what uncertainty means.</p>
+<p>All measuring devices have a smallest possible value that they can measure. Let's take for example a kitchen scale and say the smallest possible value it can measure is 1g. This means it can only measure in 1g intervals, like 300g, 301g, 302 and so on, but not 300.5g. When the scale now displays 205g for something, the real weight could be anywhere between 204.5g and 205.5g, thus there is a 0.5g uncertainty.</p>
+<p>Problems arise when you try to measure something that approaches that resolution and the uncertainty takes up a big fraction of the measurement.
+If you were to measure a rice corn with that scale and you got 3g as the weight of the rice corn, then the rice corn's real weight could be anywhere between 2.5g and 3.5g. The uncertainty makes 16% of that measurement.</p>
+<pre><code class="hljs css language-text">resolution = 1
+uncertainty = resolution / 2
+fraction = uncertainty / measurement = 0.5 / 3
+fraction => 0.16 => 16 %
+</code></pre>
+<p>You can still measure the rice corn accurately with this scale, by employing a simple trick.
+Assuming all rice corns weigh nearly the same, you count and put more of them on the scale.
+Continuing with the example, you put 100 rice corns on the scale and now it displays 315g.
+The uncertainty stays the same, but now it takes up a much smaller fraction of the measurement.
+314.5 to 315.5 is now the range for the total weight, divided by the count that's 3.145g to 3.155g or 0.16 %.</p>
+<pre><code class="hljs css language-text">resolution = 1
+uncertainty = resolution / 2
+fraction = uncertainty / measurement = 0.5 / 315
+fraction => 0.0016 => 0.16 %
+</code></pre>
+<p>The same problem happens with the timer in Node.js. While the HRTimer is pretty accurate, it still pays of to take the uncertainty into account.</p>
+<p>We measure the resolution of the HRTimer by taking a timestamp and then repeatedly take new timestamps until the difference between the first and the new timestamp is bigger than 0. We then repeat this process 50 times and take the average of those differences.</p>
+<pre><code class="hljs css language-ts"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getResolution</span>(<span class="hljs-params"></span>) </span>{
+  <span class="hljs-keyword">let</span> count = <span class="hljs-number">50</span>;
+  <span class="hljs-keyword">const</span> times: <span class="hljs-built_in">number</span>[] = [];
+  <span class="hljs-keyword">while</span> (count--) {
+    <span class="hljs-keyword">let</span> now;
+
+    <span class="hljs-comment">/* subtract current time from a fixed time taken beforehand,
+    until the difference is no longer 0 ~ false */</span>
+    <span class="hljs-keyword">const</span> begin = Timer.getTime();
+    <span class="hljs-keyword">while</span> (!(now - begin)) {
+      now = Timer.getTime();
+    }
+
+    times.push(now - begin);
+  }
+  <span class="hljs-keyword">return</span> mean(times);
+}
+</code></pre>
+<p>We aim to have a maximum uncertainty of 1% of the measurement, so if the resolution is 4ns, our measurement has to be atleast 400ns long.
+In the code, this number is referred to as the <code>minTime</code>. You can also configure a <code>minTime</code> in the config. Whichever number is higher, is then used.</p>
+<h3><a class="anchor" aria-hidden="true" id="execution-count"></a><a href="#execution-count" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Execution count</h3>
+<p>The execution count is the amount of times we repeat the code for a single &quot;sample&quot; or &quot;cycle&quot;. We calculate the execution count using the <code>minTime</code> and an incremental process, that increases the repitions until the duration surpasses <code>minTime</code>. We have to consider, that the more often we execute a function, the faster it gets.</p>
+<p>The process starts with a single execution. That execution is measured and we estimate how often it would have to be repeated to surpass <code>minTime</code>.</p>
+<pre><code class="hljs css language-text">minTime = 400ns
+count = 1
+total = 120ns
+timeLeft = minTime - total = 400ns - 120ns => 280ns
+avg = total / count = 120ns / 1 => 120ns
+target = timeLeft / avg = 280ns / 120ns => 2.33 ~ 3
+next = count + target = 1 + 3 => 4
+</code></pre>
+<p>We then repeat the process, but this time with 4 executions. The functions starts to warm up and get faster, which might even result in the next run being faster the previous one, due to optimizations having kicked in.</p>
+<pre><code class="hljs css language-text">minTime = 400ns
+count = 4
+total = 140ns
+timeLeft = minTime - total => 260ns
+avg = total / count => 65ns
+target = timeLeft / avg => 4
+next = count + target => 8
+</code></pre>
+<p>This process is repeated until the <code>minTime</code> is reached. The last count is then taken as the needed amount of repitions to warm up the code. This amount, the <code>executionCount</code> is also then used as the fixed amount of repitions for taking the samples.</p>
+<h2><a class="anchor" aria-hidden="true" id="taking-samples"></a><a href="#taking-samples" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Taking samples</h2>
+<p>Warmup is the most complicated thing about zakzak, the actual benchmark measuring is relatively straightforward.
+One full cycle of repitions is used as sample.
+To increase the accuracy and consistency, we take multiple samples.
+Using the configuration you can define a minimum and maximum amount of samples, or a maximum time for zakzak to take samples.</p>
+<p>All thats then left to do is export and interpret them.</p>
+</span></div></div><div class="blogSocialSection"></div></div><div class="blog-recent"><a class="button" href="/zakzak/blog">Recent Posts</a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#from-the-start">From the start</a></li><li><a href="#file-parsing">File parsing</a></li><li><a href="#many-childprocesses">Many childprocesses</a></li><li><a href="#isolation">Isolation</a></li><li><a href="#warmup">Warmup</a><ul class="toc-headings"><li><a href="#dynamic">Dynamic</a></li><li><a href="#timer-resolution--uncertainty">Timer resolution &amp; Uncertainty</a></li><li><a href="#execution-count">Execution count</a></li></ul></li><li><a href="#taking-samples">Taking samples</a></li></ul></nav></div><footer class="nav-footer" id="footer"><section class="sitemap"><a href="/zakzak/" class="nav-home"><img src="/zakzak/img/favicon.png" alt="Zakzak" width="66" height="58"/></a><div><h5>Docs</h5><a href="/zakzak/docs/en/get-started.html">Get started</a><a href="/zakzak/docs/en/documentation.html">Documentation</a><a href="/zakzak/docs/en/contributing.html">Contributing</a></div><div><h5>Community</h5><a href="https://stackoverflow.com/questions/tagged/zakzak" target="_blank" rel="noreferrer noopener">Stack Overflow</a></div><div><h5>More</h5><a href="/zakzak/blog">Blog</a><a href="https://github.com/dynatrace/zakzak">GitHub</a><a class="github-button" href="https://github.com/dynatrace/zakzak" data-icon="octicon-star" data-count-href="/dynatrace/zakzak/stargazers" data-show-count="true" data-count-aria-label="# stargazers on GitHub" aria-label="Star this project on GitHub">Star</a></div></section><a href="https://www.dynatrace.com/" target="_blank" rel="noreferrer noopener" class="fbOpenSource"><img src="/zakzak/img/oss_logo.png" alt="Facebook Open Source" width="170" height="170"/></a><section class="copyright">Copyright © 2019 Dynatrace LLC</section></footer></div></body></html>

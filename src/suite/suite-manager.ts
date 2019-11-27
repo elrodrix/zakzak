@@ -59,12 +59,20 @@ export default class SuiteManager {
     return SuiteManager.instance;
   }
 
+  /**
+   * Add a setup function to the current scope
+   * @param fn Function inside the setup
+   */
   public addSetup(fn: Function) {
     if (this.currentPath.length > 0) {
       _.last(this.currentPath).addSetup(fn);
     }
   }
 
+  /**
+   * Add a teardown function to the current scope
+   * @param fn Function inside teardown
+   */
   public addTeardown(fn: Function) {
     if (this.currentPath.length > 0) {
       _.last(this.currentPath).addTeardown(fn);

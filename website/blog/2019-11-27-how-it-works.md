@@ -16,19 +16,19 @@ In this blog post I will discuss how zakzak works internally.
 
 The first thing zakzak does, is reading the benchmark files. Using [globby](https://github.com/sindresorhus/globby), which in turn uses [minimatch](https://github.com/isaacs/minimatch), it matches the target files. Then, using `require`, it executes those benchmark files.
 
-_Normally `require` is used to import things exported in other files, but it can also be used to execute code in another js file_
+_Normally `require` is used to import things exported in other files, but it can also be used to execute code in another .js file_
 
 ## File parsing
 
 All that the `benchmark`, `suite`, `setup` and `teardown` statements do, is access a singleton object called the `SuiteManager` and register themselves with it. When a statement registers itself with this `SuiteManager`, the manager creates an object for it, containing name, file and, most importantly, the function that was passed as a param to the statement.
 
-Now the `SuiteManager` starts building a tree like structure to represent the hierarchy of the statements in the file. At the topmost level, the root of the tree, is a `Suite` (the object representing a `suite` statement), that was automatically created to represent the file itself. Beneath that root, there is the next level, containg all the registrations from the previous step.
+Now the `SuiteManager` starts building a tree like structure to represent the hierarchy of the statements in the file. At the topmost level, the root of the tree, is a `Suite` (the object representing a `suite` statement), that was automatically created to represent the file itself. Beneath that root, there is the next level, containing all the registrations from the previous step.
 
-To further "discover" the file, the manager now calls the functions inside the afforementioned registrations. These, in turn, contain more statements, which will again, register themselves with the manager. You can see where this is going. This process is continued until there are no more registrations when calling the functions, at which point the file is considered done and the next file is processed.
+To further "discover" the file, the manager now calls the functions inside the aforementioned registrations. These, in turn, contain more statements, which will again, register themselves with the manager. You can see where this is going. This process is continued until there are no more registrations when calling the functions, at which point the file is considered done and the next file is processed.
 
-## Many childprocesses
+## Many child processes
 
-Once all the benchmarks are discovered, a different manager, called the `BenchmarkManager`, now creates little wrapper objects for the benchmarks. Those wrappers' purpose is to start a child process for the benchmark they are containing and interchanging information between child and parent process.
+Once all the benchmarks are discovered, a different manager, called the `BenchmarkManager`, now creates little wrapper objects for the benchmarks. Those wrappers' purpose is to start a child process for the benchmark that they are containing and interchanging information between child and parent process.
 
 The reason why the benchmarks are executed in child process, instead of the parent process is to isolate their environment. During development, I noticed, that if I were to executed multiple benchmarks, the v8 and certain functions would already be warmed up and optimized from the previous benchmark, which affected the results and behaviour.
 

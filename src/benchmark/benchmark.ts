@@ -30,6 +30,9 @@ export class Benchmark {
    */
   private options: BenchmarkOptions;
 
+  /**
+   * Flag that indicates wether the function that will be benchmarked is async
+   */
   private async = false;
 
   /**
@@ -68,6 +71,9 @@ export class Benchmark {
     return this.options;
   }
 
+  /**
+   * Runs all the setups for this benchmark
+   */
   private runSetups() {
     try {
       for (let i = 0, l = this.setups.length; i < l; i++) {
@@ -80,6 +86,9 @@ export class Benchmark {
     }
   }
 
+  /**
+   * Runs all the teardowns for this benchmark
+   */
   private runTeardowns() {
     try {
       for (let i = 0, l = this.teardowns.length; i < l; i++) {
@@ -92,6 +101,9 @@ export class Benchmark {
     }
   }
 
+  /**
+   * Calculates the minimum time needed for at most 1% uncertainty
+   */
   private getMinTime() {
     // Get tiniest possible measurement
     const timerResolution = Timer.getResolution();
@@ -102,7 +114,7 @@ export class Benchmark {
   }
 
   /**
-   * Start the benchmark
+   * Starts the benchmark
    */
   public async start() {
     const minTime = this.getMinTime();
@@ -135,6 +147,9 @@ export class Benchmark {
     } as BenchmarkResult);
   }
 
+  /**
+   * Checks if the return value of the function that will be benchmarked, has a `.then` method, implying that it is async
+   */
   private isAsync() {
     let x;
     try {
@@ -148,6 +163,11 @@ export class Benchmark {
     return x !== undefined && x.then !== undefined;
   }
 
+  /**
+   * Adds a list of setup functions and teardown functions to the benchmark
+   * @param setups Setups that will be added to the start of the list
+   * @param teardowns Teardowns that will be added to the end of the list
+   */
   public applySetupAndTeardown(setups: Function[] = [], teardowns: Function[] = []) {
     this.prependSetup(...setups);
     this.addTeardown(...teardowns);

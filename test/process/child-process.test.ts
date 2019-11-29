@@ -7,7 +7,8 @@ describe("ChildProcessHandler", () => {
     describe("event handlers", () => {
       let onStub: sinon.SinonStub;
       beforeEach(() => {
-        onStub = sinon.stub(process, "on");
+        // has to be cast, otherwise error due to typescript
+        onStub = sinon.stub(process as any, "on");
       });
 
       afterEach(() => {

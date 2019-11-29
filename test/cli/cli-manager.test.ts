@@ -15,7 +15,7 @@ describe("CLIManager", () => {
     describe("--init", () => {
       let path: string;
       let data: any;
-      let exitStub: sinon.SinonStub;
+      let exitStub: sinon.SinonStub<[number?], never>;
       let writeFileSyncSpy: sinon.SinonSpy;
 
       beforeEach(() => {

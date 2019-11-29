@@ -21,6 +21,6 @@ import { BenchmarkResult } from "../../benchmark";
 export default class JsonExporter extends Exporter {
   public onFinished(results: BenchmarkResult[]): void {
     const data = JSON.stringify(results);
-    writeFileSync(`${new Date().toISOString()}.data.json`, data);
+    writeFileSync("benchmark.data.json", data, { flag: "w" });
   }
 }

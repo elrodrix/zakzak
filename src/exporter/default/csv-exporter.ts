@@ -21,7 +21,7 @@ import { BenchmarkResult } from "../../benchmark";
 export default class CsvExporter extends Exporter {
   public onFinished(results: BenchmarkResult[]): void {
     const csvWriter = createObjectCsvWriter({
-      path: `${new Date().toISOString()}.data.csv`,
+      path: "benchmark.data.csv",
       header: [
         { id: "name", title: "Name" },
         { id: "file", title: "File" },

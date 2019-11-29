@@ -24,6 +24,6 @@ export default class XmlExporter extends Exporter {
     // Dont remove compact statement
     // https://github.com/nashwaan/xml-js/issues/60
     const xmlString = js2xml(results, { compact: true });
-    writeFileSync(`${new Date().toISOString()}.data.xml`, xmlString);
+    writeFileSync("benchmark.data.xml", xmlString);
   }
 }

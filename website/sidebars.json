@@ -13,6 +13,8 @@
         "ids": [
           "documentation/benchmark/analytics",
           "documentation/benchmark/benchmark",
+          "documentation/benchmark/garbage-collector",
+          "documentation/benchmark/memory-benchmark",
           "documentation/benchmark/timer"
         ]
       },

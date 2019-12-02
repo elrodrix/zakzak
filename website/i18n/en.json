@@ -11,6 +11,12 @@
       "documentation/benchmark/benchmark": {
         "title": "Benchmark"
       },
+      "documentation/benchmark/garbage-collector": {
+        "title": "GarbageCollector"
+      },
+      "documentation/benchmark/memory-benchmark": {
+        "title": "MemoryBenchmark"
+      },
       "documentation/benchmark/timer": {
         "title": "Timer"
       },

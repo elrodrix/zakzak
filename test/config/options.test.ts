@@ -16,6 +16,9 @@ describe("Options", () => {
         minTime: 0,
         maxIterations: 0,
         minIterations: 0,
+        memoryBenchmark: true,
+        maxMemorySamples: 10,
+        minMemorySamples: 1,
       };
 
       expect(DefaultBenchmarkOptions).to.have.all.keys(options);

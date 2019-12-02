@@ -1,14 +1,19 @@
 {
-  "benchmark": {
-    "minTime": 500000,
-    "minSamples": 5,
-    "maxTime": 50000000,
-    "maxSamples": 5000
-  },
-  "manager": {
-    "runParallel": 1,
-    "pattern": "./**/*.benchmark.js",
-    "path": "./dist",
-    "exporter": ["hierarchy"]
-  }
+	"benchmark": {
+		"minTime": 500000,
+		"minSamples": 5,
+		"maxTime": 50000000,
+		"maxSamples": 5000,
+		"minIterations": 0,
+		"maxIterations": 0,
+		"memoryBenchmark": false,
+		"maxMemorySamples": 100,
+		"minMemorySamples": 10
+	},
+	"manager": {
+		"runParallel": 1,
+		"pattern": "./**/*.benchmark.js",
+		"path": "./dist",
+		"exporter": ["hierarchy"]
+	}
 }

@@ -30,9 +30,13 @@ export default class HierarchyExporter extends Exporter {
         if (line.benchmarkId === result.id) {
           terminal.previousLine(this.lines.length - i);
           terminal.eraseLineAfter();
-          console.log(
-            `${line.text}  ✔️   ${HierarchyExporter.nsToPrettyString(result.stats.median)}`,
-          );
+          let text = `${line.text}  ✔️   ${HierarchyExporter.nsToPrettyString(
+            result.stats.median,
+          )}`;
+          if (result.memoryUsage) {
+            text += `, ${result.memoryUsage} bytes`;
+          }
+          console.log(text);
           terminal.nextLine(this.lines.length - i);
         }
       }

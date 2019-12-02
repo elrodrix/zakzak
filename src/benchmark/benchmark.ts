@@ -19,6 +19,7 @@ import { mergeWith, sum } from "lodash";
 import Timer from "./timer";
 import { Analytics, FullAnalysis } from "./analytics";
 import { BenchmarkOptions, DefaultBenchmarkOptions } from "../config";
+import { MemoryBenchmark, Snapshot } from "./memory-benchmark";
 
 /**
  * Benchmark is responsible for the actual benchmarking.
@@ -132,11 +133,17 @@ export class Benchmark {
       samples = this.getSamples(optimalCount).map(sample => sample / optimalCount);
     }
 
-    this.runTeardowns();
+    let snapshots: Snapshot[] = [];
+    if (this.options.memoryBenchmark === true) {
+      const memBench = new MemoryBenchmark(this.fn, optimalCount, this.async, this.options);
+      snapshots = await memBench.start();
+
+      this.runTeardowns();
+    }
 
     const stats = Analytics.getFullAnalysis(samples);
 
-    return Promise.resolve({
+    const result = {
       id: this.id,
       name: this.name,
       filename: this.filepath,
@@ -144,7 +151,16 @@ export class Benchmark {
       count: optimalCount,
       times: samples,
       options: this.options,
-    } as BenchmarkResult);
+    } as BenchmarkResult;
+
+    if (snapshots.length !== 0) {
+      result.memorySnapshots = snapshots;
+      result.memoryUsage = Analytics.getMedian(
+        snapshots.map(s => s.during.heapUsed - s.pre.heapUsed),
+      );
+    }
+
+    return Promise.resolve(result);
   }
 
   /**
@@ -385,6 +401,8 @@ interface BenchmarkResult {
   times: number[];
   count: number;
   options: BenchmarkOptions;
+  memorySnapshots?: Snapshot[];
+  memoryUsage?: number;
 }
 
 export { BenchmarkResult };

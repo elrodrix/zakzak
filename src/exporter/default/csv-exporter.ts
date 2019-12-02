@@ -35,6 +35,7 @@ export default class CsvExporter extends Exporter {
         { id: "moe", title: "MarginOfError" },
         { id: "min", title: "Min" },
         { id: "max", title: "Max" },
+        { id: "mem", title: "Memory" },
       ],
     });
 
@@ -42,7 +43,7 @@ export default class CsvExporter extends Exporter {
       return {
         name: r.name,
         file: r.filename,
-        measurements: r.times,
+        measurements: r.times.length,
         cycles: r.count,
         mean: r.stats.mean,
         median: r.stats.median,
@@ -52,6 +53,7 @@ export default class CsvExporter extends Exporter {
         moe: r.stats.marginOfError,
         min: r.stats.min,
         max: r.stats.max,
+        mem: r.memoryUsage ? r.memoryUsage : 0,
       };
     });
 

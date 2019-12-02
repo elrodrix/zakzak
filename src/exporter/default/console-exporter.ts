@@ -29,36 +29,27 @@ export default class ConsoleExporter extends Exporter {
     const header = [
       "Name",
       "Measurements",
-      "Cycles",
-      "Mean",
+      "Iterations",
       "Median",
-      "Mode",
       "StdDev",
-      "StdErr",
-      "MoE",
       "Min",
       "Max",
+      "Memory",
     ];
     const data = results.map(r => [
       r.name,
       r.times.length,
       r.count,
-      ConsoleExporter.nsToPrettyString(r.stats.mean),
       ConsoleExporter.nsToPrettyString(r.stats.median),
-      ConsoleExporter.nsToPrettyString(r.stats.mode),
       ConsoleExporter.nsToPrettyString(r.stats.standardDeviation),
-      ConsoleExporter.nsToPrettyString(r.stats.standardError),
-      ConsoleExporter.nsToPrettyString(r.stats.marginOfError),
       ConsoleExporter.nsToPrettyString(r.stats.min),
       ConsoleExporter.nsToPrettyString(r.stats.max),
+      r.memoryUsage ? `${r.memoryUsage} bytes` : "-",
     ]);
 
     data.push(
       ...this.errors.map(e => [
         chalk.red(last(e.id.split(":"))),
-        "-",
-        "-",
-        "-",
         "-",
         "-",
         "-",

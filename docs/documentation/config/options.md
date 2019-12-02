@@ -13,15 +13,21 @@ export interface BenchmarkOptions {
   maxSamples?: number;
   minIterations?: number;
   maxIterations?: number;
+  memoryBenchmark?: boolean;
+  maxMemorySamples?: number;
+  minMemorySamples?: number;
 }
 ```
 
 - `minTime` is the minimum time that the warmup procedure has to be run. Also the minimum time for a single cycle.
 - `minSamples` is the minimum amount of samples that have to be collected.
 - `maxTime` is the maximum time allowed for taking samples.
-- `maxSamples` is the maximum amount of samples that should be collected
+- `maxSamples` is the maximum amount of samples that should be collected.
 - `minIterations` is the minimum amount of iterations that the code should run in a single benchmark. Ignored if value is equal to, or below zero.
 - `maxIterations` is the maximum amount of iterations that the code should run in a single benchmark. Ignored if value is equal to, or below zero.
+- `memoryBenchmark` is a flag to signal wether the benchmar should aslo do some memory benchmarking.
+- `maxMemorySamples` is the maximum amount of samples/snapshots the memory benchmark should take.
+- `minMemorySamples` is the minimum amount of samples/snapshots the memory benchmark should take.
 
 ## BenchmarkManagerOptions
 

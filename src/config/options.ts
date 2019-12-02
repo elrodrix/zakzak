@@ -48,6 +48,18 @@ export interface BenchmarkOptions {
    * Ignored if value is equal to, or below zero.
    */
   maxIterations?: number;
+  /**
+   * Flag that enables/disables memory benchmarking.
+   */
+  memoryBenchmark?: boolean;
+  /**
+   * Maximum amount of samples/snapshots the memory benchmark should take
+   */
+  maxMemorySamples?: number;
+  /**
+   * Minimum amount of samples/snapshots the memory benchmark should take
+   */
+  minMemorySamples?: number;
 }
 
 /**
@@ -98,6 +110,9 @@ export const DefaultBenchmarkOptions: BenchmarkOptions = {
   maxSamples: 5000,
   minIterations: 0,
   maxIterations: 0,
+  memoryBenchmark: false,
+  maxMemorySamples: 10000,
+  minMemorySamples: 100,
 };
 
 /**

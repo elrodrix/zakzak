@@ -33,19 +33,7 @@ export default class ConsoleAsyncExporter extends Exporter {
    */
   constructor(em: EventEmitter) {
     super(em);
-    const header = [
-      "Name",
-      "Measurements",
-      "Cycles",
-      "Mean",
-      "Median",
-      "Mode",
-      "StdDev",
-      "StdErr",
-      "MoE",
-      "Min",
-      "Max",
-    ];
+    const header = ["Name", "Samples", "Iterations", "Median", "StdDev", "Min", "Max", "Memory"];
     const config = {
       columnDefault: {
         width: 15,
@@ -68,14 +56,11 @@ export default class ConsoleAsyncExporter extends Exporter {
       result.name,
       String(result.times.length),
       String(result.count),
-      ConsoleAsyncExporter.nsToPrettyString(result.stats.mean),
       ConsoleAsyncExporter.nsToPrettyString(result.stats.median),
-      ConsoleAsyncExporter.nsToPrettyString(result.stats.mode),
       ConsoleAsyncExporter.nsToPrettyString(result.stats.standardDeviation),
-      ConsoleAsyncExporter.nsToPrettyString(result.stats.standardError),
-      ConsoleAsyncExporter.nsToPrettyString(result.stats.marginOfError),
       ConsoleAsyncExporter.nsToPrettyString(result.stats.min),
       ConsoleAsyncExporter.nsToPrettyString(result.stats.max),
+      result.memoryUsage ? `${result.memoryUsage} bytes` : "-",
     ]);
   }
 
@@ -93,19 +78,7 @@ export default class ConsoleAsyncExporter extends Exporter {
 
   public onError(error: Error, benchmarkId: string) {
     this.errors.push({ id: benchmarkId, error });
-    this.stream.write([
-      chalk.red(last(benchmarkId.split(":"))),
-      "-",
-      "-",
-      "-",
-      "-",
-      "-",
-      "-",
-      "-",
-      "-",
-      "-",
-      "-",
-    ]);
+    this.stream.write([chalk.red(last(benchmarkId.split(":"))), "-", "-", "-", "-", "-", "-", "-"]);
   }
 
   private errors: { error: Error; id: string }[] = [];

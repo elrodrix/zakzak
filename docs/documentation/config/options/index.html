@@ -62,15 +62,21 @@
   maxSamples?: <span class="hljs-built_in">number</span>;
   minIterations?: <span class="hljs-built_in">number</span>;
   maxIterations?: <span class="hljs-built_in">number</span>;
+  memoryBenchmark?: <span class="hljs-built_in">boolean</span>;
+  maxMemorySamples?: <span class="hljs-built_in">number</span>;
+  minMemorySamples?: <span class="hljs-built_in">number</span>;
 }
 </code></pre>
 <ul>
 <li><code>minTime</code> is the minimum time that the warmup procedure has to be run. Also the minimum time for a single cycle.</li>
 <li><code>minSamples</code> is the minimum amount of samples that have to be collected.</li>
 <li><code>maxTime</code> is the maximum time allowed for taking samples.</li>
-<li><code>maxSamples</code> is the maximum amount of samples that should be collected</li>
+<li><code>maxSamples</code> is the maximum amount of samples that should be collected.</li>
 <li><code>minIterations</code> is the minimum amount of iterations that the code should run in a single benchmark. Ignored if value is equal to, or below zero.</li>
 <li><code>maxIterations</code> is the maximum amount of iterations that the code should run in a single benchmark. Ignored if value is equal to, or below zero.</li>
+<li><code>memoryBenchmark</code> is a flag to signal wether the benchmar should aslo do some memory benchmarking.</li>
+<li><code>maxMemorySamples</code> is the maximum amount of samples/snapshots the memory benchmark should take.</li>
+<li><code>minMemorySamples</code> is the minimum amount of samples/snapshots the memory benchmark should take.</li>
 </ul>
 <h2><a class="anchor" aria-hidden="true" id="benchmarkmanageroptions"></a><a href="#benchmarkmanageroptions" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>BenchmarkManagerOptions</h2>
 <pre><code class="hljs css language-ts"><span class="hljs-keyword">export</span> <span class="hljs-keyword">interface</span> BenchmarkManagerOptions {

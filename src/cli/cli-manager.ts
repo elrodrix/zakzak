@@ -133,6 +133,9 @@ export default class CLIManager {
       console.log(" $ zakzak -P ./src/benchmarks");
       console.log(" $ zakzak -P ./src -p *.zakzak-boommboom.js");
       console.log(" $ zakzak -p *.benchmark-this.js -e serial-exporter.js");
+      console.log(
+        "\nFor more info consult the documentation:\nhttps://dynatrace.github.io/zakzak/\n",
+      );
     });
   }
 

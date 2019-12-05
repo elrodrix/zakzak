@@ -14,6 +14,6 @@
     "runParallel": 1,
     "pattern": "./**/*.benchmark.js",
     "path": "./dist",
-    "exporter": ["console-async"]
+    "exporter": ["hierarchy"]
   }
 }

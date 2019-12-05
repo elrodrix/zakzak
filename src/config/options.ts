@@ -111,8 +111,8 @@ export const DefaultBenchmarkOptions: BenchmarkOptions = {
   minIterations: 0,
   maxIterations: 0,
   memoryBenchmark: false,
-  maxMemorySamples: 10000,
-  minMemorySamples: 100,
+  maxMemorySamples: 100,
+  minMemorySamples: 10,
 };
 
 /**

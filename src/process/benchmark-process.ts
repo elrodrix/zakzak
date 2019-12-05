@@ -14,10 +14,12 @@
  * limitations under the License.
  */
 
-import { ChildProcess, fork } from "child_process";
+import { ChildProcess, spawn } from "child_process";
 import path from "path";
 import { BenchmarkOptions } from "../config";
-import { StartMessage, ExitMessage } from "./child-process";
+import { StartMessage } from "./child-process";
+import { BenchmarkResult } from "../benchmark";
+import BenchmarkError from "./benchmark-error";
 
 /**
  * Wrapper for parent process logic
@@ -38,18 +40,15 @@ export default class BenchmarkProcess {
   /**
    * Create the child process, start the benchmark and wait for the results
    */
-  public run() {
-    const promise = this.startProcess();
-    this.setEventHandlers();
+  public async run() {
+    this.startProcess();
     const message: StartMessage = {
       benchmarkID: this.benchmarkId,
       filename: this.filepath,
       options: this.options,
     };
-
-    this.child.send(message);
-
-    return promise;
+    await this.sendToChild(message);
+    return this.readFromChild<BenchmarkResult>();
   }
 
   /**
@@ -58,37 +57,46 @@ export default class BenchmarkProcess {
   private child: ChildProcess;
 
   /**
-   * Message that is received, when the child process exits
-   */
-  private message: ExitMessage;
-
-  /**
-   * Set the event handlers for the child process
-   */
-  private setEventHandlers() {
-    this.child.on("message", (msg: ExitMessage) => {
-      this.message = msg;
-    });
-  }
-
-  /**
    * Start the child process and wait for it to exit
    */
   private startProcess() {
-    // Path to child.ts
-    const childPath = path.posix.join(__dirname, "./child");
-    this.child = fork(childPath);
+    const childPath = path.posix.join(__dirname, "./child.js");
+    this.child = spawn("node", [childPath]);
+  }
 
-    const promise = new Promise((res: (msg: ExitMessage) => void, err) => {
-      this.child.on("exit", code => {
-        if (code === 0) {
-          res(this.message);
+  private sendToChild<T>(data: T) {
+    return new Promise((res, err) => {
+      this.child.stdin.write(JSON.stringify(data), error => {
+        if (error) {
+          err(error);
         } else {
-          err(this.message.error);
+          this.child.stdin.end(() => {
+            res();
+          });
         }
       });
     });
+  }
 
-    return promise;
+  private readFromChild<T>() {
+    return new Promise<T>((res, err) => {
+      const chunks: string[] = [];
+      this.child.stdout.on("data", data => {
+        chunks.push(data);
+      });
+
+      this.child.stdout.once("end", () => {
+        try {
+          const complete = chunks.join("");
+          res(JSON.parse(complete));
+        } catch {
+          // error gets handled by stderr
+        }
+      });
+
+      this.child.stderr.once("data", (data: Buffer) => {
+        err(new BenchmarkError(data.toString()));
+      });
+    });
   }
 }

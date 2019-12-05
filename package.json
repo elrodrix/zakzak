@@ -1,6 +1,6 @@
 {
   "name": "@dynatrace/zakzak",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "Zakzak is a unit-test-like benchmarking framework for Node.js",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
@@ -14,7 +14,8 @@
     "test-ci": "mocha --require source-map-support/register --reporter mocha-junit-reporter --reporter-options mochaFile=./.nyc/mocha-report.xml ./dist/test/**/*.test.js",
     "coverage": "nyc -r cobertura npm run test-ci",
     "install-cli": "npm run build && npm install -g",
-    "start": "node dist/src/cli-script.js"
+    "start": "node dist/src/cli-script.js",
+    "link": "npm run build && npm link && cd demo && npm link @dynatrace/zakzak && npm run build"
   },
   "repository": "Dynatrace/zakzak",
   "keywords": [

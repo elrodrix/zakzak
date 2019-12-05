@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+/* eslint-disable @typescript-eslint/no-empty-function */
 import { merge } from "lodash";
 import { expect } from "chai";
 import { Benchmark, Suite, DefaultBenchmarkOptions } from "../../src";

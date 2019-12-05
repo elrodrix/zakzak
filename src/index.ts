@@ -49,4 +49,4 @@ export {
   Timer,
 } from "./benchmark";
 
-export { BenchmarkProcess, ChildProcessHandler, StartMessage, ExitMessage } from "./process";
+export { BenchmarkProcess, ChildProcessHandler, StartMessage } from "./process";

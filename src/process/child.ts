@@ -15,8 +15,12 @@
  */
 
 import { ChildProcessHandler } from ".";
+import { StartMessage } from "./child-process";
 
 // This file will be called by the childprocess.fork
-
-const cp = new ChildProcessHandler();
-cp.registerEventHandlers();
+(async () => {
+  const msg = await ChildProcessHandler.readFromParent<StartMessage>();
+  const result = await ChildProcessHandler.startBenchmark(msg);
+  await ChildProcessHandler.sendToParent(result);
+  process.exit(0);
+})();

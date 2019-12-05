@@ -15,6 +15,6 @@
  */
 
 import BenchmarkProcess from "./benchmark-process";
-import { ChildProcessHandler, ExitMessage, StartMessage } from "./child-process";
+import { ChildProcessHandler, StartMessage } from "./child-process";
 
-export { BenchmarkProcess, ChildProcessHandler, ExitMessage, StartMessage };
+export { BenchmarkProcess, ChildProcessHandler, StartMessage };

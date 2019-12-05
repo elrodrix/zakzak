@@ -63,7 +63,7 @@ export class Benchmark {
         options.minSamples >= 1 ? options.minSamples : DefaultBenchmarkOptions.minSamples;
     }
 
-    this.options = mergeWith({}, this.options, options, { minSamples }, (a, b) =>
+    this.options = mergeWith({}, this.options, options, { minSamples }, (a: any, b: any) =>
       b === null ? a : undefined,
     );
   }

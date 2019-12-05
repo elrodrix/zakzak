@@ -16,10 +16,10 @@
 
 import PromisePool from "es6-promise-pool";
 
-import { Benchmark } from "../benchmark";
+import { Benchmark, BenchmarkResult } from "../benchmark";
 import { BenchmarkManagerOptions } from "../config";
 import { ExportManager } from "../exporter";
-import { BenchmarkProcess, ExitMessage } from "../process";
+import { BenchmarkProcess } from "../process";
 
 /**
  * Manages multiple benchmarks, their configuration, runtime seperation and exporting
@@ -35,9 +35,7 @@ export default class BenchmarkManager {
    * Run all the benchmarks and export them
    */
   public async run() {
-    let messages: ExitMessage[] = [];
-    messages = await this.runParallel();
-    const results = messages.filter(m => m.result !== null).map(m => m.result);
+    const results = await this.runParallel();
     this.exporter.exportFinished(results);
     return results;
   }
@@ -58,20 +56,16 @@ export default class BenchmarkManager {
   private runParallel() {
     const processes = this.getProcesses();
     const { exporter } = this;
-    const results: ExitMessage[] = [];
+    const results: BenchmarkResult[] = [];
 
     const producer = () => {
       if (processes.length > 0) {
         const p = processes.shift();
         return p
           .run()
-          .then(msg => {
-            if (msg.result) {
-              exporter.exportResult(msg.result);
-              results.push(msg);
-            } else if (msg.error) {
-              exporter.exportError(msg.error, p.benchmarkId);
-            }
+          .then(result => {
+            exporter.exportResult(result);
+            results.push(result);
           })
           .catch((error: Error) => {
             exporter.exportError(error, p.benchmarkId);

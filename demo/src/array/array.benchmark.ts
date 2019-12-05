@@ -17,47 +17,47 @@ suite(
           return CopyArray.lodashClone(array);
         });
       });
-      benchmark("apply", () => {
-        return CopyArray.apply(array);
-      });
-      benchmark("concat", () => {
-        return CopyArray.concat(array);
-      });
-      benchmark("index", () => {
-        return CopyArray.index(array);
-      });
-      benchmark("jsonStringify", () => {
-        return CopyArray.jsonStringify(array);
-      });
-      benchmark("map", () => {
-        return CopyArray.map(array);
-      });
-      benchmark("push", () => {
-        return CopyArray.push(array);
-      });
-      benchmark("slice", () => {
-        return CopyArray.slice(array);
-      });
-      benchmark("unshift", () => {
-        return CopyArray.unshift(array);
-      });
+      // benchmark("apply", () => {
+      //   return CopyArray.apply(array);
+      // });
+      // benchmark("concat", () => {
+      //   return CopyArray.concat(array);
+      // });
+      // benchmark("index", () => {
+      //   return CopyArray.index(array);
+      // });
+      // benchmark("jsonStringify", () => {
+      //   return CopyArray.jsonStringify(array);
+      // });
+      // benchmark("map", () => {
+      //   return CopyArray.map(array);
+      // });
+      // benchmark("push", () => {
+      //   return CopyArray.push(array);
+      // });
+      // benchmark("slice", () => {
+      //   return CopyArray.slice(array);
+      // });
+      // benchmark("unshift", () => {
+      //   return CopyArray.unshift(array);
+      // });
     });
-    suite("empty-array", () => {
-      benchmark("length0", () => {
-        return EmptyArray.length0(array);
-      });
-      benchmark("newInit", () => {
-        return EmptyArray.newInit(array);
-      });
-      benchmark("pop", () => {
-        return EmptyArray.pop(array);
-      });
-      benchmark("shift", () => {
-        return EmptyArray.shift(array);
-      });
-      benchmark("splice", () => {
-        return EmptyArray.splice(array);
-      });
-    });
+    // suite("empty-array", () => {
+    //   benchmark("length0", () => {
+    //     return EmptyArray.length0(array);
+    //   });
+    //   benchmark("newInit", () => {
+    //     return EmptyArray.newInit(array);
+    //   });
+    //   benchmark("pop", () => {
+    //     return EmptyArray.pop(array);
+    //   });
+    //   benchmark("shift", () => {
+    //     return EmptyArray.shift(array);
+    //   });
+    //   benchmark("splice", () => {
+    //     return EmptyArray.splice(array);
+    //   });
+    // });
   },
 );

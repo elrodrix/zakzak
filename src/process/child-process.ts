@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import { Benchmark, BenchmarkResult } from "../benchmark";
 import { BenchmarkOptions } from "../config";
 import { SuiteManager } from "../suite";
 
@@ -22,91 +21,47 @@ import { SuiteManager } from "../suite";
  * Handler for the child process logic
  */
 export class ChildProcessHandler {
-  /**
-   * Suite manager that finds, and controls benchmarks and suites
-   */
-  public manager: SuiteManager;
+  public static readFromParent<T>() {
+    return new Promise<T>((res, err) => {
+      const chunks: string[] = [];
+      process.stdin.on("data", data => {
+        chunks.push(data.toString());
+      });
 
-  /**
-   * The benchmark that will be executed
-   */
-  public benchmark: Benchmark;
-
-  /**
-   * Result of the benchmark
-   */
-  public result: BenchmarkResult;
-
-  /**
-   * Options for the benchmark
-   */
-  public options: BenchmarkOptions;
-
-  /**
-   * Registers the event handlers on the process
-   */
-  public registerEventHandlers() {
-    process.on("message", this.onStart.bind(this)); // Once a message is received, then benchmark can start
+      process.stdin.once("end", () => {
+        try {
+          const complete = chunks.join("");
+          res(JSON.parse(complete));
+        } catch (error) {
+          err(error);
+        }
+      });
+    });
   }
 
   /**
    * Starts the logic of the child process
    * @param message Message that was received from parent
    */
-  private async onStart(message: StartMessage) {
-    this.manager = new SuiteManager(message.options);
-    this.manager.addFiles([message.filename]); // Find benchmark
-    this.benchmark = this.manager.getBenchmark(message.benchmarkID);
-    if (this.benchmark == null) {
-      this.exit(1);
-      return;
+  public static async startBenchmark(message: StartMessage) {
+    const sm = new SuiteManager(message.options);
+    sm.addFiles([message.filename]); // Find benchmark
+    const b = sm.getBenchmark(message.benchmarkID);
+    if (b == null) {
+      throw new Error("BenchmarkNotFound");
     }
 
-    await this.runBenchmark();
-    this.sendResults();
+    return b.start();
   }
 
-  /**
-   * Send the results of the benchmark to the parent and then exit
-   */
-  private sendResults() {
-    const message: ExitMessage = {
-      result: this.result,
-    };
-    process.send(message);
-    this.exit(0);
+  public static async sendToParent<T>(data: T) {
+    return new Promise(res => {
+      const json = JSON.stringify(data);
+      process.stdout.write(json, () => {
+        res();
+      });
+    });
   }
-
-  /**
-   * Send error to the parent and then exit
-   * @param error Error that was caught
-   */
-  private onError(error: Error) {
-    const message: ExitMessage = {
-      error: JSON.parse(JSON.stringify(error, Object.getOwnPropertyNames(error))),
-    };
-    process.send(message);
-    this.exit(1);
-  }
-
-  /**
-   * Run the benchmark
-   */
-  private async runBenchmark() {
-    try {
-      this.result = await this.benchmark.start();
-    } catch (error) {
-      if (error instanceof Error) {
-        this.onError(error);
-      }
-    }
-  }
-
-  /**
-   * Exit the process
-   * @param status Status with which to exit
-   */
-  private exit = process.exit;
 }
 
 /**
@@ -118,12 +73,4 @@ interface StartMessage {
   options: BenchmarkOptions;
 }
 
-/**
- * Exit message that is sent to parent process, once the process exits
- */
-interface ExitMessage {
-  result?: BenchmarkResult;
-  error?: Error;
-}
-
-export { StartMessage, ExitMessage };
+export { StartMessage };

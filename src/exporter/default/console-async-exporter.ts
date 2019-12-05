@@ -65,15 +65,23 @@ export default class ConsoleAsyncExporter extends Exporter {
   }
 
   public onFinished(): void {
-    console.log(chalk.red(`\n${this.errors.length} benchmarks failed.\n`));
-    console.log(
-      chalk.red(
-        this.errors
-          .map(v => `* ${v.id} failed with:\n\t${v.error.message.replace("\n", "\n\t")}`)
-          .join("\n"),
-      ),
-    );
-    console.log();
+    if (this.errors.length > 0) {
+      console.log(chalk.red(`\n${this.errors.length} benchmarks failed.\n`));
+      console.log(
+        chalk.red(
+          this.errors
+            .map(
+              v =>
+                `* ${v.id} failed with:\n\t${v.error.name}\n\t${v.error.message?.replace(
+                  "\n",
+                  "\n\t",
+                )}`,
+            )
+            .join("\n"),
+        ),
+      );
+      console.log();
+    }
   }
 
   public onError(error: Error, benchmarkId: string) {

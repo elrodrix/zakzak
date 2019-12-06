@@ -28,6 +28,7 @@
   - [Structure the benchmarks using suites](#structure-the-benchmarks-using-suites)
   - [Setup and Teardown](#setup-and-teardown)
   - [Async Benchmarks](#async-benchmarks)
+  - [Memory benchmark](#memory-benchmark)
   - [Configuration](#configuration)
   - [CLI](#cli)
   - [Custom Exporter](#custom-exporter)
@@ -176,6 +177,10 @@ benchmark("async-await", async () => {
   doStuffThatsAsync();
 });
 ```
+
+### Memory benchmark
+
+You can also get some memory readings from the benchmarks. For that you just have to set the `memoryBenchmark` flag in the configuration to true.
 
 ### Configuration
 
